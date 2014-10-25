@@ -1,0 +1,25 @@
+.newOrderForm
+  @extend .light-font
+  display: block
+  position: fixed
+  left: 0
+  right: 0
+  +trans($easyslider)
+
+  &.visible
+    top: 25px
+  &.hidden
+    top: 5000px
+
+  .innerForm
+    display: block
+    padding: $grid
+    margin: $grid2 auto
+    background: $med-light-gray
+    border: 1px solid $light-gray-border
+    width: $doc-width
+
+    +break-for(ipad)
+      width: $tablet-width
+    +break-for(iphone)
+      width: $phone-width

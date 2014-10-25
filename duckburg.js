@@ -22,7 +22,7 @@ mongoose.connect(configDB.url);
 
 // Get Passport set up.
 require('./config/passport')(passport);
-app.use(session({ secret: 'SOME_APP_SECRET' }));
+app.use(session({ secret: 'dbsecret' }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -35,12 +35,13 @@ app.set('view engine', 'jade');
 // Pass app and passport to routes.
 require('./app/routes/route.js')(app);
 require('./app/routes/login_routes.js')(app, passport);
+require('./app/routes/explorer.js')(app);
 require('./app/routes/order_routes.js')(app);
 require('./app/routes/customer_routes.js')(app);
 
 // 404 redirect
 app.use(function(req, res, next) {
-    res.render('404.jade');
+    // res.render('404.jade');
 });
 
 // Launch app

@@ -2,7 +2,17 @@ extends components/base
 
 block append content
 
-  div
-    | welcome
+  include components/header
 
-  include components/newOrderForm
+  if (user)
+    include components/newOrderForm
+  else if !user
+    form(action="/login", method="post", class="loginForm")
+
+      include components/loginForm
+
+      button(type="submit", class="")
+        | login
+
+  if user
+    div.userName= user.local.name

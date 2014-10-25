@@ -1,0 +1,31 @@
+include components/base
+
+body
+
+	div.loginScreen
+
+		h1
+			span(class="loginScreen--header")= msg.mode
+
+		if (msg.msg)
+			span= msg.msg
+
+		form(action="/#{msg.mode}", method="post")
+
+			if (msg.mode == 'signup')
+				span
+					label
+						| Name
+					input(type="text", class="form-control", name="duckburg-login-name")
+
+			span
+				label
+					| Email
+				input(type="text", class="form-control", name="duckburg-login-email")
+
+			span
+				label
+					| Password
+				input(type="password", class="form-control", name="duckburg-login-password")
+
+			button(type="submit", class="")= msg.mode
