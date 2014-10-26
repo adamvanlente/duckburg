@@ -11,7 +11,8 @@ var User = function() {
         local            : {
             email        : String,
             password     : String,
-            name         : String
+            name         : String,
+            userType     : String
         },
         facebook         : {
             id           : String,
@@ -45,6 +46,16 @@ var User = function() {
             }
         });
     };
+
+    var _findAll = function(callback) {
+        _model.find(function(err, doc) {
+            if (err) {
+                fail(err);
+            } else {
+                callback(doc);
+            }
+        });
+    }
 
     var _findById = function(id, callback) {
         _model.findOne({ '_id' : id}, function(err, doc) {
@@ -129,6 +140,7 @@ var User = function() {
 
     return {
         createNew: _createNew,
+        findAll: _findAll,
         findByEmail: _findByEmail,
         findById: _findById,
         findFacebookUserByEmail: _findFacebookUserByEmail,

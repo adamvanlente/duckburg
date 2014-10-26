@@ -38,6 +38,7 @@ require('./app/routes/login_routes.js')(app, passport);
 require('./app/routes/explorer.js')(app);
 require('./app/routes/order_routes.js')(app);
 require('./app/routes/customer_routes.js')(app);
+require('./app/routes/json_routes.js')(app);
 
 // 404 redirect
 app.use(function(req, res, next) {
