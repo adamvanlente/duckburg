@@ -10,7 +10,7 @@ duckburg.js, within client-javascripts, handles some global functions like error
 ##### Flow of objects
 
 There are lots of objects in DuckBurg, such as customers, orders, files, etc. Each of these have some common properties/methods.  These utilize the other javascript files.  Each Object has:
-	
+
 - A form
 	- forms.js handles the launching & initilization for forms forms for all objects.  For instance, If an object exists for customers, there will be a form that can be launched to create/edit records for this object.
 	- forms.js also handles any global functions belonging to all forms in duckburg.
@@ -21,3 +21,15 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 	- (views.js) each object will have a list view, where the user can view all available objects and update them (based on their user role).
 	- views.js also handles one addition thing, which is displaying a global view that lists all objects and their available functions, much like an api explorer.
 
+#### Steps to creating a new object flow in the UI
+
+- create hte jade form template
+- add the sass rules to the forms sass file
+- [views.js] create a list function to display the item among the object listing
+- [views.js] call this function in the main 'objects' function
+- [views.js] create a function to load the list of objects
+- [forms.js] create function that loads form
+- [forms.js] create function that validates form
+- [forms.js] add logic in generic function to save object, which calls validating function
+- [requests.js] add simple function to requests for creating/updating item
+- (+)[requests.js] some objects will require custom logic like customers

@@ -120,7 +120,6 @@ duckburg.forms = {
         duckburg.errorMessage(msg);
         return false;
       }
-
       duckburg.requests.suppliers.create();
   },
 
