@@ -1,3 +1,47 @@
 .loginForm
-  display: block
-  margin-top: 50px
+  display: none
+  width: 200px
+  margin: 100px auto
+  padding: 8px
+  border-radius: 1px
+  background: $med-light-gray
+
+  +break-for(ipad)
+    width: 400px
+
+  +break-for(iphone)
+    width: $phone-width
+
+  input
+    @extend .serif-font
+    display: block
+    -webkit-appearance: none
+    border: none
+    background: none
+    border-bottom: 1px solid gainsboro
+    width: 95%
+    font-size: 14px
+    margin: 0 auto
+    padding: 16px 0 8px
+    color: #666262
+
+    +break-for(ipad)
+      font-size: 16px
+    +break-for(iphone)
+      font-size: 20px
+
+  button
+    @extend .light-font
+    display: block
+    background: $minty-green
+    -webkit-appearance: none
+    border: none
+    margin: 8px auto
+    width: 96%
+    padding: 8px
+    color: white
+    cursor: pointer
+    font-size: 12px
+
+    +break-for(iphone)
+      font-size: 18px

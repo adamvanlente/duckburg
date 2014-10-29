@@ -1,0 +1,48 @@
+div.menu.hidden#menu
+
+  span.menu-item
+    label
+      | open orders
+    button.new-order-button
+      | +
+
+  span.menu-item
+    label
+      | pending orders
+
+  span.menu-item
+    label
+      | printing orders
+
+  span.menu-item
+    label
+      | submitted orders
+
+  label.separator
+
+  span.menu-item-extra.admin-menu-item
+    label
+      | dashboard
+
+  span.menu-item-extra.menu-object-lister
+    label
+      | objects
+
+  span.menu-item-extra
+    label
+      | emails
+
+  span.menu-item-extra.admin-menu-item
+    label
+      | money
+
+  span.menu-item-extra.admin-menu-item
+    label
+      | users
+
+  span.menu-item-extra.admin-menu-item
+    label
+      | reports
+
+button.mobile-menu-button#mobile-menu-button(onclick="duckburg.toggleMobileMenu()")
+  | menu

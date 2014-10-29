@@ -1,7 +1,45 @@
 .header
+  @extend .serif-title-font
   display: block
   position: fixed
+  padding: 4px 8px
   background: $med-light-gray
+  color: $title-gray
   left: 0
   right: 0
   top: 0
+  z-index: 2
+
+  .light
+    opacity: 0.2
+
+  i
+    display: inline
+    margin-left: 4px
+    color: #999696
+
+.current_user
+  display: inline-block
+  float: right
+  margin: 2px 6px
+  font-size: 14px
+  color: rgb(133, 133, 207)
+  cursor: pointer
+  width: 50px
+  +trans($easybreezy)
+  +break-for(iphone)
+    padding: 4px
+  &:hover
+    opacity: 0.5
+
+.masterSearch
+  @extend .basic-button
+  @extend .serif-title-font
+  background: none
+  display: inline-block
+  color: #333
+  font-size: 16px
+  margin: 0 2px
+  color: rgba(85, 85, 85, 0.63)
+  +break-for(iphone)
+    width: 100px

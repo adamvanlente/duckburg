@@ -2,24 +2,22 @@ extends components/base
 
 block append content
 
+  include components/messages
 
+  include components/header
 
-  if (user)
+  include components/menu
 
-    include components/header
+  include components/loginForm
 
-    include components/wrapper
+  include components/wrapper
 
-    include components/newOrderForm
+  include components/formCustomer
 
-  else if !user
+  include components/formProducts
 
-    form(action="/login", method="post", class="loginForm")
+  include components/formColors
 
-      include components/loginForm
+  include components/formSuppliers
 
-      button(type="submit", class="")
-        | login
-
-  if user
-    div.userName= user.local.name
+  include components/existingCustomerMessage

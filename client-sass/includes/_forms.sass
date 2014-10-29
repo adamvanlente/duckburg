@@ -1,0 +1,149 @@
+.basic-form
+  display: block
+  position: fixed
+  left: 0
+  right: 0
+  max-height: 80%
+  z-index: 12
+  +trans($easyslider)
+
+.basic-element
+  @extend .light-font
+  -webkit-appearance: none
+  border: none
+  padding: 4px
+  font-size: 14px
+  color: #333
+
+.basic-form-inner
+  width: $doc-width
+  background: white
+  border: 0
+  border-radius: 1px
+  padding: 8px
+  margin: 0 auto
+  box-shadow: 0 0 4px rgba(0,0,0,0.2)
+  text-align: center
+  +break-for(ipad)
+    width: $tablet-width
+  +break-for(iphone)
+    width: $phone-width
+
+  h1
+    @extend .serif-title-font
+    font-size: 18px
+    padding: 2px
+    margin: 2px
+    color: $title-gray
+
+  textarea
+    @extend .basic-element
+    border: 1px solid #F1F1f1
+    height: 75px
+    resize: none
+
+  input
+    &[type=text],
+    &[type=password]
+      @extend .basic-element
+      border-bottom: 1px solid #F1F1f1
+
+  .full-width,
+  textarea
+    display: block
+    margin: 8px auto
+    width: 500px
+    +break-for(ipad)
+      width: 80%
+    +break-for(iphone)
+      width: 250px
+
+  .half-width
+    display: inline-block
+    margin: 8px
+    width: 240px
+    +break-for(ipad)
+      width: 38%
+    +break-for(iphone)
+      width: 110px
+
+  .third-width
+    display: inline-block
+    margin: 8px
+    width:  152px
+    +break-for(ipad)
+      width: 24%
+    +break-for(iphone)
+      width: 65px
+
+.formButtons
+  display: block
+  position: fixed
+  left: 0
+  right: 0
+  +trans($easybreezy)
+  span
+    display: block
+    width: 800px
+    text-align: right
+    margin: 0 auto
+    background: #DBD9D9
+    padding: 4px
+    +break-for(ipad)
+      width: $tablet-width
+    +break-for(iphone)
+      width: $phone-width
+      text-align: center
+
+.form-visible
+  top: 50px
+
+  .formButtons
+    bottom: 0
+    top: auto
+
+    +break-for(iphone)
+      top: 0
+      bottom: auto
+
+.form-hidden
+  top: -3500px
+
+  .formButtons
+    bottom: -400px
+    top: none
+
+    +break-for(iphone)
+      top: -100px
+      bottom: 10000px
+
+.closeFormButton,
+.saveFormButton
+  @extend .basic-button
+  @extend .light-font
+  color: white
+  background: $cancel-red
+  font-size: 13px
+  padding: 4px 8px
+  margin: 4px
+  +break-for(iphone)
+    width: 122px
+    font-size: 16px
+
+
+.closeFormButton
+  color: white
+  background: $cancel-red
+
+.saveFormButton
+  color: white
+  background: $minty-green
+
+.formCustomer,
+.formProducts,
+.formSuppliers,
+.formColors
+  @extend .basic-form
+
+  .innerForm
+    @extend .basic-form-inner

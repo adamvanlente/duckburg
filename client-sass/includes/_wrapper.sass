@@ -1,6 +1,102 @@
 .wrapper
-  display: block
+  display: none
   position: fixed
-  top: 49px
+  top: 50px
+  bottom: 0
   left: 0
   right: 0
+  z-index: 1
+  overflow: scroll
+
+  .inner-wrapper
+    display: block
+    width: 800px
+    padding: 8px
+    background: black
+    margin: 0 auto
+    background: $med-light-gray
+    +break-for(ipad)
+      width: 70%
+      margin: 0 0 0 200px
+    +break-for(iphone)
+      width: 290px
+
+    h2
+      @extend .standard-font
+      display: inline-block
+      padding: 2px
+      margin: 2px
+      margin-bottom: 24px
+      font-size: 18px
+      color: $title-gray
+
+    input.filterInput
+      @extend .basic-button
+      @extend .standard-font
+      display: inline-block
+      background: none
+      border-bottom: 1px solid #DCDCDC
+      padding: 4px
+      font-size: 18px
+      color: #918C8C
+      width: 150px
+
+    .wrapperHeader
+      @extend .light-font
+      color: #DCDCDC
+      display: block
+      overflow: hidden
+      white-space: nowrap
+
+    .listItemHolder
+      display: block
+      color: $title-gray
+      overflow: hidden
+      white-space: nowrap
+      cursor: pointer
+      +trans($easybreezy)
+      &:hover
+        background: $minty-green
+        color: white
+
+    .listItem
+      @extend .standard-font
+      display: inline-block
+      padding: 8px
+      margin: 0 8px
+      overflow: hidden
+      width: 125px
+      font-size: 13px
+
+  h1
+    @extend .serif-title-font
+    color: $title-gray
+    padding: 2px
+    margin: 4px
+    font-size: 20px
+
+  button
+    @extend .basic-button
+    @extend .light-font
+    color: white
+    font-size: 12px
+    margin-left: 12px
+    margin-bottom: 24px
+
+    +break-for(iphone)
+      font-size: 16px
+      padding: 4px 12px
+
+  .noResultsNoteDiv
+    @extend .light-font
+    display: block
+    text-align: center
+    border: 1px solid
+    padding: 8px
+    color: $title-gray
+
+  .create-button
+    background: $minty-green
+
+  .list-button
+    background: $title-gray

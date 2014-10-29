@@ -1,0 +1,59 @@
+.existingCustomerMessage
+  display: block
+  position: fixed
+  left: 0
+  right: 0
+  padding: 8px
+  z-index: 100
+
+  &.visible
+    top: 50px
+  &.hidden
+    top: -1000px
+
+  .innerMessage
+    display: block
+    width: $doc-width
+    margin: 0 auto
+    background: #F1F1F1
+    box-shadow: 0 0 4px rgba(0,0,0,0.1)
+    padding: 8px
+    +break-for(ipad)
+      width: $tablet-width
+    +break-for(iphone)
+      width: $phone-width
+
+  h2
+    @extend .serif-title-font
+    font-size: 16px
+    color: $title-gray
+    margin: 2px
+    padding: 2px
+    text-align: center
+
+  p
+    @extend .light-font
+    color: #333
+
+    span
+      display: inline-block
+      width: 30%
+      color: #666
+      overflow: hidden
+
+  button
+    @extend .basic-button
+  .createExistingCustomer,
+  .cancelAddingCustomer
+    @extend .light-font
+    display: block
+    width: 90%
+    margin: 4px auto
+    padding: 6px
+    color: white
+
+  .createExistingCustomer
+    background: $minty-green
+
+  .cancelAddingCustomer
+    background: $cancel-red

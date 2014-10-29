@@ -1,9 +1,7 @@
-span
-  label
-    | Email
-  input(type="text", class="form-control", name="duckburg-login-email")
+div.loginForm
 
-span
-  label
-    | Password
-  input(type="password", class="form-control", name="duckburg-login-password")
+  input(type="text", id="login-name", placeholder="name")
+  input(type="password", id="login-pass", placeholder="password")
+
+  button.loginButton
+    | login
