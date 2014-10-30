@@ -1,0 +1,22 @@
+div.form-hidden.formDesigns.basicForm
+  div.innerForm
+
+    h1
+      | design
+
+    input(type="text", id="design_name", placeholder="design name *", class="full-width")
+    input(type="hidden", id="design_images_list")
+    span.designImageHolder
+      label
+        | Image
+      label
+        input(type="file", id="design_image", class="designImagePicker")
+        input(type="hidden", id="design_image_ref", class="designImageUrl")
+      | <br>
+
+    textarea(id="design_notes", placeholder="notes")
+
+    span.existingImages
+
+
+  include formButtons

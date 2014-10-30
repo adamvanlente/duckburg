@@ -48,7 +48,24 @@
       @extend .basic-element
       border-bottom: 1px solid #F1F1f1
 
+  input
+    &[type=file]
+      @extend .basic-element
+      font-size: 12px
+
+  .imagePickerLabel
+    @extend .light-font
+    display: inline-block
+    font-size: 14px
+    color: #A9A3A3
+    width: 75px
+
+  span
+    display: block
+    text-align: left
+
   .full-width,
+  span,
   textarea
     display: block
     margin: 8px auto
@@ -139,11 +156,46 @@
   color: white
   background: $minty-green
 
-.formCustomer,
-.formProducts,
-.formSuppliers,
-.formColors
+.basicForm
   @extend .basic-form
 
   .innerForm
     @extend .basic-form-inner
+
+
+.existingImages
+  display: block
+  @extend .light-font
+  font-size: 12px
+
+  div
+    display: inline-block
+  img
+    display: block
+    width: 100px
+    height: 100px
+    margin: 4px
+
+  label
+    @extend .basic-button
+    display: block
+    width: 100px
+    height: 20px
+    background: #cf5f5f
+    color: white
+    margin: 4px
+    text-align: center
+    &:hover
+      background: black
+
+
+.popupFilterInput
+  @extend .light-font
+  -webkit-appearance: none
+  border: none
+  background: none
+  width: 95%
+  border-bottom: 1px dashed #DCDCDC
+  margin: 4px
+  font-size: 14px
+  font-style: italic

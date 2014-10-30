@@ -23,13 +23,14 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 
 #### Steps to creating a new object flow in the UI
 
-- create hte jade form template
-- add the sass rules to the forms sass file
-- [views.js] create a list function to display the item among the object listing
-- [views.js] call this function in the main 'objects' function
-- [views.js] create a function to load the list of objects
+- create the jade form template
+- [views.js] create a list function to display the item among the object listing **
+- [views.js] call this function in the main 'objects' function **
+- [config.js] create a constant containing all form fields
 - [forms.js] create function that loads form
 - [forms.js] create function that validates form
-- [forms.js] add logic in generic function to save object, which calls validating function
+- [forms_common.js] add logic in generic function to save object, which calls validating function
 - [requests.js] add simple function to requests for creating/updating item
 - (+)[requests.js] some objects will require custom logic like customers
+
+** These two items are technically optional.  Omitting them will simply mean the only way to create or list items is in Parse UI.

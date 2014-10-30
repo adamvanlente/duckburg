@@ -3,6 +3,8 @@ var duckburg = duckburg || {};
 
 duckburg.utils = {
 
+  searchInterval: 400,
+
   toTitleCase: function(str) {
     return str.replace(/\w\S*/g,
         function(txt){return txt.charAt(0).toUpperCase() +
@@ -12,13 +14,6 @@ duckburg.utils = {
 
   clearSearchFilters: function() {
     duckburg.searchFilters = undefined;
-    duckburg.searchOcurring = undefined;
-    duckburg.searchOccured = undefined;
-  },
-
-  cleanPhoneNumber: function() {
-    
   }
-
 
 };

@@ -8,7 +8,7 @@ var plumber   = require('gulp-plumber');
 
 gulp.task('script-concat', function() {
     return gulp
-        .src(['client-javascripts/*.js'])
+        .src(['client-javascripts/*.js', 'client-javascripts/views/*', 'client-javascripts/requests/*', 'client-javascripts/forms/*'])
         .pipe(plumber())
         .pipe(concat('production.js'))
         .pipe(gulp.dest('./public/js/'))
@@ -31,7 +31,9 @@ gulp.task('sassify', function() {
 
 gulp.task('watch', function() {
   gulp.watch('client-javascripts/*', ['script-concat', 'script-minify']);
-  gulp.watch('client-javascripts/models/*', ['script-concat', 'script-minify']);
+  gulp.watch('client-javascripts/views/*', ['script-concat', 'script-minify']);
+  gulp.watch('client-javascripts/forms/*', ['script-concat', 'script-minify']);
+  gulp.watch('client-javascripts/requests/*', ['script-concat', 'script-minify']);
   gulp.watch('client-sass/*', ['sassify']);
   gulp.watch('client-sass/includes/*', ['sassify']);
 });

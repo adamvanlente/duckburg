@@ -1,23 +1,20 @@
-div.form-hidden.formProducts
+div.form-hidden.formProducts.basicForm
   div.innerForm
 
     h1
       | product
 
-    input(type="text", id="first_name", placeholder="first name *", class="half-width")
-    input(type="text", id="last_name", placeholder="last name *", class="half-width")
+    input(type="text", id="product_name", placeholder="product name *", class="full-width")
+    input(type="text", id="colors", placeholder="comma separated list of colors, eg black, white *", class="full-width")
+    input(type="text", id="sizes", placeholder="available sizes, eg S, M, L, 4X *", class="full-width")
+
+    textarea(id="description", placeholder="description")
+
+    input(type="text", id="supplier_price", placeholder="Our price (eg 2.99) *", class="half-width")
+    input(type="text", id="rd_item_id", placeholder="RD ID *", class="half-width")
     | <br>
-    input(type="text", id="email_address", placeholder="email *", class="third-width")
-    input(type="text", id="phone_number", placeholder="phone *", class="third-width")
-    input(type="text", id="company", placeholder="company", class="third-width")
 
-    input(type="text", id="address_one", placeholder="address", class="full-width")
-    input(type="text", id="address_two", placeholder="address cont'd", class="full-width")
-
-    input(type="text", id="address_city", placeholder="city", class="third-width")
-    input(type="text", id="address_state", placeholder="state", class="third-width")
-    input(type="text", id="address_zip", placeholder="zip", class="third-width")
-
-    textarea(id="customer_notes", placeholder="notes")
+    input(type="text", id="supplier_item_id", placeholder="Supplier ID *", class="half-width")
+    input(type="text", id="supplier_id", placeholder="Supplier *", class="half-width formListenerSupplier", readonly="true")
 
   include formButtons

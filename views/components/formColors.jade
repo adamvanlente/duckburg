@@ -1,13 +1,10 @@
-div.form-hidden.formColors
+div.form-hidden.formColors.basicForm
   div.innerForm
 
     h1
       | color
 
-    input(type="text", id="first_name", placeholder="first name *", class="half-width")
-    input(type="text", id="last_name", placeholder="last name *", class="half-width")
-    | <br>
-
-    textarea(id="customer_notes", placeholder="notes")
+    input(type="text", id="color_name", placeholder="name of color *", class="half-width")
+    input(type="text", id="hex_code", placeholder="hex with pound (eg #FFFFFF) *", class="half-width")
 
   include formButtons

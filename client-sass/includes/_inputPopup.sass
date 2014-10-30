@@ -1,0 +1,37 @@
+.inputPopupSelector
+  @extend .light-font
+  background: #FFFCFC
+  padding: 4px
+  z-index: 100
+  width: 150px
+  border: 1px solid #DCDCDC
+  border-radius: 1px
+  box-shadow: 0 0 4px rgba(0,0,0,0.1)
+
+  +break-for(iphone)
+    width: 250px
+
+  span
+    display: block
+    border-bottom: 1px solid #DCDCDC
+    padding: 4px
+    cursor: pointer
+    margin: 4px 0
+    +trans($easybreezy)
+    &:hover
+      opacity: 0.9
+      color: white
+      background: $minty-green
+
+  button
+    @extend .basic-button
+    @extend .light-font
+    background: $cancel-red
+    color: white
+    width: 100%
+    font-size: 12px
+
+.inputPopupListHolder
+  display: block
+  max-height: 100px
+  overflow: scroll

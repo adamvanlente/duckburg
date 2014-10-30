@@ -37,16 +37,16 @@ duckburg.load = function() {
 
       // Add a listener that helps close all forms
       $('.closeFormButton').click(function() {
-        duckburg.forms.closeCurrentForm();
+        duckburg.forms.common.closeCurrentForm();
       });
 
       // Add a listener that helps close all forms
       $('.saveFormButton').click(function(item) {
-        duckburg.forms.saveCurrentForm();
+        duckburg.forms.common.saveCurrentForm();
       });
 
       // Load initial view.
-      duckburg.views.loadFirst();
+      duckburg.views.common.loadFirst();
 
   } else {
 

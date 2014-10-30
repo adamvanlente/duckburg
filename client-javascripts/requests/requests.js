@@ -8,95 +8,36 @@ var duckburg = duckburg || {};
  */
 duckburg.requests = {
 
-  /*
-   * Many objects have a generic flow.  They can share these two save/find
-   * functions
-   *
-   */
-  genericSave: function(objectName, stringId) {
-
-    // If editing an object, update and exit this method.
-    if (duckburg.parseEditingObject) {
-      this.updateParseObject(objectName, stringId);
-      return false;
+  suppliers: {
+    create: function() {
+      duckburg.requests.common.genericSave('DuckburgSupplier', 'Supplier');
     }
-
-    // Set object properties.
-    var newObject = {};
-    for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-      var field = duckburg.currentFormFields[i];
-      var value = $('#' + field).val();
-      newObject[field] = value;
-    }
-
-    // Extend parse object.
-    var ParseObject = Parse.Object.extend(objectName);
-
-    // New instance of object.
-    var newParseObject = new ParseObject();
-
-    this.saveParseObject(newParseObject, newObject);
   },
 
-  genericFind: function(objectName, searchFilterFields, successCb) {
-
-    var ParseObject = Parse.Object.extend(objectName);
-
-    // check if customer with this first/last name is in the system
-    var query = new Parse.Query(ParseObject);
-
-    if (duckburg.searchFilters) {
-
-      for (var i = 0; i < searchFilterFields.length; i++) {
-        var fieldName = searchFilterFields[i];
-        query.startsWith(fieldName, duckburg.searchFilters);
-      }
-
+  colors: {
+    create: function() {
+      duckburg.requests.common.genericSave('DuckburgColor', 'Color');
     }
-
-    query.find({
-      success: function(results) {
-        successCb(results);
-        duckburg.searchOcurred = false;
-      },
-      error: function(error) {
-        duckburg.errorMessage(error.message);
-      }
-    });
   },
 
-  updateParseObject: function(objectName, stringId) {
-    for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-      var field = duckburg.currentFormFields[i];
-      var newValue = $('#' + field).val();
-      duckburg.parseEditingObject.set(field, newValue);
+  designs: {
+    create: function() {
+      duckburg.requests.common.genericSave('DuckburgDesign', 'Design');
     }
-
-    duckburg.parseEditingObject.save(null, {
-      success: function() {
-        var msg = stringId + ' updated!';
-
-        duckburg.successMessage(msg);
-        duckburg.forms.closeCurrentForm();
-        duckburg.utils.clearSearchFilters();
-        duckburg.views[duckburg.currentView].load();
-      }
-    });
   },
 
-  saveParseObject: function(newParseObject, newObject) {
-    newParseObject.save(newObject, {
-      success: function(newItem) {
-        var msg = stringId + ' ' + newItem.attributes.supplier_name + ' created.';
-        duckburg.successMessage(msg);
-        duckburg.forms.closeCurrentForm();
-      },
-      error: function(error) {
-        var msg = 'Something went wrong ' + error.message;
-        duckburg.errorMessage(msg);
-        duckburg.forms.closeCurrentForm();
-      }
-    });
+  products: {
+
+    create: function() {
+      duckburg.requests.common.genericSave('DuckburgProduct', 'Product');
+    }
+  },
+
+  customers: {
+
+    create: function() {
+      duckburg.requests.common.genericSave('DuckburgCustomer', 'Customer');
+    }
   },
 
   /*
@@ -105,7 +46,7 @@ duckburg.requests = {
    * is already present in the system.  Allows us to check if customer
    * exists is some form, and if we should replace them.
    */
-  customers: {
+  customers_old: {
 
     create: function() {
 
@@ -125,7 +66,7 @@ duckburg.requests = {
             var name = duckburg.parseEditingObject.attributes.first_name;
             var msg = 'Customer ' + name + ' updated!';
             duckburg.successMessage(msg);
-            duckburg.forms.closeCurrentForm();
+            duckburg.forms.common.closeCurrentForm();
             duckburg.utils.clearSearchFilters();
             duckburg.views.customers.load();
           }
@@ -137,9 +78,7 @@ duckburg.requests = {
       for (var i = 0; i < duckburg.currentFormFields.length; i++) {
         var field = duckburg.currentFormFields[i];
         var value = $('#' + field).val();
-        if (field == 'first_name' || field == 'last_name') {
-          value = duckburg.utils.toTitleCase(value);
-        }
+
         custObject[field] = value;
       }
 
@@ -227,7 +166,7 @@ duckburg.requests = {
       });
 
       $('.cancelAddingCustomer').click(function() {
-        duckburg.forms.closeCurrentForm();
+        duckburg.forms.common.closeCurrentForm();
       });
 
     },
@@ -242,7 +181,7 @@ duckburg.requests = {
         success: function(cust) {
           var msg = custObj.first_name + ' is now a customer!  Nice.';
           duckburg.successMessage(msg);
-          duckburg.forms.closeCurrentForm();
+          duckburg.forms.common.closeCurrentForm();
         },
         error: function(cust, error) {
           var errorMsg = 'Something went horribly wrong.  No!! (' +
@@ -287,18 +226,6 @@ duckburg.requests = {
         }
       });
     }
-  },
-
-  /*
-   * Functionality for creating suppliers.
-   *
-   */
-  suppliers: {
-
-    create: function() {
-      duckburg.requests.genericSave('DuckburgSupplier', 'Supplier');
-    }
-
   },
 
   /*
@@ -354,34 +281,28 @@ duckburg.requests = {
    */
   files: {
 
-    // TODO just a smaple BROKEN!!
-    save: function(successCb, failureCb) {
+    save: function(fileInput, successCb) {
 
-      var fileUploadControl = $("#imageUploader")[0];
+      var fileUploadControl = $("#" + fileInput)[0];
 
       if (fileUploadControl.files.length > 0) {
-        var file = fileUploadControl.files[0];
-        var name = "photo.jpg";
-        var parseFile = new Parse.File(name, file);
-        parseFile.save().then(function(url) {
-          // The file has been saved to Parse.
-          console.log('file saved', url);
-        }, function(error) {
 
-          // The file either could not be read, or could not be saved to Parse.
-          console.log('unable to  save', error);
+        var file = fileUploadControl.files[0];
+
+        var name = 'design_image.jpg';
+        var parseFile = new Parse.File(name, file);
+
+        parseFile.save().then(function(url) {
+          var msg = 'File saved!';
+          duckburg.successMessage(msg);
+          duckburg.currentlySavingImage = false;
+          successCb(url);
+        }, function(error) {
+          var msg = 'Something went wrong: ' + error.message;
+          duckburg.errorMessage(msg);
+          duckburg.currentlySavingImage = false;
         });
       }
     }
-  },
-
-  setSearchFilters: function(el) {
-    var mode = el.id.replace('FilterInput', '');
-    setTimeout(function(){
-      if (!duckburg.searchOcurring && !duckburg.searchOcurred) {
-        duckburg.views[mode].load('filtering');
-        duckburg.searchOcurred = true;
-      }
-    }, 400)
   }
 };
