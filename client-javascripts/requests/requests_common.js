@@ -29,7 +29,9 @@ duckburg.requests.common = {
       }
 
       newObject[field] = value;
-      searchString += value.toLowerCase() + ' ';
+      if (duckburg.utils.isSearchableValue(field, value)) {
+        searchString += value.toLowerCase() + ' ';
+      }
     }
 
     newObject.parse_search_string = searchString;
@@ -77,7 +79,9 @@ duckburg.requests.common = {
       if (field == 'first_name' || field == 'last_name') {
         newValue = duckburg.utils.toTitleCase(newValue);
       }
-      searchString += newValue.toLowerCase() + ' ';
+      if (duckburg.utils.isSearchableValue(field, newValue)) {
+        searchString += newValue.toLowerCase() + ' ';
+      }
       duckburg.parseEditingObject.set(field, newValue);
     }
 
@@ -100,7 +104,22 @@ duckburg.requests.common = {
       success: function(newItem) {
         var msg = 'New ' + stringId + ' created.';
         duckburg.successMessage(msg);
+        duckburg.filterPopupCurrentResults = newItem;
+        if (duckburg.filteringInput) {
+          duckburg.forms.inputs.placeStringInsideInput()
+        }
+
         duckburg.forms.common.closeCurrentForm();
+
+        // If we're in list view, refresh the current list.
+        var insideListView = false;
+        $('.addNewItemListViewButton').each(function() {
+          insideListView = true;
+        });
+        if (insideListView) {
+          duckburg.views[duckburg.currentListView].load();
+        }
+
       },
       error: function(error) {
         var msg = 'Something went wrong ' + error.message;

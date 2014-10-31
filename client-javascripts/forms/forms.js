@@ -4,6 +4,18 @@ var duckburg = duckburg || {};
 duckburg.forms = {
 
   globalLoader: function(fields, formName) {
+    $('.whiteOut').show();
+    duckburg.utils.currentTopZIndex++;
+    $('.' + formName).css('z-index', duckburg.utils.currentTopZIndex);
+
+    if (duckburg.currentForm) {
+      duckburg.previousForm = duckburg.currentForm;
+    }
+
+    if (duckburg.currentFormFields) {
+      duckburg.previousFormFields = duckburg.currentFormFields;
+    }
+
     duckburg.currentFormFields = fields;
     duckburg.currentForm = formName;
     duckburg.forms.common.clearFormFields();
@@ -18,8 +30,8 @@ duckburg.forms = {
    *
    */
   customers: function() {
-    console.log
-    duckburg.forms.globalLoader(duckburg.config.CUSTOMER_FORM_FIELDS, 'formCustomer');
+    duckburg.forms.globalLoader(
+        duckburg.config.CUSTOMER_FORM_FIELDS, 'formCustomer');
   },
 
   /**
@@ -56,7 +68,8 @@ duckburg.forms = {
    *
    */
   products: function() {
-    duckburg.forms.globalLoader(duckburg.config.PRODUCT_FORM_FIELDS, 'formProducts');
+    duckburg.forms.globalLoader(
+        duckburg.config.PRODUCT_FORM_FIELDS, 'formProducts');
   },
 
   /**
@@ -90,7 +103,8 @@ duckburg.forms = {
    *
    */
   suppliers: function() {
-    duckburg.forms.globalLoader(duckburg.config.SUPPLIER_FORM_FIELDS, 'formSuppliers');
+    duckburg.forms.globalLoader(
+        duckburg.config.SUPPLIER_FORM_FIELDS, 'formSuppliers');
   },
 
 
@@ -116,7 +130,8 @@ duckburg.forms = {
    *
    */
   colors: function() {
-    duckburg.forms.globalLoader(duckburg.config.COLOR_FORM_FIELDS, 'formColors');
+    duckburg.forms.globalLoader(
+        duckburg.config.COLOR_FORM_FIELDS, 'formColors');
   },
 
 
@@ -172,7 +187,8 @@ duckburg.forms = {
       duckburg.forms.common.imagePickerListener(e);
     });
 
-    duckburg.forms.globalLoader(duckburg.config.DESIGN_FORM_FIELDS, 'formDesigns');
+    duckburg.forms.globalLoader(
+          duckburg.config.DESIGN_FORM_FIELDS, 'formDesigns');
 
     if (duckburg.parseEditingObject) {
       duckburg.forms.common.displayExistingDesignImages();
@@ -228,16 +244,41 @@ duckburg.forms = {
       duckburg.requests.designs.create();
   },
 
+  /**
+   * Set up Product form
+   *
+   */
+  catalog_item: function() {
+    duckburg.forms.globalLoader(
+        duckburg.config.CATALOG_ITEM_FORM_FIELDS, 'formCatalogItem');
+  },
+
+  validateCatalogItem: function() {
+      // Validate required fields.
+      // ..........
+      var name = $('#item_name').val();
+      var product = $('#item_product_name').val();
+      var price = $('#product_price').val();
+      var sizes = $('#product_sizes').val();
+      var colors = $('#product_colors').val();
+
+      if (name == '' || product == '' || price == '' ||
+          sizes == '' || colors == '') {
+        var msg = 'Required fields are name, product, price, size & colors.';
+        duckburg.errorMessage(msg);
+        return false;
+      }
+
+      duckburg.requests.catalog_item.create();
+  },
 
   /*
    * Templates for easy copying
    *
    */
-
   template: function() {
-    // duckburg.currentFormFields = [ARRAY_OF_FIELD_NAMES];
-    // duckburg.currentForm = 'CURRENTFORMNAME';
-    // duckburg.forms.globalLoader();
+    // duckburg.forms.globalLoader(
+    //     duckburg.config.PRODUCT_FORM_FIELDS, 'formProducts');
   },
 
   templateValidate: function() {
@@ -253,5 +294,5 @@ duckburg.forms = {
       // }
       //
       // duckburg.requests.CURRENT_NODE.create();
-  }
+  },
 };

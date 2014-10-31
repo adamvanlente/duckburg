@@ -12,7 +12,6 @@
   -webkit-appearance: none
   border: none
   padding: 4px
-  font-size: 14px
   color: #333
 
 .basic-form-inner
@@ -22,15 +21,18 @@
   border-radius: 1px
   padding: 8px
   margin: 0 auto
+  max-height: 325px
+  overflow: scroll
   box-shadow: 0 0 4px rgba(0,0,0,0.2)
   text-align: center
   +break-for(ipad)
     width: $tablet-width
   +break-for(iphone)
     width: $phone-width
+    max-height: 320px
 
   h1
-    @extend .serif-title-font
+    @extend .standard-font
     font-size: 18px
     padding: 2px
     margin: 2px
@@ -68,8 +70,14 @@
   span,
   textarea
     display: block
+
+  .full-width,
+  span,
+  textarea,
+  .editingCatalogItemDesignDetails
     margin: 8px auto
     width: 500px
+    font-size: 14px
     +break-for(ipad)
       width: 80%
     +break-for(iphone)
@@ -79,6 +87,7 @@
     display: inline-block
     margin: 8px
     width: 240px
+    font-size: 14px
     +break-for(ipad)
       width: 38%
     +break-for(iphone)
@@ -88,6 +97,7 @@
     display: inline-block
     margin: 8px
     width:  152px
+    font-size: 12px
     +break-for(ipad)
       width: 24%
     +break-for(iphone)
@@ -189,13 +199,9 @@
       background: black
 
 
-.popupFilterInput
+.editingCatalogItemDesignDetails
   @extend .light-font
-  -webkit-appearance: none
-  border: none
-  background: none
-  width: 95%
-  border-bottom: 1px dashed #DCDCDC
-  margin: 4px
-  font-size: 14px
-  font-style: italic
+  display: none
+  padding: 8px
+  background: $light-gray
+  text-align: left

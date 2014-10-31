@@ -1,0 +1,91 @@
+.highsmithCal
+  @extend .light-font
+  display: block
+  position: fixed
+  top: 10%
+  width: 250px
+  background: white
+  border: 1px solid
+  left: 38%
+  text-align: center
+  z-index: 10000
+
+  +break-for(iphone)
+    left: 10%
+
+.highsmithCal--month
+  display: block
+  font-size: 18px
+  padding: 7px
+  color: white
+  background-color: $minty-green
+
+.highsmithCal--month__label
+  display: inline-block
+  width: 60%
+
+.highsmithCal--month__increment,
+.highsmithCal--month__decrement,
+.highsmithCal--year__increment,
+.highsmithCal--year__decrement
+  display: inline-block
+  cursor: pointer
+  +trans($easybreezy)
+
+  &:hover
+    opacity: 0.8
+
+.highsmithCal--year
+  display: block
+  font-size: 16px
+  background-color: $light-gray
+  color: $title-gray
+
+.highsmithCal--year__label
+  display: inline-block
+  width: 40%
+
+.highsmithCal--daysLegend
+  display: block
+  text-align: left
+  background-color: #E4DADA
+
+.highsmithCal--dayHolder__nullLabel,
+.highsmithCal--dayHolder__label,
+.highsmithCal--daysLegend__label
+  display: inline-block
+  width: 5%
+  padding: 5px
+  margin: 6px
+  text-align: center
+  font-size: 12px
+  vertical-align: top
+  color: $title-gray
+
+.highsmithCal--dayHolder__label
+  cursor: pointer
+  +trans($easybreezy)
+
+  &:hover
+    background-color: $minty-green
+    color: white
+
+.highsmithCal--dayHolder__nullLabel
+  background-color: rgba(51, 51, 51, 0.07)
+  width: 5px
+  padding: 12px 9px
+  margin: 8px 6px
+
+.highsmithCal--dayHolder
+  display: block
+  background-color: $light-gray
+  text-align: left
+
+.highsmithCal--offClicker
+  display: block
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  z-index: 9999

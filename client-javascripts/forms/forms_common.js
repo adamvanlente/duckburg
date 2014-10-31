@@ -29,13 +29,32 @@ duckburg.forms.common = {
       duckburg.forms.validateDesignForm();
     }
 
+    if (form == 'formCatalogItem') {
+      duckburg.forms.validateCatalogItem();
+    }
+
   },
 
   closeCurrentForm: function() {
+
+    // Hide the current form.
     var form = $('.' + duckburg.currentForm);
     var formClass = form.attr('class');
     formClass = formClass.replace('visible', 'hidden');
     form.attr('class', formClass);
+    $('.' + formClass).css('z-index', '12');
+
+    // If the close call is coming because someone has created a new item
+    // using the filter input, don't remove all form elements - there's
+    // still another one beneath it.
+    if (duckburg.filteringInput) {
+
+      // Set current form to the previous form.
+      duckburg.currentForm = duckburg.previousForm;
+      duckburg.currentFormFields = duckburg.previousFormFields;
+      duckburg.filteringInput = false;
+      return false;
+    }
 
     // Be sure this div is not visible.
     // TODO(adam) be sure to create a more reasonable way of closing stuff
@@ -44,9 +63,8 @@ duckburg.forms.common = {
     messageDiv.attr('class', 'existingCustomerMessage hidden');
     duckburg.parseEditingObject = undefined;
     duckburg.existingEditingDesignImages = undefined;
-    $('.inputPopupSelector').each(function() {
-      this.remove();
-    });
+    duckburg.forms.inputs.removeFilterPopups();
+    $('.whiteOut').hide();
   },
 
   populateEmptyForm: function () {
@@ -64,109 +82,6 @@ duckburg.forms.common = {
       var field = duckburg.currentFormFields[i];
       $('#' + field).val('');
     }
-  },
-
-  createPopupForInput: function(e, parseObject, targetClass) {
-
-
-    this.appendInputPopup(e);
-
-    // Set a loading message.
-    var span = $('<span></span>')
-      .html('loading items');
-    $('.inputPopupSelector').append(span);
-
-    this.getListOfItemsForPopup(parseObject, targetClass);
-  },
-
-  getListOfItemsForPopup: function(parseObject, targetClass) {
-    duckburg.requests.common.genericFind(parseObject,
-      function(results) {
-
-        // Clear div.
-        $('.inputPopupSelector').html('');
-
-        // Determine if results exist.
-        if (results.length == 0 || !results) {
-          var span = $('<span></span>')
-            .html('Create some items!');
-          $('.inputPopupSelector').append(span);
-          return false;
-        } else {
-          duckburg.forms.common.inputPopupFilterControl();
-        }
-
-        // Create a holder for the list of items.
-        var div = $('<div></div>')
-          .attr('class', 'inputPopupListHolder');
-
-        duckburg.forms.common.getAndAppendFilteredOptions(
-            div, results, targetClass);
-
-    })
-  },
-
-  getAndAppendFilteredOptions: function(div, results, targetClass) {
-    for (var i = 0; i < results.length; i++) {
-      var item = results[i].attributes['supplier_name'];
-
-      var span = $('<span></span>')
-        .html(item);
-
-      span.click(function(event) {
-          $(targetClass).val(event.currentTarget.innerHTML);
-          $('.inputPopupSelector').remove();
-      })
-
-      div.append(span);
-    }
-    $('.inputPopupSelector').append(div);
-
-    var button = $('<button></button>')
-      .html('cancel')
-      .click(function() {
-        $('.inputPopupSelector').remove();
-      });
-    $('.inputPopupSelector').append(button);
-  },
-
-  inputPopupFilterControl: function() {
-    var input = $('<input>')
-      .attr('placeholder', 'filter')
-      .attr('class', 'popupFilterInput');
-
-    $('.inputPopupSelector').append(input);
-  },
-
-  appendInputPopup: function(e) {
-
-    // Get location of mouse click.
-    var x = e.pageX + 'px';
-    var y = (e.pageY - 50) + 'px';
-
-    // Set CSS styles for div.
-    var css = {
-        'position': 'absolute',
-        'left': x,
-        'top': y
-      };
-
-    // Conditions for iphones/smaller screens.
-    var width = $(window).width();
-    if (width < 500) {
-      css = {
-          'position': 'absolute',
-          'left': '30px',
-          'right': '30px',
-          'top': '150px'
-      }
-    }
-
-    // Create, style and append the div.
-    var div = $('<div>')
-      .css(css)
-      .attr('class', 'inputPopupSelector');
-    $(document.body).append(div);
   },
 
   imagePickerListener: function(e) {
@@ -210,11 +125,11 @@ duckburg.forms.common = {
     var labelContent = fieldCount == 0 ? 'Add images' : '&nbsp;';
 
     // append a blank label for spacing.
-    $('.designImageHolder').append($('<label></label>')
+    $('.designImageHolder').append($('<label>')
       .html(labelContent)
       .attr('class', 'imagePickerLabel'));
 
-    var label = $('<label></label>');
+    var label = $('<label>');
 
     // Create image picker.
     var imgPicker = $('<input>')
@@ -290,7 +205,9 @@ duckburg.forms.common = {
 
     for (var i = 0; i < imagesList.length; i++) {
       var url = imagesList[i];
-      duckburg.forms.common.addImageToDesignForm(url);
+      if (url != '') {
+        duckburg.forms.common.addImageToDesignForm(url);
+      }
     }
   }
 };

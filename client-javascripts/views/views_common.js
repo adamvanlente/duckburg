@@ -6,6 +6,7 @@ duckburg.views.common = {
   // First view to load.
   loadFirst: function() {
     duckburg.views.objects.load();
+    duckburg.forms.catalog_item();
   },
 
   clearWrapper: function() {
@@ -17,12 +18,12 @@ duckburg.views.common = {
    *
    */
   setHeader: function(fields) {
-    var header = $('<span></span>')
+    var header = $('<span>')
       .attr('class', 'wrapperHeader');
 
     for (var i = 0; i < fields.length; i++) {
       var field = fields[i];
-      header.append($('<span></span>')
+      header.append($('<span>')
         .attr('class', 'listItem')
         .html(field));
     }
@@ -31,7 +32,7 @@ duckburg.views.common = {
   },
 
   setTitle: function(title) {
-    $('.inner-wrapper').append($('<h2></h2>').html(title));
+    $('.inner-wrapper').append($('<h2>').html(title));
 
     var filterIdSuffix = 'FilterInput';
 
@@ -41,6 +42,17 @@ duckburg.views.common = {
       .attr('class', 'filterInput')
       .attr('placeholder', 'filter');
     $('.inner-wrapper').append(filterInput);
+
+    var addButton = $('<button>')
+      .html('add new item')
+      .attr('id', title)
+      .attr('class', 'addNewItemListViewButton')
+      .click(function(e) {
+        var type = e.currentTarget.id
+        duckburg.forms[type]();
+        duckburg.currentListView = type;
+      }) ;
+    $('.inner-wrapper').append(addButton);
 
     this.setSearchFilter(title, filterIdSuffix);
   },
@@ -78,8 +90,10 @@ duckburg.views.common = {
 
     // Only create these on the first load, not when filtering.
     if (filtering != 'filtering') {
+
       // Clear the wrapper that holds all dynamic content.
       duckburg.views.common.clearWrapper();
+      duckburg.views.common.objectListViewHeader();
       duckburg.utils.clearSearchFilters();
       duckburg.views.common.setTitle(title);
       duckburg.views.common.setHeader(fields);
@@ -89,22 +103,39 @@ duckburg.views.common = {
     $('.' + containerClass).remove();
 
     // Create container.
-    var container = $('<div></div>')
+    var container = $('<div>')
       .attr('class', containerClass);
 
-    // if (title == 'customers') {
-    //   duckburg.views.common.populateCustomers(container, fields, title);
-    // } else {
+    duckburg.currentView = title;
+    duckburg.views.common.populate(container, fields, title, parseName);
+  },
 
-      duckburg.currentView = title;
-      duckburg.views.common.populate(container, fields, title, parseName);
-    // }
+  objectListViewHeader: function() {
+    var header = $('<div>')
+      .attr('class', 'objectListViewHeader');
 
+    var button = $('<button>')
+      .html('&larr; back to objects')
+      .click(function() {
+        duckburg.views.objects.load();
+      });
+    header.append(button);
+
+    var objectList = duckburg.config.VISIBLE_OBJECTS;
+    for (var object in objectList) {
+      var span = $('<span>')
+        .html(object)
+        .click(function(e) {
+          var node = e.currentTarget.innerHTML;
+          duckburg.views[node].load();
+        });
+      header.append(span);
+    }
+
+    $('.inner-wrapper').append(header);
   },
 
   populate: function(container, fields, title, parseName) {
-
-    
 
     duckburg.requests.common.genericFind(parseName, function(results) {
 
@@ -115,12 +146,12 @@ duckburg.views.common = {
       }
 
       duckburg.currentResults = results;
-      var filteredItems = $('<div></div>');
+      var filteredItems = $('<div>');
 
       for (var i = 0; i < results.length; i++) {
         var customer = results[i].attributes;
 
-        var span = $('<span></span>')
+        var span = $('<span>')
           .attr('class', 'listItemHolder')
           .attr('id', i)
           .click(function(e) {
@@ -133,7 +164,7 @@ duckburg.views.common = {
         for (var j = 0; j < fields.length; j++) {
           var field = fields[j];
           var fieldVal = customer[field];
-          span.append($('<span></span>')
+          span.append($('<span>')
             .html(fieldVal)
             .attr('class', 'listItem'));
         }
@@ -156,12 +187,12 @@ duckburg.views.common = {
       }
 
       duckburg.currentResults = results;
-      var filteredItems = $('<div></div>');
+      var filteredItems = $('<div>');
 
       for (var i = 0; i < results.length; i++) {
         var customer = results[i].attributes;
 
-        var span = $('<span></span>')
+        var span = $('<span>')
           .attr('class', 'listItemHolder')
           .attr('id', i)
           .click(function(e) {
@@ -174,7 +205,7 @@ duckburg.views.common = {
         for (var j = 0; j < fields.length; j++) {
           var field = fields[j];
           var fieldVal = customer[field];
-          span.append($('<span></span>')
+          span.append($('<span>')
             .html(fieldVal)
             .attr('class', 'listItem'));
         }
@@ -186,7 +217,7 @@ duckburg.views.common = {
   },
 
   showEmptyResultsMessage: function(container) {
-    var emptyResultsDiv = $('<div></div>')
+    var emptyResultsDiv = $('<div>')
       .attr('class', 'noResultsNoteDiv')
       .html('no results');
     container.append(emptyResultsDiv);

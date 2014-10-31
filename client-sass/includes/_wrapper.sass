@@ -39,7 +39,7 @@
       padding: 4px
       font-size: 18px
       color: #918C8C
-      width: 150px
+      width: 100px
 
     .wrapperHeader
       @extend .light-font
@@ -100,3 +100,45 @@
 
   .list-button
     background: $title-gray
+
+
+.objectListViewHeader
+  @extend .light-font
+  display: block
+  border-bottom: 1px solid #E8E7E7
+  padding: 0px 0px 2px
+  margin-bottom: 12px
+  +break-for(iphone)
+    display: none
+
+  span,
+  button
+    display: inline-block
+
+  span
+    color: #C5C1C1
+    font-size: 13px
+    margin: 0 15px
+    cursor: pointer
+    &:hover
+      opacity: 0.3
+  button
+    @extend .basic-button
+    margin: 4px 0
+    padding: 4px 12px
+    color: #66c08d
+    border: 1px solid
+    background: white
+    &:hover
+      color: $title-gray
+
+.addNewItemListViewButton
+  @extend .basic-button
+  color: white
+  margin: 4px 0
+  padding: 4px 12px
+  background: $minty-green
+
+  &:hover
+    background: white
+    color: $minty-green

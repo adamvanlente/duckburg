@@ -40,6 +40,14 @@ duckburg.requests = {
     }
   },
 
+  catalog_item: {
+
+    create: function() {
+      duckburg.requests.common.genericSave(
+          'DuckburgCatalogItem', 'Catalog Item');
+    }
+  },
+
   /*
    * Functions for making requests to create/save customers.
    * This inlcudes functionality for determining if customer/email address
@@ -155,9 +163,9 @@ duckburg.requests = {
         var lastName = cust.last_name;
         var email = cust.email_address;
 
-        custDiv.append($('<span></span>').html(firstName));
-        custDiv.append($('<span></span>').html(lastName));
-        custDiv.append($('<span></span>').html(email));
+        custDiv.append($('<span>').html(firstName));
+        custDiv.append($('<span>').html(lastName));
+        custDiv.append($('<span>').html(email));
       }
 
       // Add listeners to the form buttons.

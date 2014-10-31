@@ -13,63 +13,31 @@ duckburg.views = {
     // Load the object list.
     load: function() {
       $('.inner-wrapper').html('');
-      this.customers();
-      this.products();
-      this.suppliers();
-      this.colors();
-      this.designs();
-    },
 
-    // Create order object list item.
-    orders: function() {
-      this.makeObjectListing(
-        'Orders', duckburg.forms.orders, duckburg.views.orders.load);
-    },
-
-    // Create customer object list item.
-    customers: function() {
-      this.makeObjectListing(
-        'Customers', duckburg.forms.customers, duckburg.views.customers.load);
-    },
-
-    // Create customer object list item.
-    products: function() {
-      this.makeObjectListing(
-        'Products', duckburg.forms.products, duckburg.views.products.load);
-    },
-
-    // Create customer object list item.
-    suppliers: function() {
-      this.makeObjectListing(
-        'Suppliers', duckburg.forms.suppliers, duckburg.views.suppliers.load);
-    },
-
-    // Create customer object list item.
-    colors: function() {
-      this.makeObjectListing(
-        'Colors', duckburg.forms.colors, duckburg.views.colors.load);
-    },
-
-    // Create customer object list item.
-    designs: function() {
-      this.makeObjectListing(
-        'Designs', duckburg.forms.designs, duckburg.views.designs.load);
+      var objects = duckburg.config.VISIBLE_OBJECTS;
+      for (var object in objects) {
+        var prettyName = objects[object];
+        duckburg.views.objects.makeObjectListing(prettyName, object);
+      }
     },
 
     // Make an item for the list of objects.
-    makeObjectListing: function(title, createFn, listFn) {
+    makeObjectListing: function(title, objectName) {
+
+      var createFn = duckburg.forms[objectName];
+      var listFn = duckburg.views[objectName].load;
 
       // List item heading.
-      var header = $('<h1></h1>').html(title);
+      var header = $('<h1>').html(title);
 
       // Button for creating an object.
-      var create = $('<button></button>')
+      var create = $('<button>')
         .html('CREATE')
         .attr('class', 'create-button')
         .click(createFn);
 
       // Button for listing objects.
-      var list = $('<button></button>')
+      var list = $('<button>')
         .html('LIST')
         .attr('class', 'list-button')
         .click(listFn);
@@ -143,6 +111,20 @@ duckburg.views = {
       duckburg.views.common.setup(
             'designListContainer', 'designs', fields, filteredLoad,
             'DuckburgDesign');
+    }
+  },
+
+  catalog_item: {
+
+    load: function(filteredLoad) {
+
+      // Determine the visible fields for this object.
+      var fields = ['item_name', 'item_product_name', 'product_category',
+          'product_price', 'product_design_id'];
+
+      duckburg.views.common.setup(
+            'catalogItemListContainer', 'catalog_item', fields, filteredLoad,
+            'DuckburgCatalogItem');
     }
   },
 
