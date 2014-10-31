@@ -38,7 +38,7 @@
     margin: 2px
     color: $title-gray
 
-  textarea
+  .textarea-standard
     @extend .basic-element
     border: 1px solid #F1F1f1
     height: 75px
@@ -68,12 +68,12 @@
 
   .full-width,
   span,
-  textarea
+  .textarea-standard
     display: block
 
   .full-width,
   span,
-  textarea,
+  .textarea-standard,
   .editingCatalogItemDesignDetails
     margin: 8px auto
     width: 500px
@@ -205,3 +205,71 @@
   padding: 8px
   background: $light-gray
   text-align: left
+
+  h3
+    font-weight: normal
+    font-size: 14px
+    padding: 4px
+    margin: 2px 0
+    color: #DAD7D7
+
+  .input-style
+    display: block
+    margin: 0
+    font-size: 14px
+    display: block
+    padding: 4px
+
+
+  input
+    &[type=text],
+      @extend .input-style
+      background: none
+      width: 45%
+  textarea
+    @extend .input-style
+    @extend .basic-element
+    resize: none
+    display: block
+    margin: 8px auto
+    font-size: 14px
+    display: block
+    padding: 4px
+    width: 97%
+
+  .editingCatalogImageHolder
+    display: block
+    width: 97%
+
+    label
+      display: inline-block
+      width: 100px
+      height: 100px
+      margin: 8px 4px
+      cursor:pointer
+      vertical-align: top
+      em
+        display: none
+        text-align: center
+        height: 50%
+        line-height: 50px
+        cursor: pointer
+        opacity: 0.90
+        color: white
+        font-size: 14px
+        font-style: normal
+        &.view
+          background: $minty-green
+        &.remove
+          background: $cancel-red
+        &:hover
+          opacity: 1.0
+
+
+
+      &:hover
+        em
+          display: block
+
+    button
+      @extend .basic-button

@@ -243,12 +243,143 @@ duckburg.forms.inputs = {
       duckburg.forms.inputs.displayEditableDesign();
     }
   },
+
   displayEditableDesign: function() {
     var item = duckburg.filterPopupEditingDesign;
-    $('.editingCatalogItemDesignDetails')
-      .show()
-      .html('hi!');
     console.log(item);
+    var attribs = item.attributes;
+
+    // Get/clear/show div.
+    var div = $('.editingCatalogItemDesignDetails');
+    div.html('');
+    div.show();
+
+    duckburg.forms.inputs.appendEditableDesignFields(div, attribs);
+    duckburg.forms.inputs.appendEditableDesignImage(div, attribs);
+    duckburg.forms.inputs.addEditingCatalogImageFormListeners();
+  },
+
+  appendEditableDesignFields: function(div, attribs) {
+    // Design details header.
+    div.append($('<h3>')
+      .html('Design details'));
+
+    div.append($('<input>')
+      .val(attribs.design_name)
+      .attr('id', 'design_name')
+      .attr('type', 'text')
+      .attr('placeholder', 'design name')
+      .attr('class', 'editingCatalogImageDesignField'));
+
+    div.append($('<input>')
+      .val(attribs.design_color_count)
+      .attr('id', 'design_color_count')
+      .attr('type', 'text')
+      .attr('placeholder', 'color count')
+      .attr('class', 'editingCatalogImageDesignField'));
+
+    div.append($('<textarea>')
+      .val(attribs.design_notes)
+      .attr('id', 'design_notes')
+      .attr('placeholder', 'notes')
+      .attr('class', 'editingCatalogImageDesignField'));
+  },
+
+  appendEditableDesignImage: function (div, attribs) {
+    var imgHolder = $('<div>')
+      .attr('class', 'editingCatalogImageHolder');
+
+    var imgArray = attribs.design_images_list.split(',');
+
+    if (imgArray.length == 0) {
+      div.append($('<em>')
+        .html('no images'));
+    }
+
+    for (var i = 0; i < imgArray.length; i++) {
+
+        var url = imgArray[i];
+        duckburg.forms.inputs.appendEditingImageAndOverlays(url, imgHolder)
+
+    }
+    div.append(imgHolder);
+  },
+
+  appendEditingImageAndOverlays: function(url, imgHolder) {
+    var imgLabel = $('<label>')
+      .attr('class', 'editingCatalogImageWithUrl')
+      .attr('id', url)
+      .css({'background': 'url(' + url + ')',
+            'background-size': '100%'});
+
+    imgLabel.append($('<em>')
+      .attr('class', 'view')
+      .attr('id', url)
+      .html('view')
+      .click(function(e) {
+        var el = e.currentTarget;
+        var url = el.id
+
+        $('.imageLightboxBlackout')
+          .show()
+          .click(function() {
+            $('.imageLightboxBlackout').hide();
+          });
+        $('.imageLightboxHolder').css({
+            'background': 'url(' + url + ')',
+            'background-size' : '100%'
+          });
+      }));
+
+    imgLabel.append($('<em>')
+      .attr('class', 'remove')
+      .attr('id', url)
+      .html('remove')
+      .click(function(e) {
+        var el = e.currentTarget;
+        var id = el.id
+        var parent = e.currentTarget.parentElement;
+        parent.parentElement.removeChild(parent);
+        duckburg.forms.inputs.updateEditingCatalogImageDesign();
+      }));
+
+    imgHolder.append(imgLabel);
+  },
+
+  addEditingCatalogImageFormListeners: function() {
+
+    $('.editingCatalogImageDesignField').keyup(function() {
+
+      if (duckburg.editingCatalogImageUpdaterTimer) {
+        window.clearInterval(duckburg.editingCatalogImageUpdaterTimer);
+      }
+
+      duckburg.editingCatalogImageUpdaterTimer = setTimeout(function () {
+        duckburg.forms.inputs.updateEditingCatalogImageDesign();
+      }, 400);
+    });
+  },
+
+  updateEditingCatalogImageDesign: function() {
+
+    // Currently viewing design.
+    var item = duckburg.filterPopupEditingDesign
+    $('.editingCatalogImageDesignField').each(function() {
+      item.set(this.id, this.value);
+    });
+
+    var urlArray = [];
+    $('.editingCatalogImageWithUrl').each(function() {
+      urlArray.push(this.id);
+    });
+    var urlString = urlArray.join();
+    urlString = urlString == '' || urlString == ',' ? '' : urlString;
+    item.set('design_images_list', urlString);
+
+    item.save();
+
+    // Update the current name,  (it may have changed).
+    $('#product_design').val(item.attributes.design_name);
 
   }
 };

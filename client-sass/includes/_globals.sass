@@ -89,13 +89,33 @@ body
   +trans($easybreezy)
 
 
-.whiteOut
+.blockOut
   display: none
   position: fixed
   top: 0
   left: 0
   right: 0
   bottom: 0
+
+.whiteOut
+  @extend .blockOut
   background: rgba(102, 192, 141, 0.65)
   z-index: 11
   +trans($easybreezy)
+
+.imageLightboxBlackout
+  @extend .blockOut
+  background: rgba(255,255,255,0.9)
+  z-index: 10001
+
+.imageLightboxHolder
+  display: block
+  margin: 50px auto
+  padding: 8px
+  height: 350px
+  width: 350px
+  background: white
+  // TODO global for image dimensions once we settle on that.
+  +break-for(iphone)
+    height: 200px
+    width: 200px

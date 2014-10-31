@@ -5,6 +5,13 @@ duckburg.forms = {
 
   globalLoader: function(fields, formName) {
     $('.whiteOut').show();
+
+    // TODO have to make this a glbal for all forms just like close global
+    $('#product_design').val('');
+    $('.editingCatalogItemDesignDetails')
+      .html('')
+      .hide();
+
     duckburg.utils.currentTopZIndex++;
     $('.' + formName).css('z-index', duckburg.utils.currentTopZIndex);
 

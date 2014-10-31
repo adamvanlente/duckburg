@@ -25,8 +25,7 @@
       @extend .standard-font
       display: inline-block
       padding: 2px
-      margin: 2px
-      margin-bottom: 24px
+      margin: 0 8px
       font-size: 18px
       color: $title-gray
 
@@ -47,6 +46,7 @@
       display: block
       overflow: hidden
       white-space: nowrap
+      margin-left: 12px
 
     .listItemHolder
       display: block
@@ -54,6 +54,7 @@
       overflow: hidden
       white-space: nowrap
       cursor: pointer
+      margin: 4px 12px
       +trans($easybreezy)
       &:hover
         background: $minty-green
@@ -81,7 +82,7 @@
     color: white
     font-size: 12px
     margin-left: 12px
-    margin-bottom: 24px
+    margin-bottom: 12px
 
     +break-for(iphone)
       font-size: 16px
@@ -107,7 +108,7 @@
   display: block
   border-bottom: 1px solid #E8E7E7
   padding: 0px 0px 2px
-  margin-bottom: 12px
+  margin: 12px
   +break-for(iphone)
     display: none
 

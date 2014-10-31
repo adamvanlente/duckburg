@@ -31,6 +31,7 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 - [forms_common.js] add logic in generic function to save object, which calls validating function
 - [requests.js] add simple function to requests for creating/updating item
 - (+)[requests.js] some objects will require custom logic like customers
+- Create an initial object and set permissions on it
 
 ** These two items are technically optional.  Omitting them will simply mean the only way to create or list items is in Parse UI.
 
