@@ -69,12 +69,42 @@ duckburg.forms.common = {
 
   populateEmptyForm: function () {
     if (duckburg.parseEditingObject) {
+
       var fields = duckburg.parseEditingObject.attributes;
       for (var attribute in fields) {
 
         $('#' + attribute).val(fields[attribute]);
       }
     }
+
+    if (duckburg.parseEditingObject.attributes.product_design_id) {
+      var id = duckburg.parseEditingObject.attributes.product_design_id;
+      duckburg.forms.common.getImageInfoFromParseUsingImageId(id);
+    }
+  },
+
+  getImageInfoFromParseUsingImageId: function(id) {
+    console.log('gonna get some product info');
+
+    var Design = Parse.Object.extend('DuckburgDesign');
+    var query = new Parse.Query(Design);
+    query.equalTo('objectId', id);
+
+    query.find({
+      success: function(existingDesign) {
+        duckburg.filterPopupEditingDesign = existingDesign[0];
+        // Let's get super dope and show the user some design details on the
+        // fly.
+        duckburg.forms.inputs.displayEditableDesign();
+      },
+      error: function(error) {
+        var msg = 'Tried to load a design and failed:' + error.message;
+        duckburg.errorMessage(msg);
+      }
+    });
+
+
+
   },
 
   clearFormFields: function() {
@@ -91,7 +121,6 @@ duckburg.forms.common = {
     var targetInputId = curId + '_ref';
 
     if (e.currentTarget.value != '') {
-      duckburg.forms.common.appendNewImagePicker('.designImageHolder');
 
       // Save the image.
       duckburg.currentlySavingImage = true;
@@ -99,6 +128,8 @@ duckburg.forms.common = {
         $('#' + targetInputId).val(result._url);
         duckburg.forms.common.addImageToDesignForm(result._url, targetInputId);
       });
+
+      duckburg.forms.common.resetImagePicker();
 
       // Since there are new pickers, reapply the listener.
       $('.designImagePicker').change(function(e) {
@@ -113,20 +144,9 @@ duckburg.forms.common = {
 
   appendNewImagePicker: function() {
 
-    var fieldCount = 0;
-    $('.designImagePicker').each(function() {
-      if (this.value != '') {
-        fieldCount++;
-      }
-    });
-
-    var id = 'design_image_' + fieldCount;
-
-    var labelContent = fieldCount == 0 ? 'Add images' : '&nbsp;';
-
     // append a blank label for spacing.
     $('.designImageHolder').append($('<label>')
-      .html(labelContent)
+      .html('Add images')
       .attr('class', 'imagePickerLabel'));
 
     var label = $('<label>');
@@ -134,14 +154,14 @@ duckburg.forms.common = {
     // Create image picker.
     var imgPicker = $('<input>')
       .attr('type', 'file')
-      .attr('id', id)
+      .attr('id', 'design_image')
       .attr('class', 'designImagePicker');
     label.append(imgPicker);
 
     // Create image ref.
     var imgRef = $('<input>')
       .attr('type', 'hidden')
-      .attr('id', id + '_ref')
+      .attr('id', 'design_image_ref')
       .attr('class', 'designImageUrl');
     label.append(imgRef);
 
@@ -150,8 +170,15 @@ duckburg.forms.common = {
     $('.designImageHolder').append('<br>');
   },
 
+  resetImagePicker: function() {
+    var newInput = $('<input>')
+      .attr('id', 'design_image')
+      .attr('type', 'file')
+      .attr('class', 'designImagePicker');
+    $('#design_image').replaceWith(newInput);
+  },
+
   addImageToDesignForm: function(url, isNew) {
-    var div = $('<div>');
     var imgCss = {
         'background': 'url(' + url + ')',
         'background-size': '100%'
@@ -159,10 +186,21 @@ duckburg.forms.common = {
 
     var id = isNew ? isNew : url;
 
-    var img = $('<img>')
+    var imgLabel = $('<div>')
+      .attr('class', 'designFormImageThumb')
       .css(imgCss);
-    var label = $('<label>')
-      .attr('class', 'cancel')
+
+    var viewEm = $('<em>')
+      .attr('id', url)
+      .attr('class', 'view')
+      .html('view')
+      .click(function(e) {
+        var url = e.currentTarget.id;
+        duckburg.utils.lightboxImage(url);
+      })
+
+    var removeEm = $('<em>')
+      .attr('class', 'remove')
       .html('remove')
       .attr('id', id)
       .click(function(e) {
@@ -171,16 +209,6 @@ duckburg.forms.common = {
           var index = duckburg.existingEditingDesignImages.indexOf(url);
           duckburg.existingEditingDesignImages.splice(index, 1);
         } else {
-          var clickedId = e.currentTarget.id;
-
-          clickedId = clickedId.replace('_ref', '');
-
-          var newInput = $('<input>')
-            .attr('id', clickedId)
-            .attr('type', 'file')
-            .attr('class', 'designImagePicker');
-          $('#' + clickedId).replaceWith(newInput);
-
           // Since there are new pickers, reapply the listener.
           $('.designImagePicker').change(function(e) {
             duckburg.forms.common.imagePickerListener(e);
@@ -191,9 +219,10 @@ duckburg.forms.common = {
         parent.parentElement.removeChild(parent);
       });
 
-    div.append(img);
-    div.append(label);
-    $('.existingImages').append(div);
+    imgLabel.append(viewEm);
+    imgLabel.append(removeEm);
+
+    $('.existingImages').append(imgLabel);
   },
 
   displayExistingDesignImages: function() {

@@ -38,3 +38,14 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 
 possible objects
 - stock levels. pulls from catalog items, looks for available sizes, and allows you to check stock.
+- activity log (this can live in create/update of objects, just log what's happening, current user, etc.)
+- supplies, for internal monitoring order etc (perhaps these are just products?)
+- object to handle names/numbers/etc
+- explore how to represent social orders.  probably just done with isPrivate/isIndexed/ and product family
+
+
+possible pages
+- order page (order eg order to supplier)
+  - shows all pending orders
+	- these orders can be marked as 'waiting to order' or 'ordered' or 'received', sending them to printing
+	- shipments - when an order is shipped, create a log in shipments so it is easier to find.

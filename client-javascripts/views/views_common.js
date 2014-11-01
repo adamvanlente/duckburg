@@ -5,8 +5,11 @@ duckburg.views.common = {
 
   // First view to load.
   loadFirst: function() {
+    //TODO this is just sample stuff
     duckburg.views.objects.load();
-    duckburg.forms.catalog_item();
+    
+    // duckburg.forms.catalog_item();
+    duckburg.views.designs.load();
   },
 
   clearWrapper: function() {

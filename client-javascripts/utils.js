@@ -39,6 +39,18 @@ duckburg.utils = {
 
     return true;
 
+  },
+
+  lightboxImage: function(url) {
+    $('.imageLightboxBlackout')
+      .show()
+      .click(function() {
+        $('.imageLightboxBlackout').hide();
+      });
+    $('.imageLightboxHolder').css({
+        'background': 'url(' + url + ')',
+        'background-size' : '100%'
+    });
   }
 
 };

@@ -246,7 +246,6 @@ duckburg.forms.inputs = {
 
   displayEditableDesign: function() {
     var item = duckburg.filterPopupEditingDesign;
-    console.log(item);
     var attribs = item.attributes;
 
     // Get/clear/show div.
@@ -257,6 +256,7 @@ duckburg.forms.inputs = {
     duckburg.forms.inputs.appendEditableDesignFields(div, attribs);
     duckburg.forms.inputs.appendEditableDesignImage(div, attribs);
     duckburg.forms.inputs.addEditingCatalogImageFormListeners();
+    duckburg.forms.inputs.editingCatalogItemNewImagePicker(div);
   },
 
   appendEditableDesignFields: function(div, attribs) {
@@ -270,6 +270,9 @@ duckburg.forms.inputs = {
       .attr('type', 'text')
       .attr('placeholder', 'design name')
       .attr('class', 'editingCatalogImageDesignField'));
+
+    // There's a chance this may be empty.
+    $('#product_design').val(attribs.design_name);
 
     div.append($('<input>')
       .val(attribs.design_color_count)
@@ -295,17 +298,16 @@ duckburg.forms.inputs = {
       div.append($('<em>')
         .html('no images'));
     }
+    div.append(imgHolder);
 
     for (var i = 0; i < imgArray.length; i++) {
-
         var url = imgArray[i];
-        duckburg.forms.inputs.appendEditingImageAndOverlays(url, imgHolder)
-
+        duckburg.forms.inputs.appendEditingImageAndOverlays(url)
     }
-    div.append(imgHolder);
   },
 
-  appendEditingImageAndOverlays: function(url, imgHolder) {
+  appendEditingImageAndOverlays: function(url) {
+
     var imgLabel = $('<label>')
       .attr('class', 'editingCatalogImageWithUrl')
       .attr('id', url)
@@ -319,16 +321,7 @@ duckburg.forms.inputs = {
       .click(function(e) {
         var el = e.currentTarget;
         var url = el.id
-
-        $('.imageLightboxBlackout')
-          .show()
-          .click(function() {
-            $('.imageLightboxBlackout').hide();
-          });
-        $('.imageLightboxHolder').css({
-            'background': 'url(' + url + ')',
-            'background-size' : '100%'
-          });
+        duckburg.utils.lightboxImage(url);
       }));
 
     imgLabel.append($('<em>')
@@ -343,7 +336,7 @@ duckburg.forms.inputs = {
         duckburg.forms.inputs.updateEditingCatalogImageDesign();
       }));
 
-    imgHolder.append(imgLabel);
+    $('.editingCatalogImageHolder').append(imgLabel);
   },
 
   addEditingCatalogImageFormListeners: function() {
@@ -381,5 +374,47 @@ duckburg.forms.inputs = {
     // Update the current name,  (it may have changed).
     $('#product_design').val(item.attributes.design_name);
 
+  },
+
+  editingCatalogItemNewImagePicker: function(div) {
+    // append a blank label for spacing.
+    div.append($('<label>')
+      .html('Add image')
+      .attr('class', 'imagePickerLabel'));
+
+    var label = $('<label>');
+    var pickerId = 'cat_item_img_picker';
+
+    // Create image picker.
+    var imgPicker = $('<input>')
+      .attr('type', 'file')
+      .attr('id', pickerId)
+      .attr('class', 'editingCatalogImageDesignPicker');
+    label.append(imgPicker);
+
+    $('.imagePickerLabel').append(label);
+
+    duckburg.forms.inputs.edtingCatalogItemImagePickerListener();
+  },
+
+  edtingCatalogItemImagePickerListener: function() {
+    $('.editingCatalogImageDesignPicker').change(function (e) {
+
+      var curId = e.currentTarget.id;
+
+      // Save the image.
+      duckburg.currentlySavingImage = true;
+      duckburg.requests.files.save(curId, function(result) {
+        duckburg.forms.inputs.appendEditingImageAndOverlays(result._url);
+        duckburg.forms.inputs.updateEditingCatalogImageDesign();
+
+        var imgPicker = $('<input>')
+          .attr('type', 'file')
+          .attr('id', 'cat_item_img_picker')
+          .attr('class', 'editingCatalogImageDesignPicker');
+        $('#cat_item_img_picker').replaceWith(imgPicker);
+
+      });
+    });
   }
 };

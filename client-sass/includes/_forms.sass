@@ -21,7 +21,7 @@
   border-radius: 1px
   padding: 8px
   margin: 0 auto
-  max-height: 325px
+  max-height: 475px
   overflow: scroll
   box-shadow: 0 0 4px rgba(0,0,0,0.2)
   text-align: center
@@ -259,13 +259,15 @@
         font-size: 14px
         font-style: normal
         &.view
-          background: $minty-green
+          background: #333
+          &:hover
+            background: $minty-green
         &.remove
-          background: $cancel-red
+          background: #333
+          &:hover
+            background: $cancel-red
         &:hover
           opacity: 1.0
-
-
 
       &:hover
         em
@@ -273,3 +275,28 @@
 
     button
       @extend .basic-button
+
+
+.designFormImageThumb
+  width: 100px
+  height: 100px
+  margin-right: 8px
+  vertical-align: top
+  em
+    font-style: normal
+    display: none
+    height: 50%
+    text-align: center
+    line-height: 50px
+    color: white
+    background: #333
+    cursor: pointer
+    &.view
+      &:hover
+        background: $minty-green
+    &.remove
+      &:hover
+        background: $cancel-red
+  &:hover
+    em
+      display: block
