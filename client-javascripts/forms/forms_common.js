@@ -77,9 +77,13 @@ duckburg.forms.common = {
       }
     }
 
-    if (duckburg.parseEditingObject.attributes.product_design_id) {
-      var id = duckburg.parseEditingObject.attributes.product_design_id;
-      duckburg.forms.common.getImageInfoFromParseUsingImageId(id);
+    if (duckburg.parseEditingObject) {
+      if (duckburg.parseEditingObject.attributes) {
+        if (duckburg.parseEditingObject.attributes.product_design_id) {
+          var id = duckburg.parseEditingObject.attributes.product_design_id;
+          duckburg.forms.common.getImageInfoFromParseUsingImageId(id);
+        }
+      }
     }
   },
 
