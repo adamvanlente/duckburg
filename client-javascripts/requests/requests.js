@@ -266,8 +266,8 @@ duckburg.requests = {
         success: function(user) {
 
           // Set logged in user as current user.
-          curUser = Parse.User.current();
-          curUser.setACL(new Parse.ACL(user));
+          duckburg.curUser = Parse.User.current();
+          duckburg.curUser.setACL(new Parse.ACL(user));
           successCb(user);
         },
         error: function(user, error) {

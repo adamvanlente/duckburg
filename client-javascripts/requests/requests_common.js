@@ -95,6 +95,12 @@ duckburg.requests.common = {
         duckburg.forms.common.closeCurrentForm();
         duckburg.utils.clearSearchFilters();
         duckburg.views[duckburg.currentView].load();
+
+        duckburg.requests.common.activityLog(stringId, 'updated');
+      },
+      error: function(error) {
+        duckburg.requests.common.activityLog(
+            stringId, 'NOT updated', error.message);
       }
     });
   },
@@ -120,12 +126,43 @@ duckburg.requests.common = {
           duckburg.views[duckburg.currentListView].load();
         }
 
+        duckburg.requests.common.activityLog(stringId, 'saved');
+
       },
       error: function(error) {
         var msg = 'Something went wrong ' + error.message;
         duckburg.errorMessage(msg);
         duckburg.forms.common.closeCurrentForm();
+        duckburg.requests.common.activityLog(
+            stringId, 'NOT saved', error.message);
       }
     });
+  },
+
+  activityLog: function(type, method, msg) {
+    var Activity = Parse.Object.extend("DuckburgActivity");
+    var activityLog = new Activity();
+
+    var currentUserName = duckburg.curUser.attributes.username;
+
+    // String message, such as 'A product was saved by adam'.
+    var summary = 'An ' + type + ' was ' + method + ' by ' + currentUserName;
+    activityLog.set("summary", summary);
+    activityLog.set("user", currentUserName);
+
+    if (msg) {
+      activityLog.set("msg", msg);
+    }
+
+    activityLog.save(null, {
+      success: function(logItem) {
+        // activity logged
+      },
+      error: function(logItem, error) {
+        var msg = 'Something is failing on the activity log: ' + error.message;
+        duckburg.errorMessage(msg);
+      }
+    });
+
   }
 };

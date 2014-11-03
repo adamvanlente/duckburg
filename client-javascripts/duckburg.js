@@ -8,20 +8,20 @@ var duckburg = duckburg || {};
 duckburg.load = function() {
 
   // Look for current user.
-  var curUser = Parse.User.current();
+  duckburg.curUser = Parse.User.current();
 
   // Determine if there is a user or not.
-  if (curUser) {
+  if (duckburg.curUser) {
 
       // Set username in the UI.
-      var userName = curUser.attributes.username;
+      var userName = duckburg.curUser.attributes.username;
       var userContent = userName + '<i class="fa fa-sign-out"></i>';
       $('#current_user').html(userContent);
 
       // Hide admin menu items from non-admins.  Now worries if they're
       // motivated and uncover these items in browser - pages will still be
       // unavailable to them.
-      if (curUser.attributes.role != 'admin') {
+      if (duckburg.curUser.attributes.role != 'admin') {
         $('.admin-menu-item').hide();
       }
 
