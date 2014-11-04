@@ -48,6 +48,30 @@ duckburg.requests = {
     }
   },
 
+  licensing_type: {
+
+    create: function() {
+      duckburg.requests.common.genericSave(
+          'DuckburgLicensingType', 'Licensing type');
+    }
+  },
+
+  shipping_methods: {
+
+    create: function() {
+      duckburg.requests.common.genericSave(
+          'DuckburgShippingMethod', 'Shipping methods');
+    }
+  },
+
+  job_status: {
+
+    create: function() {
+      duckburg.requests.common.genericSave(
+          'DuckburgJobStatus', 'Job status');
+    }
+  },
+
   /*
    * Functions for making requests to create/save customers.
    * This inlcudes functionality for determining if customer/email address

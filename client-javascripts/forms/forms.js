@@ -279,6 +279,74 @@ duckburg.forms = {
       duckburg.requests.catalog_item.create();
   },
 
+  /**
+   * Set up Licensing type form.
+   *
+   */
+  licensing_type: function() {
+    duckburg.forms.globalLoader(
+        duckburg.config.LICENSING_TYPE_FORM_FIELDS, 'formLicensingType');
+  },
+
+  validateLicensingTypeItem: function() {
+      // Validate required fields.
+      var name = $('#licensing_type').val();
+
+      if (name == '') {
+        var msg = 'Must fill out licensing type.';
+        duckburg.errorMessage(msg);
+        return false;
+      }
+
+      duckburg.requests.licensing_type.create();
+  },
+
+  /**
+   * Set up Shipping methods form.
+   *
+   */
+  shipping_methods: function() {
+    duckburg.forms.globalLoader(
+        duckburg.config.SHIPPING_METHODS_FORM_FIELDS, 'formShippingMethods');
+  },
+
+  validateShippingMethods: function() {
+
+      // Validate required fields.
+      var name = $('#shipping_method').val();
+
+      if (name == '') {
+        var msg = 'Must have a name.';
+        duckburg.errorMessage(msg);
+        return false;
+      }
+
+      duckburg.requests.shipping_methods.create();
+  },
+
+  /**
+   * Set up job statuses.
+   *
+   */
+  job_status: function() {
+    duckburg.forms.globalLoader(
+        duckburg.config.JOB_STATUS_FORM_FIELDS, 'formJobStatus');
+  },
+
+  validateJobStatus: function() {
+
+      // Validate required fields.
+      var name = $('#job_status_name').val();
+
+      if (name == '') {
+        var msg = 'Must have a name.';
+        duckburg.errorMessage(msg);
+        return false;
+      }
+
+      duckburg.requests.job_status.create();
+  },
+
   /*
    * Templates for easy copying
    *

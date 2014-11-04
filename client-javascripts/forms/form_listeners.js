@@ -71,10 +71,17 @@ $('.formCatalogItemDesignListener').click(function(e) {
   duckburg.forms.inputs.createPopupForInput(e, type, className, obj, form);
 });
 
+
+
 // Highsmith Calendars for forms.
 var calConfig = {
   style: {
     disable: true
   }
 };
+
+// Expiration date on a catalog item.
 duckburg.catExpDateCal = new Highsmith('item_expiration_date', calConfig);
+
+// Due date on an order.
+duckburg.newOrderDueDate = new Highsmith('order_due_date', calConfig);

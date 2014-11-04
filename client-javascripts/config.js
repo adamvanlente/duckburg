@@ -4,6 +4,11 @@ var duckburg = duckburg || {};
 duckburg.config = {
 
   // Form fields for all objects.
+  'ORDER_FORM_FIELDS'         :    ['first_name', 'last_name', 'email_address',
+                                    'phone_number', 'company', 'address_one',
+                                    'address_two', 'address_city', 'address_state',
+                                    'address_zip', 'customer_notes'],
+
   'CUSTOMER_FORM_FIELDS'      :    ['first_name', 'last_name', 'email_address',
                                     'phone_number', 'company', 'address_one',
                                     'address_two', 'address_city', 'address_state',
@@ -30,6 +35,13 @@ duckburg.config = {
                                     'item_product_name',
                                     'item_expiration_date'],
 
+  'LICENSING_TYPE_FORM_FIELDS':    ['licensing_type', 'contact_name',
+                                    'contact_number', 'contact_email'],
+
+  'SHIPPING_METHODS_FORM_FIELDS':  ['shipping_method'],
+
+  'JOB_STATUS_FORM_FIELDS'      :  ['job_status_name'],
+
   // Objects that will be visible to all users.  They can create/edit.
   'VISIBLE_OBJECTS'           :    {
       'customers'             :    'Customers',
@@ -37,7 +49,11 @@ duckburg.config = {
       'suppliers'             :    'Suppliers',
       'designs'               :    'Designs',
       'colors'                :    'Colors',
-      'catalog_item'          :    'Catalog item'
+      'catalog_item'          :    'Catalog item',
+      'licensing_type'        :    'Licensing type',
+      'shipping_methods'      :    'Shipping methods',
+      'job_status'            :    'Job status',
+
   }
 
 };

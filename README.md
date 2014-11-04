@@ -24,12 +24,14 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 #### Steps to creating a new object flow in the UI
 
 - create the jade form template
+- add jade template to index.jade
 - [config.js] create a visible object entry, if desired (optional, makes it available for editing)
 - [config.js] create a constant containing all form fields
 - [forms.js] create function that loads form
 - [forms.js] create function that validates form
 - [forms_common.js] add logic in generic function to save object, which calls validating function
 - [requests.js] add simple function to requests for creating/updating item
+- [views.js] create a loading function for viewing the list of items
 - (+)[requests.js] some objects will require custom logic like customers
 - Create an initial object and set permissions on it
 

@@ -6,10 +6,8 @@ duckburg.views.common = {
   // First view to load.
   loadFirst: function() {
     //TODO this is just sample stuff
-    duckburg.views.objects.load();
-    
-    // duckburg.forms.catalog_item();
-    duckburg.views.designs.load();
+    duckburg.views.customers.load();
+
   },
 
   clearWrapper: function() {
@@ -118,7 +116,7 @@ duckburg.views.common = {
       .attr('class', 'objectListViewHeader');
 
     var button = $('<button>')
-      .html('&larr; back to objects')
+      .html('&larr;')
       .click(function() {
         duckburg.views.objects.load();
       });

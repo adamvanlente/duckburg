@@ -128,6 +128,45 @@ duckburg.views = {
     }
   },
 
+  licensing_type: {
+
+    load: function(filteredLoad) {
+
+      // Determine the visible fields for this object.
+      var fields = ['licensing_type', 'contact_name', 'contact_email'];
+
+      duckburg.views.common.setup(
+            'licensingTypeListContainer', 'licensing_type', fields,
+            filteredLoad, 'DuckburgLicensingType');
+    }
+  },
+
+  shipping_methods: {
+
+    load: function(filteredLoad) {
+
+      // Determine the visible fields for this object.
+      var fields = ['shipping_method'];
+
+      duckburg.views.common.setup(
+            'shippingMethodsListContainer', 'shipping_methods', fields,
+            filteredLoad, 'DuckburgShippingMethod');
+    }
+  },
+
+  job_status: {
+
+    load: function(filteredLoad) {
+
+      // Determine the visible fields for this object.
+      var fields = ['job_status_name'];
+
+      duckburg.views.common.setup(
+            'jobStatusListContainer', 'job_status', fields,
+            filteredLoad, 'DuckburgJobStatus');
+    }
+  },
+
   template: {
 
     load: function(filteredLoad) {

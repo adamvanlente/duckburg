@@ -56,6 +56,9 @@ duckburg.requests.common = {
         query.matches('parse_search_string', duckburg.searchFilters);
     }
 
+    // Always sort newest first.
+    query.descending("createdAt");
+
     query.find({
       success: function(results) {
 

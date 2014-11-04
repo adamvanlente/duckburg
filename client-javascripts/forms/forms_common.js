@@ -33,6 +33,17 @@ duckburg.forms.common = {
       duckburg.forms.validateCatalogItem();
     }
 
+    if (form == 'formLicensingType') {
+      duckburg.forms.validateLicensingTypeItem();
+    }
+
+    if (form == 'formShippingMethods') {
+      duckburg.forms.validateShippingMethods();
+    }
+
+    if (form == 'formJobStatus') {
+      duckburg.forms.validateJobStatus();
+    }
   },
 
   closeCurrentForm: function() {
@@ -72,7 +83,6 @@ duckburg.forms.common = {
 
       var fields = duckburg.parseEditingObject.attributes;
       for (var attribute in fields) {
-
         $('#' + attribute).val(fields[attribute]);
       }
     }
@@ -88,7 +98,6 @@ duckburg.forms.common = {
   },
 
   getImageInfoFromParseUsingImageId: function(id) {
-    console.log('gonna get some product info');
 
     var Design = Parse.Object.extend('DuckburgDesign');
     var query = new Parse.Query(Design);
