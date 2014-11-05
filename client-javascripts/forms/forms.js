@@ -347,6 +347,31 @@ duckburg.forms = {
       duckburg.requests.job_status.create();
   },
 
+  /**
+   * Set up job statuses.
+   *
+   */
+  job_positions: function() {
+    duckburg.forms.globalLoader(
+        duckburg.config.JOB_POSITIONS_FORM_FIELDS, 'formJobPositions');
+  },
+
+  validateJobPositions: function() {
+
+      // Validate required fields.
+      var name = $('#position_name').val();
+      var date = $('#end_search_date').val();
+      var desc = $('#position_description').val();
+
+      if (name == '' && date == '' || desc == '') {
+        var msg = 'All fields are required.';
+        duckburg.errorMessage(msg);
+        return false;
+      }
+
+      duckburg.requests.job_positions.create();
+  },
+
   /*
    * Templates for easy copying
    *

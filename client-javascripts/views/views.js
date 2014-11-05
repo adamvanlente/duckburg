@@ -81,7 +81,8 @@ duckburg.views = {
 
       // Determine the visible fields for this object.
       var fields =
-          ['supplier_name', 'website', 'contact_person', 'contact_number'];
+          ['supplier_name', 'supplier_account_number', 'website',
+           'contact_person', 'contact_number'];
       duckburg.views.common.setup(
             'suppliersListContainer', 'suppliers', fields, filteredLoad,
             'DuckburgSupplier');
@@ -164,6 +165,19 @@ duckburg.views = {
       duckburg.views.common.setup(
             'jobStatusListContainer', 'job_status', fields,
             filteredLoad, 'DuckburgJobStatus');
+    }
+  },
+
+  job_positions: {
+
+    load: function(filteredLoad) {
+
+      // Determine the visible fields for this object.
+      var fields = ['position_name', 'end_search_date', 'position_description'];
+
+      duckburg.views.common.setup(
+            'jobPositionsListContainer', 'job_positions', fields,
+            filteredLoad, 'DuckburgJobPosition');
     }
   },
 

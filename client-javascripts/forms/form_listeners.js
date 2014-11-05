@@ -85,3 +85,6 @@ duckburg.catExpDateCal = new Highsmith('item_expiration_date', calConfig);
 
 // Due date on an order.
 duckburg.newOrderDueDate = new Highsmith('order_due_date', calConfig);
+
+// Date that a job posting should come down.
+duckburg.jobPosEndDate = new Highsmith('end_search_date', calConfig);

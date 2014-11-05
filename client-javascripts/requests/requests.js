@@ -72,6 +72,14 @@ duckburg.requests = {
     }
   },
 
+  job_positions: {
+
+    create: function() {
+      duckburg.requests.common.genericSave(
+          'DuckburgJobPosition', 'Job position');
+    }
+  },
+
   /*
    * Functions for making requests to create/save customers.
    * This inlcudes functionality for determining if customer/email address

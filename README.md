@@ -29,20 +29,22 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 - [config.js] create a constant containing all form fields
 - [forms.js] create function that loads form
 - [forms.js] create function that validates form
+- (if there is a date input, be sure to attach a CAL in forms_listeners.js)
 - [forms_common.js] add logic in generic function to save object, which calls validating function
 - [requests.js] add simple function to requests for creating/updating item
 - [views.js] create a loading function for viewing the list of items
 - (+)[requests.js] some objects will require custom logic like customers
-- Create an initial object and set permissions on it
+
+- Create an initial object and set permissions on it (log in to Parse to do so)
 
 ** These two items are technically optional.  Omitting them will simply mean the only way to create or list items is in Parse UI.
 
 
 possible objects
 - stock levels. pulls from catalog items, looks for available sizes, and allows you to check stock.
-- activity log (this can live in create/update of objects, just log what's happening, current user, etc.)
 - supplies, for internal monitoring order etc (perhaps these are just products?)
-- object to handle names/numbers/etc
+- object to handle names/numbers/etc (or just store object in orders? benefit in keeping these?)
+  NOTE: names nums, should provide method to submit csv contents for adding
 - explore how to represent social orders.  probably just done with isPrivate/isIndexed/ and product family
 
 

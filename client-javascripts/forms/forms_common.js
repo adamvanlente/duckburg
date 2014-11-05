@@ -44,6 +44,11 @@ duckburg.forms.common = {
     if (form == 'formJobStatus') {
       duckburg.forms.validateJobStatus();
     }
+
+    if (form == 'formJobPositions') {
+      duckburg.forms.validateJobPositions();
+    }
+
   },
 
   closeCurrentForm: function() {
