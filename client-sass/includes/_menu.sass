@@ -50,16 +50,17 @@
 
 
 .new-order-button
-  display: inline-block
-  float: right
+  @extend .serif-font
+  display: block
   -webkit-appearance: none
   border: none
   border-radius: 1px
-  background: $minty-green
+  background: #66c08d
   color: white
   padding: 2px 8px 4px 8px
   vertical-align: middle
   cursor: pointer
+  margin: 0 4px
   +trans($easybreezy)
   +break-for(iphone)
     font-size: 24px

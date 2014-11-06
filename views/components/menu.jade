@@ -1,9 +1,18 @@
 div.menu.hidden#menu
 
+  | <button class="new-order-button" onclick="duckburg.orders.toggleForm()">new order</button>
+
   span.menu-item
     label
       | open orders
-      | <button class="new-order-button" onclick="duckburg.orders.toggleForm()">+</button>
+
+  span.menu-item
+    label
+      | social orders
+
+  span.menu-item
+    label
+      | partnerships
 
   span.menu-item
     label

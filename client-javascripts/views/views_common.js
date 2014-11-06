@@ -120,7 +120,7 @@ duckburg.views.common = {
       .click(function() {
         duckburg.views.objects.load();
       });
-    header.append(button);
+    // header.append(button);
 
     var objectList = duckburg.config.VISIBLE_OBJECTS;
     for (var object in objectList) {

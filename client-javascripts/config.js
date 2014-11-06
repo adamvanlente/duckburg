@@ -33,7 +33,7 @@ duckburg.config = {
                                         'product_tags', 'product_ishidden',
                                         'product_isindexed','product_price',
                                         'product_saleprice', 'product_desc',
-                                        'item_product_name',
+                                        'item_product_name', 'product_socialprice',
                                         'item_expiration_date'],
 
   'LICENSING_TYPE_FORM_FIELDS'      :  ['licensing_type', 'contact_name',

@@ -292,7 +292,12 @@ duckburg.forms.inputs = {
     var imgHolder = $('<div>')
       .attr('class', 'editingCatalogImageHolder');
 
-    var imgArray = attribs.design_images_list.split(',');
+    var imgArray = attribs.design_images_list;
+    if (imgArray == '') {
+      return false;
+    }
+
+    imgArray = imgArray.split(',');
 
     if (imgArray.length == 0) {
       div.append($('<em>')
@@ -301,8 +306,10 @@ duckburg.forms.inputs = {
     div.append(imgHolder);
 
     for (var i = 0; i < imgArray.length; i++) {
+      if (url != '') {
         var url = imgArray[i];
-        duckburg.forms.inputs.appendEditingImageAndOverlays(url)
+        duckburg.forms.inputs.appendEditingImageAndOverlays(url);
+      }
     }
   },
 

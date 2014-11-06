@@ -43,10 +43,16 @@ There are lots of objects in DuckBurg, such as customers, orders, files, etc. Ea
 possible objects
 - stock levels. pulls from catalog items, looks for available sizes, and allows you to check stock.
 - supplies, for internal monitoring order etc (perhaps these are just products?)
-- object to handle names/numbers/etc (or just store object in orders? benefit in keeping these?)
   NOTE: names nums, should provide method to submit csv contents for adding
 - explore how to represent social orders.  probably just done with isPrivate/isIndexed/ and product family
+- timepunch object.  users will punch in/out.  When they punch out, it will look for the newest punch in for their user account, and calculate their hours based on that.
+- PAYMENTS, need to incorporate once orders have been established.  Payment module only available from order?  Perhaps just a payment module that allows you to search for orders as well.
+- ORDER TYPES (standard, social, partnership)
 
+
+!! Can I make routes in a database, then iterate over them in Express to create new routes?
+// EG, let users create routes from Parse, then create them on the fly?  This would allow for custom
+// routes to social orders.
 
 possible pages
 - order page (order eg order to supplier)
