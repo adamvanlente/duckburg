@@ -7,6 +7,12 @@ duckburg.utils = {
 
   currentTopZIndex: 1000,
 
+  currentOpenForms: [],
+  currentOpenFormFields: [],
+
+  currentlyViewingFormName: false,
+  currentlyViewingFormFields: false,
+
   toTitleCase: function(str) {
     return str.replace(/\w\S*/g,
         function(txt){return txt.charAt(0).toUpperCase() +
@@ -16,6 +22,13 @@ duckburg.utils = {
 
   clearSearchFilters: function() {
     duckburg.searchFilters = undefined;
+  },
+
+  inputIsCheckbox: function(field) {
+    if (duckburg.config.checkboxInputList.indexOf(field) != -1) {
+      return true;
+    }
+    return false;
   },
 
   isSearchableValue: function(field, value) {
@@ -30,15 +43,11 @@ duckburg.utils = {
       return false;
     }
 
-    // Filter out any invalid fields.
-    var invalidFields = ['product_price', 'product_sizes', 'product_colors',
-        'color_count'];
-    if (invalidFields.indexOf(field) != -1) {
+    if (duckburg.config.invalidSearchableFields.indexOf(field) != -1) {
       return false;
     }
 
     return true;
-
   },
 
   lightboxImage: function(url) {
@@ -52,5 +61,4 @@ duckburg.utils = {
         'background-size' : '100%'
     });
   }
-
 };

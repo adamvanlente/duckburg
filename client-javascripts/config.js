@@ -12,7 +12,8 @@ duckburg.config = {
   'CUSTOMER_FORM_FIELDS'            :  ['first_name', 'last_name', 'email_address',
                                         'phone_number', 'company', 'address_one',
                                         'address_two', 'address_city', 'address_state',
-                                        'address_zip', 'customer_notes'],
+                                        'address_zip', 'customer_notes',
+                                        'customer_is_salesperson'],
 
   'PRODUCT_FORM_FIELDS'             :  ['product_name', 'colors', 'sizes',
                                         'description', 'rd_item_id', 'supplier_item_id',
@@ -46,6 +47,8 @@ duckburg.config = {
   'JOB_POSITIONS_FORM_FIELDS'       :  ['position_name', 'end_search_date',
                                         'position_description'],
 
+  'JOB_TYPE_FORM_FIELDS'            :  ['job_type_name'],
+
   // Objects that will be visible to all users.  They can create/edit.
   'VISIBLE_OBJECTS'           :    {
       'customers'             :    'Customers',
@@ -58,7 +61,16 @@ duckburg.config = {
       'shipping_methods'      :    'Shipping methods',
       'job_status'            :    'Job status',
       'job_positions'         :    'Job positions',
+      'job_type'              :    'Job type'
 
-  }
+  },
+
+  // Do not index these field values for searching in parse.
+  invalidSearchableFields     :    ['product_price', 'product_sizes',
+                                    'product_colors', 'color_count',
+                                    'customer_is_salesperson'],
+
+  // These are inputs which are checkboxes.
+  checkboxInputList           :    ['customer_is_salesperson']
 
 };

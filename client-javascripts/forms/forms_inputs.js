@@ -100,6 +100,7 @@ duckburg.forms.inputs = {
       .attr('class', 'filterCancel')
       .html('cancel')
       .click(function() {
+        duckburg.filteringInput = false;
         $('.inputPopupSelector').remove();
       });
     $('.inputPopupSelector').append(button);
@@ -204,12 +205,11 @@ duckburg.forms.inputs = {
     $('.inputPopupSelector').each(function() {
       this.remove();
     });
-    duckburg.filteringInput = false;
+
     duckburg.searchFilters = false;
   },
 
   placeStringInsideInput: function(e) {
-
     var newItem;
     var string;
     var attributes;
@@ -242,6 +242,16 @@ duckburg.forms.inputs = {
       // fly.
       duckburg.forms.inputs.displayEditableDesign();
     }
+
+    // Special behavior for design input in new catalog item form.
+    if (duckburg.filterInputTargetClass == '.formCatalogItemDesignListener') {
+      $('#product_design_id').val(newItem.id);
+      duckburg.filterPopupEditingDesign = newItem;
+      // Let's get super dope and show the user some design details on the
+      // fly.
+      duckburg.forms.inputs.displayEditableDesign();
+    }
+
   },
 
   displayEditableDesign: function() {

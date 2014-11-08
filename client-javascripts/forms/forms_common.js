@@ -7,7 +7,7 @@ duckburg.forms.common = {
    * Some global functions for all forms
    */
   saveCurrentForm: function() {
-    var form = duckburg.currentForm;
+    var form = duckburg.currentlyViewingFormName;
 
     if (form == 'formCustomer') {
       duckburg.forms.validateCustomerForm();
@@ -49,12 +49,16 @@ duckburg.forms.common = {
       duckburg.forms.validateJobPositions();
     }
 
+    if (form == 'formJobType') {
+      duckburg.forms.validateJobType();
+    }
+
   },
 
   closeCurrentForm: function() {
-
+    console.log('closing current')
     // Hide the current form.
-    var form = $('.' + duckburg.currentForm);
+    var form = $('.' + duckburg.currentlyViewingFormName);
     var formClass = form.attr('class');
     formClass = formClass.replace('visible', 'hidden');
     form.attr('class', formClass);
@@ -65,11 +69,18 @@ duckburg.forms.common = {
     // still another one beneath it.
     if (duckburg.filteringInput) {
 
+      duckburg.utils.currentOpenForms.pop();
+      duckburg.utils.currentOpenFormFields.pop();
+
       // Set current form to the previous form.
-      duckburg.currentForm = duckburg.previousForm;
-      duckburg.currentFormFields = duckburg.previousFormFields;
+      duckburg.currentlyViewingFormName = duckburg.utils.currentOpenForms[
+          duckburg.utils.currentOpenForms.length - 1];
+      duckburg.currentlyViewingFormFields = duckburg.utils.currentOpenFormFields[
+          duckburg.utils.currentOpenFormFields.length - 1];
       duckburg.filteringInput = false;
       return false;
+    } else {
+      duckburg.parseEditingObject = undefined;
     }
 
     // Be sure this div is not visible.
@@ -77,18 +88,27 @@ duckburg.forms.common = {
     //            if there are more divs like this around.
     var messageDiv = $('.existingCustomerMessage');
     messageDiv.attr('class', 'existingCustomerMessage hidden');
-    duckburg.parseEditingObject = undefined;
     duckburg.existingEditingDesignImages = undefined;
     duckburg.forms.inputs.removeFilterPopups();
     $('.whiteOut').hide();
   },
 
   populateEmptyForm: function () {
+    if (duckburg.filteringInput) {
+      return false;
+    }
     if (duckburg.parseEditingObject) {
 
       var fields = duckburg.parseEditingObject.attributes;
+
       for (var attribute in fields) {
-        $('#' + attribute).val(fields[attribute]);
+
+        // Is it a checkbox or regular input?
+        if (duckburg.utils.inputIsCheckbox(attribute)) {
+          $('#' + attribute).prop('checked', fields[attribute]);
+        } else {
+          $('#' + attribute).val(fields[attribute]);
+        }
       }
     }
 
@@ -126,9 +146,13 @@ duckburg.forms.common = {
   },
 
   clearFormFields: function() {
-    for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-      var field = duckburg.currentFormFields[i];
+    for (var i = 0; i < duckburg.currentlyViewingFormFields.length; i++) {
+      var field = duckburg.currentlyViewingFormFields[i];
       $('#' + field).val('');
+
+      if (duckburg.utils.inputIsCheckbox(field)) {
+        $('#' + field).prop('checked', false);
+      }
     }
   },
 

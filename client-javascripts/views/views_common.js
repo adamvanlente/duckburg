@@ -6,7 +6,7 @@ duckburg.views.common = {
   // First view to load.
   loadFirst: function() {
     //TODO this is just sample stuff
-    duckburg.views.customers.load();
+    duckburg.views.products.load();
 
   },
 

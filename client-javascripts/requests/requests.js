@@ -80,6 +80,14 @@ duckburg.requests = {
     }
   },
 
+  job_type: {
+
+    create: function() {
+      duckburg.requests.common.genericSave(
+          'DuckburgJobType', 'Job type');
+    }
+  },
+
   /*
    * Functions for making requests to create/save customers.
    * This inlcudes functionality for determining if customer/email address
@@ -92,8 +100,8 @@ duckburg.requests = {
 
       if (duckburg.parseEditingObject) {
 
-        for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-          var field = duckburg.currentFormFields[i];
+        for (var i = 0; i < duckburg.currentlyViewingFormFields.length; i++) {
+          var field = duckburg.currentlyViewingFormFields[i];
           var newValue = $('#' + field).val();
           if (field == 'first_name' || field == 'last_name') {
             newValue = duckburg.utils.toTitleCase(newValue);
@@ -115,8 +123,8 @@ duckburg.requests = {
       }
       // Set customer properties.
       var custObject = {};
-      for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-        var field = duckburg.currentFormFields[i];
+      for (var i = 0; i < duckburg.currentlyViewingFormFields.length; i++) {
+        var field = duckburg.currentlyViewingFormFields[i];
         var value = $('#' + field).val();
 
         custObject[field] = value;

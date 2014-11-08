@@ -181,6 +181,19 @@ duckburg.views = {
     }
   },
 
+  job_type: {
+
+    load: function(filteredLoad) {
+
+      // Determine the visible fields for this object.
+      var fields = ['job_type_name'];
+
+      duckburg.views.common.setup(
+            'jobTypeListContainer', 'job_type', fields,
+            filteredLoad, 'DuckburgJobType');
+    }
+  },
+
   template: {
 
     load: function(filteredLoad) {

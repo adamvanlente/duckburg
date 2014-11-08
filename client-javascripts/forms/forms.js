@@ -4,6 +4,7 @@ var duckburg = duckburg || {};
 duckburg.forms = {
 
   globalLoader: function(fields, formName) {
+    console.log('showing')
     $('.whiteOut').show();
 
     // TODO have to make this a glbal for all forms just like close global
@@ -15,21 +16,16 @@ duckburg.forms = {
     duckburg.utils.currentTopZIndex++;
     $('.' + formName).css('z-index', duckburg.utils.currentTopZIndex);
 
-    if (duckburg.currentForm) {
-      duckburg.previousForm = duckburg.currentForm;
-    }
+    duckburg.utils.currentOpenForms.push(formName);
+    duckburg.utils.currentOpenFormFields.push(fields);
 
-    if (duckburg.currentFormFields) {
-      duckburg.previousFormFields = duckburg.currentFormFields;
-    }
-
-    duckburg.currentFormFields = fields;
-    duckburg.currentForm = formName;
+    duckburg.currentlyViewingFormName = formName;
+    duckburg.currentlyViewingFormFields = fields;
     duckburg.forms.common.clearFormFields();
     duckburg.forms.common.populateEmptyForm();
 
-    $('.' + duckburg.currentForm).attr(
-        'class', duckburg.currentForm + ' form-visible basicForm');
+    $('.' + duckburg.currentlyViewingFormName).attr(
+        'class', duckburg.currentlyViewingFormName + ' form-visible basicForm');
   },
 
   /**
@@ -87,8 +83,8 @@ duckburg.forms = {
 
       // Most fields in product form are required, so lets validate generously.
       var incompleteFields = false;
-      for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-        var field = duckburg.currentFormFields[i];
+      for (var i = 0; i < duckburg.currentlyViewingFormFields.length; i++) {
+        var field = duckburg.currentlyViewingFormFields[i];
         var fieldVal = $('#' + field).val();
         if (fieldVal == '' && field != 'description') {
           incompleteFields = true;
@@ -370,6 +366,29 @@ duckburg.forms = {
       }
 
       duckburg.requests.job_positions.create();
+  },
+
+  /**
+   * Set up job types.
+   *
+   */
+  job_type: function() {
+    duckburg.forms.globalLoader(
+        duckburg.config.JOB_TYPE_FORM_FIELDS, 'formJobType');
+  },
+
+  validateJobType: function() {
+
+      // Validate required fields.
+      var name = $('#job_type_name').val();
+
+      if (name == '') {
+        var msg = 'Job type must have a name.';
+        duckburg.errorMessage(msg);
+        return false;
+      }
+
+      duckburg.requests.job_type.create();
   },
 
   /*

@@ -19,5 +19,10 @@ div.form-hidden.formCustomer.basicForm
     input(type="text", id="address_zip", placeholder="zip", class="third-width")
 
     textarea(id="customer_notes", placeholder="notes", class="textarea-standard")
+    
+    span.formCheckboxHolder
+      input(type="checkbox", id="customer_is_salesperson")
+      label(id="customer_form_salesperson_label")
+        | is salesperson?
 
   include formButtons

@@ -12,15 +12,15 @@ duckburg.requests.common = {
 
     var searchString = '';
     // If editing an object, update and exit this method.
-    if (duckburg.parseEditingObject) {
+    if (duckburg.parseEditingObject && !duckburg.filteringInput) {
       this.updateParseObject(objectName, stringId);
       return false;
     }
 
     // Set object properties.
     var newObject = {};
-    for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-      var field = duckburg.currentFormFields[i];
+    for (var i = 0; i < duckburg.currentlyViewingFormFields.length; i++) {
+      var field = duckburg.currentlyViewingFormFields[i];
       var value = $('#' + field).val();
 
       // Sentance case for First & Last name.
@@ -31,6 +31,10 @@ duckburg.requests.common = {
       newObject[field] = value;
       if (duckburg.utils.isSearchableValue(field, value)) {
         searchString += value.toLowerCase() + ' ';
+      }
+
+      if (duckburg.utils.inputIsCheckbox(field)) {
+        value = $('#' + field).is(':checked');
       }
     }
 
@@ -74,8 +78,8 @@ duckburg.requests.common = {
   updateParseObject: function(objectName, stringId) {
 
     var searchString = ''
-    for (var i = 0; i < duckburg.currentFormFields.length; i++) {
-      var field = duckburg.currentFormFields[i];
+    for (var i = 0; i < duckburg.currentlyViewingFormFields.length; i++) {
+      var field = duckburg.currentlyViewingFormFields[i];
       var newValue = $('#' + field).val();
 
       // Sentance case for First & Last name.
@@ -85,13 +89,24 @@ duckburg.requests.common = {
       if (duckburg.utils.isSearchableValue(field, newValue)) {
         searchString += newValue.toLowerCase() + ' ';
       }
+
+      if (duckburg.utils.inputIsCheckbox(field)) {
+        newValue = $('#' + field).is(':checked');
+      }
+
       duckburg.parseEditingObject.set(field, newValue);
     }
 
     duckburg.parseEditingObject.set('parse_search_string', searchString);
 
     duckburg.parseEditingObject.save(null, {
-      success: function() {
+      success: function(newItem) {
+
+        duckburg.filterPopupCurrentResults = newItem;
+        if (duckburg.filteringInput) {
+          duckburg.forms.inputs.placeStringInsideInput()
+        }
+
         var msg = stringId + ' updated!';
 
         duckburg.successMessage(msg);
@@ -114,21 +129,21 @@ duckburg.requests.common = {
         var msg = 'New ' + stringId + ' created.';
         duckburg.successMessage(msg);
         duckburg.filterPopupCurrentResults = newItem;
+
         if (duckburg.filteringInput) {
           duckburg.forms.inputs.placeStringInsideInput()
         }
-
-        duckburg.forms.common.closeCurrentForm();
 
         // If we're in list view, refresh the current list.
         var insideListView = false;
         $('.addNewItemListViewButton').each(function() {
           insideListView = true;
         });
-        if (insideListView) {
+        if (insideListView && !duckburg.filteringInput) {
           duckburg.views[duckburg.currentListView].load();
         }
 
+        duckburg.forms.common.closeCurrentForm();
         duckburg.requests.common.activityLog(stringId, 'saved');
 
       },
