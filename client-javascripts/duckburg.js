@@ -45,9 +45,6 @@ duckburg.load = function() {
         duckburg.forms.common.saveCurrentForm();
       });
 
-      // Load initial view.
-      duckburg.views.common.loadFirst();
-
   } else {
 
     // Hide menu, show login form, and add listener to login button.
@@ -84,25 +81,6 @@ duckburg.login = function() {
         var msg = 'Incorrect user/pass.';
         duckburg.errorMessage(msg);
       });
-  }
-}
-
-/*
- * Toggle the mobile-scaled menu in & out of view.
- */
-duckburg.toggleMobileMenu = function(forceHide) {
-
-  // Menu and menu toggle button.
-  var menu = $('#menu');
-  var menuButton = $('#mobile-menu-button');
-
-  // Hide/show menu.
-  if (menu.attr('class').search('hidden') == -1 || forceHide) {
-    menuButton.html('menu');
-    menu.attr('class', 'menu hidden');
-  } else {
-    menuButton.html('hide');
-    menu.attr('class', 'menu visible');
   }
 }
 
