@@ -109,7 +109,7 @@ duckburg.requests = {
     // database space, but it greatly simplifies the logic for filtering a
     // list of items and quickly displaying matching results.
     if (filters) {
-      // query.matches('parse_search_string', duckburg.searchFilters);
+      query.matches('parse_search_string', filters);
     }
 
     // Perform the queries and continue with the help of the callback functions.

@@ -90,7 +90,7 @@ duckburg.objects = {
         .attr('class', 'objectListFilterInput')
         .attr('placeholder', 'filter results')
         .keyup(function(e) {
-          console.log(e.currentTarget.value);
+          duckburg.objects.filterObjectList(e, model);
         }))
 
       // Create a button for making new objects.
@@ -103,6 +103,23 @@ duckburg.objects = {
 
     // Append header to wrapper.
     $('.wrapper-content').html(header);
+  },
+
+  filterObjectList: function(event, model) {
+
+    // The search term entered.
+    var filterTerm = event.currentTarget.value;
+
+    // Clear the search timer if it exists
+    if (duckburg.objects.searchTimeout) {
+      window.clearInterval(duckburg.objects.searchTimeout);
+    }
+
+    duckburg.objects.searchTimeout = setTimeout(function() {
+        console.log('searching');
+        duckburg.objects.fetchListOfObjects(model, filterTerm)
+      }, 200);
+
   },
 
   // Create a new object form, so that a user can create a new object.
@@ -278,10 +295,15 @@ duckburg.objects = {
   },
 
   // Fetch a list of objects.
-  fetchListOfObjects: function(type) {
+  fetchListOfObjects: function(type, filters) {
 
-    // Initialize a holder for search filters.
-    var filters = false;
+    // Remove any of the previous list elements.
+    $('.objectResultListItemSpan').each(function() {
+      this.remove();
+    });
+
+    // Let the user know a search is being performed.
+    duckburg.objects.showLoadingResultsMessage();
 
     duckburg.requests.findObjects(type,
 
@@ -298,6 +320,13 @@ duckburg.objects = {
         filters);
   },
 
+  // Show the user that no results have been found.
+  showLoadingResultsMessage: function() {
+    $('.wrapper-content').append($('<div>')
+      .attr('class', 'loadingMessage')
+      .html('searching for items'));
+  },
+
   // With results, render the list of objects.
   renderListOfObjects: function(results) {
 
@@ -310,6 +339,8 @@ duckburg.objects = {
   },
 
   renderListOfObjects: function(results) {
+
+    $('.loadingMessage').remove();
 
     var validFields = duckburg.objects.currentlyViewingFields;
 
