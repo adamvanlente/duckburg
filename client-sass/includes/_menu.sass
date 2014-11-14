@@ -1,93 +1,54 @@
 .menu
-  @extend .serif-font
-  display: none
-  position: fixed
-  top: 50px
-  background: $light-gray
-  padding: 4px 8px
-  width: 150px
-  font-size: 14px
-  z-index: 10
-  +trans($easyslider)
-
-  +break-for(iphone)
-    box-shadow: 0 0 5px rgba(0,0,0,0.2)
-    width: 315px
-    font-size: 30px
-    padding: 4px
-    top: 35px
-    max-height: 320px
-    overflow: scroll
-
-  &.hidden
-    left: 0
-
-    +break-for(iphone)
-      left: -500px
-
-  &.visible
-    left: 0
-
-  span
-    display: block
-    padding: 4px
-    margin: 7px 0
-    +break-for(iphone)
-      margin: 4px
-      padding: 0
-
-    label
-      cursor: pointer
-      +trans($easybreezy)
-      &:hover
-        opacity: 0.7
-
-.menu-item
-  color: #747171
-
-.menu-item-extra
-  color: $minty-green
-
-
-.new-order-button
-  @extend .serif-font
   display: block
-  -webkit-appearance: none
-  border: none
-  border-radius: 1px
-  background: #66c08d
-  color: white
-  padding: 2px 8px 4px 8px
-  vertical-align: middle
-  cursor: pointer
-  margin: 0 4px
-  +trans($easybreezy)
+  margin-top: 30px
   +break-for(iphone)
-    font-size: 24px
+    margin-top: 39px
+
+  button
+    display: inline
+    -webkit-appearance: none
+    border: none
+    cursor: pointer
     padding: 4px 12px
+    +trans($easybreezy)
+    @extend .light-font
 
-.mobile-menu-button
-  @extend .light-font
+// Buttons
+.menuAddNewOrderButton
+  color: #fff
+  background: $minty-green
+  &:hover
+    color: $minty-green
+    background: #333
+
+.menuObjectsButton
+  color: #333
+  background: #F1F1F1
+  &:hover
+    color: #F1F1F1
+    background: #333
+
+
+.objectMenu
   display: none
   position: fixed
-  bottom: 0
-  right: 0
-  margin: 8px
-  -webkit-appearance: none
-  border: none
-  border-radius: 1px
-  background: $minty-green
-  color: white
-  cursor: pointer
-  font-size: 14px
-  padding: 6px 16px
-  width: 100px
-  z-index: 10
+  background: rgb(242, 242, 242)
 
-  +break-for(iphone)
-    display: block
+  button
+    display: inline
+    -webkit-appearance: none
+    border: none
+    cursor: pointer
+    padding: 4px 12px
+    +trans($easybreezy)
+    @extend .light-font
 
-.separator
-  border-bottom: 1px dotted rgb(205, 200, 200)
-  display: block
-  margin: 0 24px 0 4px
+    &.evenClass
+      color: #333333
+      background: #E2DCDC
+    &.oddClass
+      color: #333333
+      background: #D8D0D0
+    &:hover
+      color: #E2DCDC
+      background: #333333

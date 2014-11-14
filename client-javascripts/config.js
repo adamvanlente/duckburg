@@ -9,12 +9,6 @@ duckburg.config = {
                                         'address_two', 'address_city', 'address_state',
                                         'address_zip', 'customer_notes'],
 
-  'CUSTOMER_FORM_FIELDS'            :  ['first_name', 'last_name', 'email_address',
-                                        'phone_number', 'company', 'address_one',
-                                        'address_two', 'address_city', 'address_state',
-                                        'address_zip', 'customer_notes',
-                                        'customer_is_salesperson'],
-
   'PRODUCT_FORM_FIELDS'             :  ['product_name', 'colors', 'sizes',
                                         'description', 'rd_item_id', 'supplier_item_id',
                                         'supplier_id', 'supplier_price'],

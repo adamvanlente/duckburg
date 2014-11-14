@@ -1,0 +1,32 @@
+.wrapper
+  display: block
+  margin-top: 20px
+  padding: 8px
+
+.wrapper-content
+  display: block
+  width: 80%
+  padding: 4px
+  margin: 0 auto
+
+  h2
+    @extend .serif-font
+    color: #C7C7C7
+    font-size: 20px
+    padding: 4px
+
+    button
+      display: inline
+      color: #fff
+      background: $minty-green
+      -webkit-appearance: none
+      border: none
+      cursor: pointer
+      padding: 2px 8px
+      font-size: 14px
+      margin-left: 4px
+      +trans($easybreezy)
+      @extend .light-font
+      &:hover
+        color: $minty-green
+        background: #333

@@ -13,47 +13,42 @@ duckburg.load = function() {
   // Determine if there is a user or not.
   if (duckburg.curUser) {
 
-      // Set username in the UI.
-      var userName = duckburg.curUser.attributes.username;
-      var userContent = userName + '<i class="fa fa-sign-out"></i>';
-      $('#current_user').html(userContent);
+    // Set username in the UI.
+    var userName = duckburg.curUser.attributes.username;
+    var userContent = userName + '<i class="fa fa-sign-out"></i>';
+    $('#current_user').html(userContent);
 
-      // Hide admin menu items from non-admins.  Now worries if they're
-      // motivated and uncover these items in browser - pages will still be
-      // unavailable to them.
-      if (duckburg.curUser.attributes.role != 'admin') {
-        $('.admin-menu-item').hide();
-      }
+    // Hide admin menu items from non-admins.  Now worries if they're
+    // motivated and uncover these items in browser - pages will still be
+    // unavailable to them.
+    if (duckburg.curUser.attributes.role != 'admin') {
+      $('.admin-menu-item').hide();
+    }
 
-      // Reveal menu
-      $('.menu').show();
+    // Reveal menu & wrapper.
+    $('.menu').show();
+    $('.wrapper').show();
 
-      $('.wrapper').show();
+    // Create a logout link.
+    $('.current_user').click(function(){
+      duckburg.requests.users.logout();
+    });
 
-      // Create a logout link.
-      $('.current_user').click(function(){
-        duckburg.requests.users.logout();
-      });
-
-      // Add a listener that helps close all forms
-      $('.closeFormButton').click(function() {
-        duckburg.forms.common.closeCurrentForm();
-      });
-
-      // Add a listener that helps close all forms
-      $('.saveFormButton').click(function(item) {
-        duckburg.forms.common.saveCurrentForm();
-      });
+    // Load whatever the first action is.
+    duckburg.loadFirst();
 
   } else {
 
-    // Hide menu, show login form, and add listener to login button.
+    // Hide menu and wrapper
     $('.menu').remove();
-    $('.mobile-menu-button').remove();
+    $('.wrapper').remove();
+
+    // Show login form, and add listener to login button.
     $('.loginForm').show();
     $('.loginButton').click(duckburg.login);
 
-    // Add listener to the enter button - this is not a real form.
+    // Add listener to the enter button - this is not a real form, so be
+    // sure to submit it when user clicks enter.
     $(document).keypress(function(e) {
         if (e.which == 13) {
             duckburg.login();
@@ -100,6 +95,9 @@ duckburg.errorMessage = function(errorMessage) {
   }, 2000);
 }
 
+/*
+ * Show a success message to the user.
+ */
 duckburg.successMessage = function(message) {
 
   // Reveal error bar and insert message.
@@ -112,3 +110,7 @@ duckburg.successMessage = function(message) {
     $('#successMessageContent').html('');
   }, 2000);
 }
+
+duckburg.loadFirst = function() {
+  // oh what to do....
+};
