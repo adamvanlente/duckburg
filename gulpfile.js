@@ -8,7 +8,7 @@ var plumber   = require('gulp-plumber');
 
 gulp.task('script-concat', function() {
     return gulp
-        .src(['client-javascripts/*.js', 'client-javascripts/views/*', 'client-javascripts/requests/*', 'client-javascripts/forms/*'])
+        .src(['client-javascripts/*.js'])
         .pipe(plumber())
         .pipe(concat('production.js'))
         .pipe(gulp.dest('./public/js/'))

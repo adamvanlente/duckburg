@@ -2,5 +2,20 @@ script(type="text/javascript", src="//www.parsecdn.com/js/parse-1.3.1.min.js")
 script(type="text/javascript", src="/js/jquery-min.js")
 script(type="text/javascript", src="/js/production.js")
 
+if (object)
+  input(type="hidden", value="#{object}", id="makerInput")
+
 script(type='text/javascript').
+
   duckburg.load();
+  
+  // If the route is requesting the ability to make a new object, let it!
+  if ($('#makerInput')) {
+    var val = $('#makerInput').val();
+    if (val) {
+      duckburg.objects.beginLoadingObjectView(val);
+      var id = 'objectListCreateNewButton';
+      document.getElementsByClassName(id)[0].click();
+    }
+  }
+  

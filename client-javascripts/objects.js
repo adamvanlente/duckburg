@@ -97,6 +97,7 @@ duckburg.objects = {
       .append($('<button>')
         .html('+')
         .attr('id', model)
+        .attr('class', 'objectListCreateNewButton')
         .click(function(e) {
           duckburg.objects.createNewObjectFormForObject(e.currentTarget.id);
         }));
@@ -116,10 +117,8 @@ duckburg.objects = {
     }
 
     duckburg.objects.searchTimeout = setTimeout(function() {
-        console.log('searching');
         duckburg.objects.fetchListOfObjects(model, filterTerm)
       }, 200);
-
   },
 
   // Create a new object form, so that a user can create a new object.
@@ -133,7 +132,7 @@ duckburg.objects = {
     $('.newObjectFormHolder')
       .html('')
       .append($('<h3>')
-        .html('Create new ' + model.display_name));
+        .html(model.display_name));
 
     // Create the form elements.
     var formDiv = $('<div>')
@@ -177,14 +176,44 @@ duckburg.objects = {
             .attr('id', fieldName))
           .append('<br>');
 
+    } else if (field.input == 'image') {
+
+      duckburg.forms.createImagePicker(formDiv, fieldName);
+
     // All other form fields.
     } else {
-      formDiv.append(
-        $('<input>')
+
+      var input = $('<input>')
         .attr('class', field.input_size)
         .attr('type', field.input)
         .attr('placeholder', placeholder)
-        .attr('id', fieldName));
+        .attr('id', fieldName);
+
+      // For some fields, the input is controlled.  For instance, when a user
+      // chooses a supplier for a Product (the supplier we order this product
+      // from), it must come from our list of existing suppliers, or the user
+      // must create a new supplier if neccesary.  For these inputs, we must
+      // supress the native behavior, and add a little helper that will make
+      // some calls out to the database and give us the info we need.
+      if (field.dbObject) {
+        input
+          .prop('readonly', true)
+          .attr('id', fieldName + '_visible_readonly')
+          .click(function(e) {
+            duckburg.objects.relatedObjectSelector(e, field.dbObject);
+          });
+        formDiv.append(input);
+
+        // Append a hidden input that will actually store the value.
+        formDiv.append($('<input>')
+          .attr('type', 'hidden')
+          .attr('id', fieldName));
+
+      } else {
+        formDiv.append(input);
+      }
+
+
     }
   },
 
@@ -250,8 +279,11 @@ duckburg.objects = {
     duckburg.requests.saveObject(type, fields,
 
       // Success Cb
-      function(result) {
-        var msg = 'Created new item.';
+      function(result, verb) {
+        var model = duckburg.models[type];
+        var name = model.display_name;
+
+        var msg = name + ' was ' + verb;
         duckburg.successMessage(msg);
         duckburg.objects.hideNewObjectForm();
         duckburg.objects.beginLoadingObjectView(type);
@@ -277,7 +309,8 @@ duckburg.objects = {
 
     // Create a legend that will be a header containing the object properties.
     var listLegend = $('<div>')
-      .attr('class', 'objectListLegend');
+      .attr('class', 'objectListLegend')
+      .attr('id', type);
 
     // Create a label for each property.
     var fields = duckburg.models[type].values;
@@ -298,7 +331,7 @@ duckburg.objects = {
   fetchListOfObjects: function(type, filters) {
 
     // Remove any of the previous list elements.
-    $('.objectResultListItemSpan').each(function() {
+    $('.objectResultsHolder').each(function() {
       this.remove();
     });
 
@@ -308,7 +341,7 @@ duckburg.objects = {
     duckburg.requests.findObjects(type,
 
         // Success CB
-        duckburg.objects.renderListOfObjects,
+        duckburg.objects.handleObjectResults,
 
         // Error CB
         function(message) {
@@ -322,19 +355,23 @@ duckburg.objects = {
 
   // Show the user that no results have been found.
   showLoadingResultsMessage: function() {
+    $('.zeroResultsForListDiv').remove();
+    $('.loadingMessage').remove();
     $('.wrapper-content').append($('<div>')
       .attr('class', 'loadingMessage')
-      .html('searching for items'));
+      .html('<em>searching for items</em>'));
   },
 
   // With results, render the list of objects.
-  renderListOfObjects: function(results) {
+  handleObjectResults: function(results) {
+
+    duckburg.objects.currentResults = results;
 
     // TODO array of random  responsese like no, nope, nada, found nothing, etc.
     if (results.length == 0 || !results) {
       duckburg.objects.showZeroResultsMessage();
     } else {
-      duckburg.renderListOfObjects(results);
+      duckburg.objects.renderListOfObjects(results);
     }
   },
 
@@ -343,29 +380,106 @@ duckburg.objects = {
     $('.loadingMessage').remove();
 
     var validFields = duckburg.objects.currentlyViewingFields;
+    var holder = $('<div>')
+      .attr('class', 'objectResultsHolder');
 
     for (var i = 0; i < results.length; i++) {
 
       var span = $('<span>')
-        .attr('class', 'objectResultListItemSpan');
+        .attr('class', 'objectResultListItemSpan')
+        .attr('id', i)
+        .click(function(e) {
+          duckburg.objects.launchObjectEditor(e);
+        });
 
       var obj = results[i];
       var items = obj['attributes'];
 
       for (var field in validFields) {
-
         span.append($('<label>')
           .html(items[field]));
       }
-
-      $('.wrapper-content').append(span);
+      holder.append(span);
     }
+    $('.wrapper-content').append(holder);
+  },
 
+  launchObjectEditor: function(event) {
+    var el = event.currentTarget;
+    var object = duckburg.objects.currentResults[el.id];
+    var type = $('.objectListLegend').attr('id');
+    duckburg.objects.createNewObjectFormForObject(type);
+    duckburg.objects.populateFormForEditing(object, type);
+
+    duckburg.objects.currentlyEditingObject = object;
+  },
+
+  // Edit an object - fill a 'new item' form with existing details.
+  populateFormForEditing: function(object, type) {
+
+    // Get the attributes and type for the object.
+    var attribs = object.attributes;
+    var model = duckburg.models[type];
+
+    // Iterate over all attributes and fill each field.
+    for (var item in attribs) {
+
+      // If there is a target field to fill...
+      var modelItem = model.values[item];
+      if (modelItem) {
+
+        // Checkbox behavior (can't simply fill an input)
+        if (modelItem.input == 'checkbox') {
+          var checked = attribs[item] == 'yes';
+          $('#' + item).prop('checked', checked);
+
+        // All other text based inputs.
+        } else if (modelItem.input == 'image') {
+
+          var imgArray = attribs[item].split(',');
+          duckburg.forms.displayImagesInsideNewObjectForm(imgArray, item);
+
+          // Still assign value like normal.
+          $('#' + item).val(attribs[item]);
+
+        } else {
+
+          // Set the value of an input.
+          $('#' + item).val(attribs[item]);
+
+          // Special case for an event where the input contains a reference to
+          // another object.  For example, name is simply a string, but supplier
+          // may contain the id of another object.  In this case, take the
+          // value (which will be a unique id) and store it in a hidden field.
+          // Fetch a readable value from the DB, and set both.
+          if (modelItem.dbObject) {
+
+            // Type of object to fetch, and the value we want off of the object.
+            var type = modelItem.dbObject.type;
+            var pKey = modelItem.dbObject.primary_key;
+
+            // Get the object by its id, fetch our readable value.
+            duckburg.requests.quickFind(type,
+              function(result, returnedItem) {
+                var readableValue = result.attributes[pKey];
+                $('#' + returnedItem + '_visible_readonly').val(readableValue);
+              },
+              function(error) {
+                duckburg.errorMessage(error.messge);
+              },
+              attribs[item], item);
+          }
+        }
+      }
+    }
   },
 
   // Show the user that no results have been found.
   showZeroResultsMessage: function() {
-    $('.wrapper-content').append($('<div>')
+    $('.zeroResultsForListDiv').remove();
+    $('.loadingMessage').remove();
+    $('.wrapper-content')
+      .append($('<div>')
       .attr('class', 'zeroResultsForListDiv')
       .html('no results for this search'));
   },
@@ -374,6 +488,157 @@ duckburg.objects = {
     $('.newObjectFormHolder')
       .html('')
       .hide();
+
+    // Clear out editing item if it exists.
+    duckburg.objects.currentlyEditingObject = false;
+  },
+
+  // Get related objects for a particular input field.
+  relatedObjectSelector: function(event, object) {
+
+    // Launch related items selector.
+    duckburg.objects.launchRelatedItemSelector(event);
+
+    // Set a header and filter input.
+    duckburg.objects.loadInputPopupHeader(object, event);
+
+    // Fetch and drop the results into the selector.
+    duckburg.objects.fetchRelatedObjects(object.type, object.primary_key, event);
+  },
+
+  loadInputPopupHeader: function(object, event) {
+    var type = duckburg.models[object.type].display_name;
+
+    $('.inputPopupSelector')
+      .append($('<input>')
+        .attr('class', 'filterForRelatedObjectPicker')
+        .attr('placeholder', 'Select a ' + type)
+        .keyup(function(e) {
+          duckburg.objects.relatedObjectFilterSearch(e, object, event);
+        }));
+
+    $('.inputPopupSelector')
+      .append($('<a>')
+        .html('+')
+        .attr('href', '/make/' + object.type)
+        .attr('target', 'new')
+        .attr('class', 'makeNewObjectInNewWindow'));
+
+    $('.inputPopupSelector')
+      .append($('<div>')
+        .attr('class', 'relatedObjectResultsHolder'));
+  },
+
+  relatedObjectFilterSearch: function(e, object, originalEvent) {
+
+    if (duckburg.objects.relatedObjectFilterSearchTimeout) {
+      window.clearInterval(duckburg.objects.relatedObjectFilterSearchTimeout);
+    }
+
+    var el = e.currentTarget;
+    var val = el.value;
+
+    duckburg.objects.relatedObjectFilterSearchTimeout = setTimeout(function() {
+      duckburg.objects.fetchRelatedObjects(
+          object.type, object.primary_key, originalEvent, val);
+    }, 200);
+
+  },
+
+  fetchRelatedObjects: function(type, key, originalEvent, filters) {
+
+    // Clear out the existing list.
+    $('.relatedObjectResultsHolder').html('');
+
+    duckburg.requests.findObjects(type,
+
+        // Success CB
+        function(results) {
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var attribs = item.attributes;
+            var value = attribs[key];
+            $('.relatedObjectResultsHolder')
+              .append($('<span>')
+                .html(value)
+                .attr('id', item.id)
+                .click(function(e) {
+                  duckburg.objects.selectRelatedObject(e, originalEvent);
+                }));
+          }
+
+          if (results.length == 0 || !results) {
+            $('.relatedObjectResultsHolder')
+              .append($('<span>')
+                .html('no results found'));
+          }
+        },
+
+        // Error CB
+        function(message) {
+          duckburg.errorMessage(message);
+        },
+
+        // Include filters in request.
+        filters);
+  },
+
+  selectRelatedObject: function(event, originalEvent) {
+
+    // Remove the selector.
+    $('.inputPopupSelector').remove();
+    $('.offClicker').hide();
+
+    // Drop a readable value into the input field.
+    var targetField = originalEvent.currentTarget;
+    var value = event.currentTarget.innerHTML;
+    targetField.value = value;
+
+    // Now drop the id of the elment, the actual value we want to save.
+    var hiddenField = $('#' + targetField.id.replace('_visible_readonly', ''));
+    hiddenField.val(event.currentTarget.id);
+  },
+
+  launchRelatedItemSelector: function(e) {
+
+    // Remove any existing popups.
+    $('.inputPopupSelector').remove();
+
+    // Show offclicker element.
+    $('.offClicker')
+      .show()
+      .click(function() {
+        $('.inputPopupSelector').remove();
+        $('.offClicker').hide();
+      });
+
+    // Get location of mouse click.
+    var x = e.pageX + 'px';
+    var y = (e.pageY - 50) + 'px';
+
+    // Set CSS styles for div.
+    var css = {
+        'position': 'absolute',
+        'left': x,
+        'top': y
+      };
+
+    // Conditions for iphones/smaller screens.
+    var width = $(window).width();
+    if (width < 500) {
+      css = {
+          'position': 'absolute',
+          'left': '30px',
+          'right': '30px',
+          'top': '75px'
+      }
+    }
+
+    // Create, style and append the div.
+    var div = $('<div>')
+      .css(css)
+      .attr('class', 'inputPopupSelector');
+    $(document.body).append(div);
   }
 }
 

@@ -16,18 +16,22 @@ duckburg.requests = {
    *
    */
 
-  saveObject: function(objectType, fields, successCb, errorCb, existingObject) {
+  saveObject: function(objectType, fields, successCb, errorCb) {
 
+    // New item is the object bring created or updated.  Verb is one of those
+    // two words to describe what is happening to the item.
     var newItem;
+    var verb;
 
     // Function will update an existing object.
-    if (existingObject) {
-      newItem = existingObject;
-
+    if (duckburg.objects.currentlyEditingObject) {
+      newItem = duckburg.objects.currentlyEditingObject;
+      verb = 'updated';
     // Function will update an existing object.
     } else {
       var DbObject = Parse.Object.extend(objectType);
-      var newItem = new DbObject();
+      newItem = new DbObject();
+      verb = 'created';
     }
 
     // Get the model object so we can take a look at it.
@@ -63,12 +67,12 @@ duckburg.requests = {
     }
 
     // Set search string if it has content.
-    newItem.set('parse_search_string', searchString);
+    newItem.set('parse_search_string', searchString.toLowerCase());
 
     // Save the dang thing.
     newItem.save(null, {
       success: function(result) {
-        successCb(result)
+        successCb(result, verb)
       },
       error: function(error) {
         errorCb(error);
@@ -109,13 +113,34 @@ duckburg.requests = {
     // database space, but it greatly simplifies the logic for filtering a
     // list of items and quickly displaying matching results.
     if (filters) {
-      query.matches('parse_search_string', filters);
+      query.matches('parse_search_string', filters.toLowerCase());
     }
+
+    // Always sort newest first.
+    query.descending("createdAt");
 
     // Perform the queries and continue with the help of the callback functions.
     query.find({
       success: function(results) {
         successCb(results);
+      },
+      error: function(error) {
+        errorCb(error.message);
+      }
+    });
+  },
+
+  // Quickly get an item using its id.
+  quickFind: function(objectType, successCb, errorCb, id, itemId) {
+
+    // Build a query from the object type.
+    var DbObject = Parse.Object.extend(objectType);
+    var query = new Parse.Query(DbObject);
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.get(id, {
+      success: function(results) {
+        successCb(results, itemId);
       },
       error: function(error) {
         errorCb(error.message);
@@ -176,27 +201,27 @@ duckburg.requests = {
    */
   files: {
 
+    // Save a file.
     save: function(fileInput, successCb) {
 
-      var fileUploadControl = $("#" + fileInput)[0];
+      // Get the list of files.
+      if (fileInput.files.length > 0) {
 
-      if (fileUploadControl.files.length > 0) {
-
-        var file = fileUploadControl.files[0];
-
+        // Get the file, give it a name and a Parse instance.
+        var file = fileInput.files[0];
         var name = 'design_image.jpg';
         var parseFile = new Parse.File(name, file);
 
-        parseFile.save().then(function(url) {
-          var msg = 'File saved!';
-          duckburg.successMessage(msg);
-          duckburg.currentlySavingImage = false;
-          successCb(url);
+        // Save the file and send it back, or throw error.
+        parseFile.save().then(function(response) {
+          successCb(response);
         }, function(error) {
-          var msg = 'Something went wrong: ' + error.message;
-          duckburg.errorMessage(msg);
-          duckburg.currentlySavingImage = false;
+          duckburg.errorMessage(error.message);
         });
+      } else {
+
+        // Return, but with nothing.
+        successCb(false);
       }
     }
   }
