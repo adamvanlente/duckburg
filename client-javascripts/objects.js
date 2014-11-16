@@ -2,7 +2,7 @@
 var duckburg = duckburg || {};
 
 /*
- * For clarification, objects here refers to database objects; all items
+ * For clarification, objects here refer to database objects; all items
  * that are stored in the parse/DuckBurg database, all of which are building
  * blocks for an order, such as colors, customers, products, distributors, etc.
  * This portion of DuckBurg reveals these objects to users so they can easily

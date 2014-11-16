@@ -74,20 +74,48 @@ duckburg.forms = {
     duckburg.forms.displayImagesInsideNewObjectForm(imageArray, inputId);
   },
 
-  removeImageFromImageList: function(event, url, inputId) {
+  removeImageFromImageList: function(event, inputId) {
 
     // Remove image from UI.
     var el = $('#' + event.currentTarget.id);
-    console.log(el);
+    el[0].parentNode.remove();
 
     // Get the list of images.
     var val = $('#' + inputId).val();
 
+    // Remove the selected item from the list of images.
     var imgArray = val.split(',');
-    var urlIndex = imgArray.indexOf(url);
-    imgArray.splice(urlIndex, 1);
+    var index = el.attr('id');
+    imgArray.splice(index, 1);
 
     $('#' + inputId).val(imgArray.join(','));
+  },
+
+  viewImageDetail: function(event, inputId) {
+
+    // Get the span that contains the image.
+    var el = $('#' + event.currentTarget.id);
+
+    // Get the list of images.
+    var val = $('#' + inputId).val();
+
+    // Get the url from the list of images.
+    var imgArray = val.split(',');
+    var index = el.attr('id');
+    var url = imgArray[index];
+
+    // Reveal image detail div.
+    $('.imgDetail')
+      .show()
+      .click(function() {
+        $('.imgDetail').hide();
+      });
+
+    // Assign url to background of image detail.
+    $('.imgDetailContent')
+      .css({'background': 'url(' + url + ')',
+            'background-size': '100%'});
+
   },
 
   // Display images within the form.
@@ -97,24 +125,26 @@ duckburg.forms = {
 
     for (var i = imageArray.length - 1; i >= 0; i--) {
       var url = imageArray[i];
-      parent.append(
-        $('<span>')
-          .css({'background': 'url(' + url + ')',
-            'background-size': '100%'})
-          .append($('<label>')
-            .attr('class', 'delete')
-            .html('remove')
-            .attr('id', 'delete_' + i)
-            .click(function(e) {
-              duckburg.forms.removeImageFromImageList(e, url, inputId);
-            }))
-          .append($('<label>')
-            .attr('class', 'view')
-            .attr('id', 'view_' + i)
-            .html('view')
-            .click(function() {
-              console.log('view this img', url);
-            })));
+      if (url != '') {
+          parent.append(
+            $('<span>')
+              .css({'background': 'url(' + url + ')',
+                'background-size': '100%'})
+              .append($('<label>')
+                .attr('class', 'delete')
+                .html('remove')
+                .attr('id', i)
+                .click(function(e) {
+                  duckburg.forms.removeImageFromImageList(e, inputId);
+                }))
+              .append($('<label>')
+                .attr('class', 'view')
+                .attr('id', i)
+                .html('view')
+                .click(function(e) {
+                  duckburg.forms.viewImageDetail(e, inputId);
+                })));
+      }
     }
   }
 };
