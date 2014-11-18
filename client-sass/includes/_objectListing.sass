@@ -139,6 +139,9 @@
     &:hover
       color: #fff
 
+    em
+      color: #E5E4E4
+
 .objectResultsHolder
   display: block
   max-height: 400px
@@ -151,13 +154,15 @@
     display: inline-block
     margin: 8px
 
+  label
+    width: 200px
+    color: #333
+
 .inputPopupSelector
   display: block
   padding: 4px
   background: #F1F1F1
-
-
-.inputPopupSelector
+  z-index: 5
   box-shadow: 0 0 2px rgba(0,0,0,0.1)
 
   span
@@ -239,7 +244,7 @@
 .imagePickerImageHolder
   display: block
   padding: 2px
-  white-space: nowrap
+  white-space: pre-wrap
   overflow: scroll
 
   span

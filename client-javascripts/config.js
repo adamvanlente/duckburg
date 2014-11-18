@@ -11,15 +11,6 @@ duckburg.config = {
 
   'COLOR_FORM_FIELDS'               :  ['color_name', 'hex_code'],
 
-  'CATALOG_ITEM_FORM_FIELDS'        :  ['item_name', 'product_sizes',
-                                        'product_colors', 'product_design_id',
-                                        'product_category', 'product_family',
-                                        'product_tags', 'product_ishidden',
-                                        'product_isindexed','product_price',
-                                        'product_saleprice', 'product_desc',
-                                        'item_product_name', 'product_socialprice',
-                                        'item_expiration_date'],
-
   'LICENSING_TYPE_FORM_FIELDS'      :  ['licensing_type', 'contact_name',
                                         'contact_number', 'contact_email'],
 
@@ -31,22 +22,6 @@ duckburg.config = {
                                         'position_description'],
 
   'JOB_TYPE_FORM_FIELDS'            :  ['job_type_name'],
-
-  // Objects that will be visible to all users.  They can create/edit.
-  'VISIBLE_OBJECTS'           :    {
-      'customers'             :    'Customers',
-      'products'              :    'Products',
-      'suppliers'             :    'Suppliers',
-      'designs'               :    'Designs',
-      'colors'                :    'Colors',
-      'catalog_item'          :    'Catalog item',
-      'licensing_type'        :    'Licensing type',
-      'shipping_methods'      :    'Shipping methods',
-      'job_status'            :    'Job status',
-      'job_positions'         :    'Job positions',
-      'job_type'              :    'Job type'
-
-  },
 
   // Do not index these field values for searching in parse.
   invalidSearchableFields     :    ['product_price', 'product_sizes',

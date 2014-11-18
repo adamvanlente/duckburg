@@ -5,6 +5,170 @@ var duckburg = duckburg || {};
 duckburg.models = {
 
   /**
+   * CATALOG ITEM MODEL
+   *
+   */
+  dbCatalogItem: {
+    display_name: 'Catalog item',
+    values: {
+      'item_name': {
+        placeholder: 'Name, eg Gruff Sparty T-Shirts',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: true
+      },
+      'product_type': {
+        placeholder: 'Product design will be applied to',
+        input: 'text',
+        input_size: 'half',
+        options: null,
+        dbObject: {
+            type: 'dbProduct',
+            primary_key: 'product_name',
+            additional_mappings: {
+              sizes: 'product_sizes',
+              colors: 'product_colors',
+              supplier_item_id: 'supplier_item_id'
+            }
+        }
+      },
+      'design': {
+        placeholder: 'Design for product',
+        input: 'text',
+        input_size: 'half',
+        options: null,
+        dbObject:  {
+          type: 'dbDesign',
+          primary_key: 'design_name'
+        }
+      },
+      'product_sizes': {
+        placeholder: 'Available sizes',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null
+      },
+      'product_colors': {
+        placeholder: 'Available colors',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null
+      },
+      'product_category': {
+        placeholder: 'Category',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: {
+          type: 'dbCatCategory',
+          primary_key: 'category_name'
+        }
+      },
+
+      'product_price': {
+        placeholder: 'Price for customer',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null
+      },
+      'product_saleprice': {
+        placeholder: 'Sale price for site',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null
+      },
+      'product_socialprice': {
+        placeholder: 'Price for social customers',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null
+      },
+
+      'product_description': {
+        placeholder: 'Description / notes',
+        input: 'textarea',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+
+      'product_family': {
+        placeholder: 'Family for product ',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null
+      },
+      'product_store': {
+        placeholder: 'Product store',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: {
+          type: 'dbStorefront',
+          primary_key: 'store_name'
+        }
+      },
+      'product_tags': {
+        placeholder: 'Comma separated list of tags',
+        input: 'text',
+        input_size: 'third',
+        options: null,
+        dbObject: null,
+      },
+
+      'item_expiration_date': {
+        placeholder: 'Items expires on date',
+        input: 'date',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+      },
+
+      'product_ishidden': {
+        placeholder: 'Hide item from site customers?',
+        input: 'checkbox',
+        input_size: 'third',
+        options: null,
+        dbObject: null,
+      },
+
+      'product_isindexed': {
+        placeholder: 'Item is public?',
+        input: 'checkbox',
+        input_size: 'third',
+        options: null,
+        dbObject: null,
+      }
+    }
+  },
+
+  /**
+   * CATALOG CATEGORY MODEL
+   *
+   */
+  dbCatCategory: {
+    display_name: 'Category',
+    values: {
+      'category_name': {
+        placeholder: 'Name of category for items',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: true
+      }
+    }
+  },
+
+  /**
    * CUSTOMER MODEL
    *
    */
@@ -100,6 +264,48 @@ duckburg.models = {
   },
 
   /**
+   * DESIGN MODEL
+   *
+   */
+  dbDesign: {
+    display_name: 'Design',
+    values: {
+      'design_name': {
+        placeholder: 'Name of design',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: true
+      },
+      'design_images_list': {
+        placeholder: 'Add an image',
+        input: 'image',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: false
+      },
+      'design_notes': {
+        placeholder: 'Notes about the design',
+        input: 'textarea',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: false
+      },
+      'design_color_count': {
+        placeholder: 'Colors in this order F,B,L,R eg 1,2,0,0',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: false
+      }
+    }
+  },
+
+  /**
    * PRODUCT MODEL
    *
    */
@@ -163,6 +369,32 @@ duckburg.models = {
   },
 
   /**
+   * STOREFRONT MODEL
+   *
+   */
+  dbStorefront: {
+    display_name: 'Storefront',
+    values: {
+      'store_name': {
+        placeholder: 'Name of store, eg RetroDuck.com',
+        input: 'text',
+        input_size: 'half',
+        options: null,
+        dbObject: null,
+        required: true
+      },
+      'store_url': {
+        placeholder: 'full url, eg http://www.retroduck.com',
+        input: 'text',
+        input_size: 'half',
+        options: null,
+        dbObject: null,
+        required: true
+      }
+    }
+  },
+
+  /**
    * SUPPLIER MODEL
    *
    */
@@ -219,55 +451,6 @@ duckburg.models = {
       },
     }
   },
-
-  /**
-   * DESIGN MODEL
-   *
-   */
-  dbDesign: {
-    display_name: 'Design',
-    values: {
-      'design_name': {
-        placeholder: 'Name of design',
-        input: 'text',
-        input_size: 'full',
-        options: null,
-        dbObject: null,
-        required: true
-      },
-      'design_images_list': {
-        placeholder: 'Add an image',
-        input: 'image',
-        input_size: 'full',
-        options: null,
-        dbObject: null,
-        required: false
-      },
-      'design_notes': {
-        placeholder: 'Notes about the design',
-        input: 'textarea',
-        input_size: 'full',
-        options: null,
-        dbObject: null,
-        required: false
-      },
-      'design_color_count': {
-        placeholder: 'Colors in this order F,B,L,R eg 1,2,0,0',
-        input: 'text',
-        input_size: 'full',
-        options: null,
-        dbObject: null,
-        required: false
-      }
-    }
-  }
-
-
-  //
-  // 'SUPPLIER_FORM_FIELDS'            :  ['supplier_name', 'website',
-                                          // 'contact_person',
-  //                                       'contact_number', 'contact_email',
-  //                                       'supplier_account_number'],
 
   /**
    * SAMPLE MODEL

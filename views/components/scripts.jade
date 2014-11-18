@@ -4,18 +4,30 @@ script(type="text/javascript", src="/js/production.js")
 
 if (object)
   input(type="hidden", value="#{object}", id="makerInput")
+    
+if (order)
+  input(type="hidden", value="#{order}", id="launchOrderForm")
 
 script(type='text/javascript').
 
   duckburg.load();
   
-  // If the route is requesting the ability to make a new object, let it!
-  if ($('#makerInput')) {
-    var val = $('#makerInput').val();
-    if (val) {
-      duckburg.objects.beginLoadingObjectView(val);
-      var id = 'objectListCreateNewButton';
-      document.getElementsByClassName(id)[0].click();
-    }
+  // Launch the order form if needed.
+  var orderId = $('#launchOrderForm').val();
+  if (orderId) {
+    if (orderId == 'newOrder') {
+      duckburg.orders.launchForm();
+    } else {
+      duckburg.orders.launchForm(orderId);
+    }    
   }
+  
+  // If the route is requesting the ability to make a new object, let it!
+  var makeNewObjectInput = $('#makerInput').val();
+  if (makeNewObjectInput) {
+    duckburg.objects.beginLoadingObjectView(makeNewObjectInput);
+    var id = 'objectListCreateNewButton';
+    document.getElementsByClassName(id)[0].click();
+  }
+  
   

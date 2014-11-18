@@ -24,8 +24,8 @@ duckburg.requests = {
     var verb;
 
     // Function will update an existing object.
-    if (duckburg.objects.currentlyEditingObject) {
-      newItem = duckburg.objects.currentlyEditingObject;
+    if (duckburg.forms.currentlyEditingObject) {
+      newItem = duckburg.forms.currentlyEditingObject;
       verb = 'updated';
     // Function will update an existing object.
     } else {
@@ -131,7 +131,7 @@ duckburg.requests = {
   },
 
   // Quickly get an item using its id.
-  quickFind: function(objectType, successCb, errorCb, id, itemId) {
+  quickFind: function(objectType, successCb, errorCb, id, itemId, pKey) {
 
     // Build a query from the object type.
     var DbObject = Parse.Object.extend(objectType);
@@ -140,7 +140,11 @@ duckburg.requests = {
     // Perform the queries and continue with the help of the callback functions.
     query.get(id, {
       success: function(results) {
-        successCb(results, itemId);
+        if (!itemId || !pkey) {
+          successCb(results);
+        } else {
+          successCb(results, itemId, pKey);
+        }
       },
       error: function(error) {
         errorCb(error.message);

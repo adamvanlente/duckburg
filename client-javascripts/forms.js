@@ -7,6 +7,157 @@ var duckburg = duckburg || {};
  */
 duckburg.forms = {
 
+  // Create a new object form, so that a user can create a new object.
+  createNewObjectFormForObject: function(modelType, parentClass) {
+
+    // Get model and fields for form.
+    var model = duckburg.models[modelType];
+    var fields = model.values;
+
+    // Hold the type in memory.
+    duckburg.forms.currentlyCreatingItemWithType = modelType;
+
+    // Create a heading/message for the form.
+    $(parentClass)
+      .html('')
+      .append($('<h3>')
+        .html(model.display_name));
+
+    // Create the form elements.
+    var formDiv = $('<div>')
+      .attr('class', 'newObjectFormFields');
+
+    for (var field in fields) {
+      duckburg.forms.createFieldForNewObjectForm(fields[field], formDiv, field);
+    }
+
+    // Append form to the holder.
+    $(parentClass)
+      .append(formDiv)
+      .show();
+
+    // Save and Cancel buttons for the form.
+    duckburg.forms.createNewObjectFormButtons(modelType, parentClass);
+  },
+
+  // Create a field, which can be a text field, checkbox, or many other things.
+  createFieldForNewObjectForm: function(field, formDiv, fieldName) {
+
+    // Note if a field is required in the placeholder.
+    var placeholder = field.required ?
+        field.placeholder + ' (required)' : field.placeholder;
+
+    // Textarea form fields.
+    if (field.input == 'textarea') {
+      formDiv.append(
+        $('<textarea>')
+        .attr('class', field.input_size)
+        .attr('placeholder', placeholder)
+        .attr('id', fieldName));
+
+    // Checkboxes.
+    } else if (field.input == 'checkbox') {
+        formDiv
+          .append($('<label>')
+            .html(placeholder))
+          .append($('<input>')
+            .attr('type', field.input)
+            .attr('id', fieldName))
+          .append('<br>');
+
+    } else if (field.input == 'image') {
+
+      duckburg.forms.createImagePicker(formDiv, fieldName);
+
+    // All other form fields.
+    } else {
+
+      var inputType = field.input == 'date' ? 'text' : field.input;
+
+      var inputClass = field.input == 'date' ?
+          field.input_size + ' makeMeHighsmith' : field.input_size;
+
+      var input = $('<input>')
+        .attr('class', inputClass)
+        .attr('type', inputType)
+        .attr('placeholder', placeholder)
+        .attr('id', fieldName);
+
+      // For some fields, the input is controlled.  For instance, when a user
+      // chooses a supplier for a Product (the supplier we order this product
+      // from), it must come from our list of existing suppliers, or the user
+      // must create a new supplier if neccesary.  For these inputs, we must
+      // supress the native behavior, and add a little helper that will make
+      // some calls out to the database and give us the info we need.
+      if (field.dbObject) {
+        input
+          .prop('readonly', true)
+          .attr('id', fieldName + '_visible_readonly')
+          .click(function(e) {
+            duckburg.objects.relatedObjectSelector(e, field.dbObject);
+          });
+        formDiv.append(input);
+
+        // Append a hidden input that will actually store the value.
+        formDiv.append($('<input>')
+          .attr('type', 'hidden')
+          .attr('id', fieldName));
+
+      } else {
+        formDiv.append(input);
+      }
+
+      // Make calendars out of date fields.
+      if (field.input == 'date') {
+        setTimeout(function () {
+
+          $('.makeMeHighsmith').each(function() {
+            var id = this.id;
+
+            var calConfig = {
+              style: {
+                disable: true
+              },
+              killButton: true
+            };
+
+            var cal = new Highsmith(id, calConfig);
+          })
+
+        }, 100)
+      }
+    }
+  },
+
+  createNewObjectFormButtons: function(type, parentClass) {
+
+    $(parentClass)
+      .append($('<div>')
+        .attr('class', 'createNewObjectFormButtons'));
+
+    if (parentClass != '.newCustomerForm') {
+
+      $('.createNewObjectFormButtons')
+        .append($('<button>')
+          .html('cancel')
+          .attr('class', 'cancelButton')
+          // Cancel create new object.
+          .click(function() {
+            duckburg.objects.hideNewObjectForm();
+          }));
+
+    }
+
+    $('.createNewObjectFormButtons')
+      .append($('<button>')
+        .html('save')
+        .attr('class', 'saveButton')
+        .attr('id', type)
+        .click(function(e) {
+          duckburg.objects.saveNewObject(e);
+        }));
+  },
+
   // An image picker for within the create new item form.
   createImagePicker: function(parent, inputId) {
 
@@ -113,7 +264,7 @@ duckburg.forms = {
 
     // Assign url to background of image detail.
     $('.imgDetailContent')
-      .css({'background': 'url(' + url + ')',
+      .css({'background': '#F1F1F1 url(' + url + ')',
             'background-size': '100%'});
 
   },

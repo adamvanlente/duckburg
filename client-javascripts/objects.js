@@ -51,6 +51,14 @@ duckburg.objects = {
   // objects and allow them to edit/create new ones & filter results.
   loadObjectViewForObjectFromEvent: function(event) {
 
+    // Check if an order form is open.
+    if ($('.orderForm').length) {
+      var msg = 'An order is being edited.  Please save it first.';
+      duckburg.errorMessage(msg);
+      $('.objectMenu').hide();
+      return false;
+    }
+
     // Determine clicked object type.
     var objectType = event.currentTarget.id;
 
@@ -99,7 +107,8 @@ duckburg.objects = {
         .attr('id', model)
         .attr('class', 'objectListCreateNewButton')
         .click(function(e) {
-          duckburg.objects.createNewObjectFormForObject(e.currentTarget.id);
+          duckburg.forms.createNewObjectFormForObject(
+              e.currentTarget.id, '.newObjectFormHolder');
         }));
 
     // Append header to wrapper.
@@ -119,123 +128,6 @@ duckburg.objects = {
     duckburg.objects.searchTimeout = setTimeout(function() {
         duckburg.objects.fetchListOfObjects(model, filterTerm)
       }, 200);
-  },
-
-  // Create a new object form, so that a user can create a new object.
-  createNewObjectFormForObject: function(modelType) {
-
-    // Get model and fields for form.
-    var model = duckburg.models[modelType];
-    var fields = model.values;
-
-    // Create a heading/message for the form.
-    $('.newObjectFormHolder')
-      .html('')
-      .append($('<h3>')
-        .html(model.display_name));
-
-    // Create the form elements.
-    var formDiv = $('<div>')
-      .attr('class', 'newObjectFormFields');
-
-    for (var field in fields) {
-      duckburg.objects.createFieldForNewObjectForm(fields[field], formDiv, field);
-    }
-
-    // Append form to the holder.
-    $('.newObjectFormHolder')
-      .append(formDiv)
-      .show();
-
-    // Save and Cancel buttons for the form.
-    duckburg.objects.createNewObjectFormButtons(modelType);
-  },
-
-  // Create a field, which can be a text field, checkbox, or many other things.
-  createFieldForNewObjectForm: function(field, formDiv, fieldName) {
-
-    // Note if a field is required in the placeholder.
-    var placeholder = field.required ?
-        field.placeholder + ' (required)' : field.placeholder;
-
-    // Textarea form fields.
-    if (field.input == 'textarea') {
-      formDiv.append(
-        $('<textarea>')
-        .attr('class', field.input_size)
-        .attr('placeholder', placeholder)
-        .attr('id', fieldName));
-
-    // Checkboxes.
-    } else if (field.input == 'checkbox') {
-        formDiv
-          .append($('<label>')
-            .html(placeholder))
-          .append($('<input>')
-            .attr('type', field.input)
-            .attr('id', fieldName))
-          .append('<br>');
-
-    } else if (field.input == 'image') {
-
-      duckburg.forms.createImagePicker(formDiv, fieldName);
-
-    // All other form fields.
-    } else {
-
-      var input = $('<input>')
-        .attr('class', field.input_size)
-        .attr('type', field.input)
-        .attr('placeholder', placeholder)
-        .attr('id', fieldName);
-
-      // For some fields, the input is controlled.  For instance, when a user
-      // chooses a supplier for a Product (the supplier we order this product
-      // from), it must come from our list of existing suppliers, or the user
-      // must create a new supplier if neccesary.  For these inputs, we must
-      // supress the native behavior, and add a little helper that will make
-      // some calls out to the database and give us the info we need.
-      if (field.dbObject) {
-        input
-          .prop('readonly', true)
-          .attr('id', fieldName + '_visible_readonly')
-          .click(function(e) {
-            duckburg.objects.relatedObjectSelector(e, field.dbObject);
-          });
-        formDiv.append(input);
-
-        // Append a hidden input that will actually store the value.
-        formDiv.append($('<input>')
-          .attr('type', 'hidden')
-          .attr('id', fieldName));
-
-      } else {
-        formDiv.append(input);
-      }
-
-
-    }
-  },
-
-  createNewObjectFormButtons: function(type) {
-    $('.newObjectFormHolder')
-      .append($('<div>')
-        .attr('class', 'createNewObjectFormButtons')
-        .append($('<button>')
-          .html('cancel')
-          .attr('class', 'cancelButton')
-
-          // Cancel create new object.
-          .click(function() {
-            duckburg.objects.hideNewObjectForm();
-          }))
-        .append($('<button>')
-          .html('save')
-          .attr('class', 'saveButton')
-          .attr('id', type)
-          .click(function(e) {
-            duckburg.objects.saveNewObject(e);
-          })));
   },
 
   // Prepare to save a new object to the database.  Abort if form is invalid.
@@ -284,9 +176,30 @@ duckburg.objects = {
         var name = model.display_name;
 
         var msg = name + ' was ' + verb;
-        duckburg.successMessage(msg);
-        duckburg.objects.hideNewObjectForm();
-        duckburg.objects.beginLoadingObjectView(type);
+
+        // New object is being created within an order.
+        if ($('.newCustomerForm').length > 0) {
+          $('.offClicker').hide();
+          $('.popupItemHolder').hide();
+
+          // Check if it is within an order form.
+          if (verb == 'updated' && $('.customerWithinOrder').length) {
+            duckburg.orders.replaceCustomerWithNewCustomer(result);
+          } else {
+            duckburg.orders.addCustomerToOrder(result);
+          }
+
+
+
+
+        // Object was created using object forms.
+        } else {
+          duckburg.successMessage(msg);
+          duckburg.objects.hideNewObjectForm();
+          duckburg.objects.beginLoadingObjectView(type);
+        }
+
+
       },
 
       // Error Cb
@@ -396,22 +309,25 @@ duckburg.objects = {
       var items = obj['attributes'];
 
       for (var field in validFields) {
-        span.append($('<label>')
-          .html(items[field]));
+
+        var val = items[field] == '' ? '<em>--------------</em>' : items[field];
+         span.append($('<label>')
+          .html(val));
       }
       holder.append(span);
     }
     $('.wrapper-content').append(holder);
   },
 
+  // TODO this function can be used for "spotlight search" edit option.
   launchObjectEditor: function(event) {
     var el = event.currentTarget;
     var object = duckburg.objects.currentResults[el.id];
     var type = $('.objectListLegend').attr('id');
-    duckburg.objects.createNewObjectFormForObject(type);
-    duckburg.objects.populateFormForEditing(object, type);
 
-    duckburg.objects.currentlyEditingObject = object;
+    duckburg.forms.createNewObjectFormForObject(type, '.newObjectFormHolder');
+    duckburg.objects.populateFormForEditing(object, type);
+    duckburg.forms.currentlyEditingObject = object;
   },
 
   // Edit an object - fill a 'new item' form with existing details.
@@ -460,14 +376,16 @@ duckburg.objects = {
 
             // Get the object by its id, fetch our readable value.
             duckburg.requests.quickFind(type,
-              function(result, returnedItem) {
-                var readableValue = result.attributes[pKey];
+              function(result, returnedItem, key) {
+                console.log(result, pKey)
+                var readableValue = result.attributes[key];
+                console.log(readableValue)
                 $('#' + returnedItem + '_visible_readonly').val(readableValue);
               },
               function(error) {
                 duckburg.errorMessage(error.messge);
               },
-              attribs[item], item);
+              attribs[item], item, pKey);
           }
         }
       }
@@ -490,7 +408,7 @@ duckburg.objects = {
       .hide();
 
     // Clear out editing item if it exists.
-    duckburg.objects.currentlyEditingObject = false;
+    duckburg.forms.currentlyEditingObject = false;
   },
 
   // Get related objects for a particular input field.
@@ -554,6 +472,8 @@ duckburg.objects = {
 
         // Success CB
         function(results) {
+
+          duckburg.objects.currentRelatedResults = results;
           for (var i = 0; i < results.length; i++) {
             var item = results[i];
             var attribs = item.attributes;
@@ -595,8 +515,44 @@ duckburg.objects = {
     targetField.value = value;
 
     // Now drop the id of the elment, the actual value we want to save.
-    var hiddenField = $('#' + targetField.id.replace('_visible_readonly', ''));
+    var rootName = targetField.id.replace('_visible_readonly', '');
+    var hiddenField = $('#' + rootName);
     hiddenField.val(event.currentTarget.id);
+
+    duckburg.objects.setRelatedProductFields(event, rootName);
+  },
+
+  setRelatedProductFields: function(event, value) {
+    var selectedItemId = event.currentTarget.id;
+    var model = duckburg.models[duckburg.forms.currentlyCreatingItemWithType];
+
+    for (var i = 0; i < duckburg.objects.currentRelatedResults.length; i++) {
+      var item = duckburg.objects.currentRelatedResults[i];
+      if (item.id == selectedItemId) {
+        var attributes = item.attributes;
+        var maps = model.values[value].dbObject.additional_mappings;
+        for (var map in maps) {
+
+          // Special logic for the order form.  Make sure we are dropping
+          // the item number into the Nth item, n being the last clicked
+          // element.
+          var designCount = $('.catalogItemWithinOrder').length;
+          if (maps[map] == 'supplier_item_id' && designCount > 0) {
+            var parent = duckburg.orders.lastClickedProductButton.parentElement;
+            for (var kid in parent.children) {
+              if (parent.children[kid].className == 'designInFormProductNumber') {
+                parent.children[kid].value = attributes[map];
+              }
+            }
+
+          // Standard logic for regular forms.
+          } else {
+            $('#' + maps[map]).val(attributes[map]);
+          }
+
+        }
+      }
+    }
   },
 
   launchRelatedItemSelector: function(e) {
