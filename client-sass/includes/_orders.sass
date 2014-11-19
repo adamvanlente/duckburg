@@ -62,18 +62,21 @@
   padding: 8px
   cursor: pointer
   +trans($easybreezy)
-  &:hover
-    background: $minty-green
   i
     font-size: 10px
 
 .addNewCustomerToOrderButton
   background: #718ABE
   color: white
+  border-bottom: 4px solid #5C76AB
+  &:hover
+    background: #CDC56F
 .addNewDesignToOrderButton
   color: #fff
   background: rgb(86, 197, 193)
-
+  border-bottom: 4px solid #5AA8A5
+  &:hover
+    background: #CDC56F
 
 .popupItemHolder
   display: none
@@ -207,6 +210,7 @@
     font-size: 13px
     width: 94%
     background: #66c08d
+    box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1)
     color: white
     cursor: pointer
     +trans($easybreezy)
@@ -323,7 +327,7 @@
   vertical-align: top
   color: #333
   font-size: 13px
-  width: 650px
+  width: 705px
 
 .designInFormRemoveButton
   display: inline-block
@@ -391,7 +395,7 @@
     background: #f7f7f7
     border: none
     border-radius: 1px
-    padding: 4px 50px
+    padding: 4px 70px
     outline: none
     white-space: nowrap
     -webkit-user-select: none
@@ -434,7 +438,7 @@
   -webkit-appearance: none
   border: none
   padding: 6px
-  margin-left: -50px
+  margin-left: 0
   font-size: 11px
   color: #fff
   background: $cancel-red
@@ -486,11 +490,12 @@
 
     em
       display: inline-block
-      width: 100px
+      width: 250px
       font-size: 13px
       vertical-align: top
       line-height: 55px
       color: #333
+      overflow: hidden
 
     label
       display: inline-block
@@ -499,3 +504,165 @@
       border: 2px solid #E7E1E1
       margin: 8px
       cursor: pointer
+
+.designImagesWithinOrderForm
+  display: block
+
+  span
+    display: inline-block
+    width: 75px
+    height: 75px
+    margin-right: 8px
+    border: 5px solid #DCDCDC
+    vertical-align: top
+    &:hover
+      label
+        display: block
+
+    label
+      display: none
+      padding: 10px
+      text-align: center
+      color: #fff
+      cursor: pointer
+      +trans($easybreezy)
+
+      &.viewDesignImageWithinOrder
+        background: $minty-green
+        &:hover
+          background: #333
+          color: $minty-green
+      &.removeDesignImageWithinOrder
+        background: $cancel-red
+        &:hover
+          background: #333
+          color: $cancel-red
+
+.designNotesWithinOrderForm
+  @extend .light-font
+  font-size: 13px
+  color: #777
+  padding: 8px
+  -webkit-appearance: none
+  border: none
+  background: #FCFCFC
+  margin-top: 12px
+  display: block
+  width: 720px
+  height: 50px
+
+.orderSavedStatusNub
+  @extend .light-font
+  display: block
+  position: fixed
+  text-align: center
+  padding: 4px
+  right: 20px
+  width: 100px
+  font-size: 10px
+  +trans($easyslider)
+
+  &.invisible
+    bottom: -150px
+
+  &.visible
+    bottom: 0
+
+  &.gray
+    background: #F1F1F1
+    color: #333
+    border-top: 3px solid rgb(139, 137, 137)
+
+  &.green
+    background: $minty-green
+    color: #fff
+    border-top: 3px solid #468461
+
+  &.red
+    background: $cancel-red
+    color: #fff
+    border-top: 3px solid #996060
+
+.catItemWithinOrderSizeOptions
+  display: inline-block
+  margin-top: 12px
+  margin-bottom: 16px
+  background: rgba(255, 255, 255, 0.56)
+  padding: 4px
+  border-radius: 2px
+
+  .appendNewSizeSpan
+    @extend .light-font
+    display: inline-block
+    margin: 4px
+    background: rgba(0, 0, 0, 0.05)
+    padding: 4px
+
+    input
+      display: inline-block
+      -webkit-appearance: none
+      border: none
+      border-radius: 1px
+      padding: 6px 6px 7px 8px
+      width: 50px
+      text-align: center
+      background: rgba(0, 0, 0, 0.06)
+      font-size: 11px
+      color: #545151
+
+  .appendNewSizeButton
+    display: inline-block
+    -webkit-appearance: none
+    border: none
+    padding: 7px
+    margin: 4px
+    background: $minty-green
+    color: #fff
+    cursor: pointer
+    +trans($easybreezy)
+    &:hover
+      background: #333
+
+
+
+.sizeLabelAndCountHolder
+  @extend .light-font
+  display: inline-block
+  margin: 4px
+  background: rgba(0, 0, 0, 0.05)
+  padding: 4px
+
+  input
+
+    &.sizeInput
+      display: inline-block
+      -webkit-appearance: none
+      border: none
+      border-radius: 1px
+      padding: 7px
+      width: 36px
+      text-align: center
+      background: rgba(0, 0, 0, 0.06)
+      font-size: 11px
+      color: #545151
+
+  span
+    &.sizeNameLabel
+      color: #333
+      font-size: 14px
+      padding: 8px 4px
+      display: inline-block
+
+    &.sizeRemoveButton
+      color: white
+      background: $cancel-red
+      vertical-align: middle
+      margin: 8px
+      padding: 1px 4px 3px 5px
+      text-align: center
+      border-radius: 1px
+      font-size: 13px
+      cursor: pointer
+      +trans($easybreezy)
+      &:hover
+        background: #333

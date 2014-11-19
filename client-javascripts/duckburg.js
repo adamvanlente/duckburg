@@ -92,7 +92,7 @@ duckburg.errorMessage = function(errorMessage) {
   setTimeout(function() {
     $('.errorMessage').attr('class', 'errorMessage hidden');
     $('#errorMessageContent').html('');
-  }, 2000);
+  }, 3500);
 }
 
 /*
@@ -108,7 +108,7 @@ duckburg.successMessage = function(message) {
   setTimeout(function() {
     $('.successMessage').attr('class', 'successMessage hidden');
     $('#successMessageContent').html('');
-  }, 2000);
+  }, 3500);
 }
 
 duckburg.loadFirst = function() {

@@ -152,6 +152,36 @@ duckburg.requests = {
     });
   },
 
+  // Quickly update a design's details.
+  updateDesign: function(id, newDetails) {
+
+    // Build a query from the object type.
+    var DbObject = Parse.Object.extend('dbDesign');
+    var query = new Parse.Query(DbObject);
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.get(id, {
+      success: function(result) {
+
+        for (var detail in newDetails) {
+          result.set(detail, newDetails[detail]);
+        }
+        result.save(null, {
+          success: function(savedItem) {
+            console.log('saving design');
+            // Design was saved.
+          },
+          error: function(error) {
+            // pass
+          }
+        });
+      },
+      error: function(error) {
+        duckburg.errorMessage(error.message);
+      }
+    });
+  },
+
   /*
    * Functionality for creating new users.
    *
@@ -218,7 +248,7 @@ duckburg.requests = {
 
         // Save the file and send it back, or throw error.
         parseFile.save().then(function(response) {
-          successCb(response);
+          successCb(response, fileInput);
         }, function(error) {
           duckburg.errorMessage(error.message);
         });

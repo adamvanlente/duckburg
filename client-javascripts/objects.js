@@ -189,17 +189,12 @@ duckburg.objects = {
             duckburg.orders.addCustomerToOrder(result);
           }
 
-
-
-
         // Object was created using object forms.
         } else {
           duckburg.successMessage(msg);
           duckburg.objects.hideNewObjectForm();
           duckburg.objects.beginLoadingObjectView(type);
         }
-
-
       },
 
       // Error Cb
@@ -539,6 +534,16 @@ duckburg.objects = {
           var designCount = $('.catalogItemWithinOrder').length;
           if (maps[map] == 'supplier_item_id' && designCount > 0) {
             var parent = duckburg.orders.lastClickedProductButton.parentElement;
+
+            // Save the product number for the database.
+            for (var j = 0; j < parent.children.length; j++) {
+              var el = parent.children[j];
+              if (el.id == 'product_type') {
+                el.value = item.id;
+              }
+            }
+
+            // Place the visible values in the form for the user.
             for (var kid in parent.children) {
               if (parent.children[kid].className == 'designInFormProductNumber') {
                 parent.children[kid].value = attributes[map];
