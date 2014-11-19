@@ -907,7 +907,7 @@ var duckburg = duckburg || {};
            .append($('<button>')
              .attr('class', 'resetDesignImagesButton')
              .attr('id', counter)
-             .html('reset design')
+             .html('reset design images')
              .click(function(e) {
                duckburg.orders.appendDesignOptions(e.currentTarget.id);
              }))
