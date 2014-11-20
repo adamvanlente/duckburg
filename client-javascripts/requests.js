@@ -130,6 +130,56 @@ duckburg.requests = {
     });
   },
 
+  // Find an order.  First check for readable id, then for the actual id.
+  findOrder: function(id) {
+
+    // Build query using readable id as search param.
+    var DbObject = Parse.Object.extend('dbOrder');
+    var query = new Parse.Query(DbObject);
+
+    query.matches('readable_id', id);
+
+    // Look for the order with the readable id.
+    query.find({
+      success: function(order) {
+
+        // Id was readable order id.
+        if (order.length == 1) {
+          duckburg.fillOrder.begin(order[0]);
+        } else {
+
+          // Order not found with this id as readable id.  Perform an additional
+          // search using the parse ID.
+          var DbObject = Parse.Object.extend('dbOrder');
+          var query = new Parse.Query(DbObject);
+
+          // Use Parse ID.
+          query.get(id, {
+            success: function(result) {
+              if (result) {
+                  duckburg.fillOrder.begin(result);
+              } else {
+
+                // No order exists with this parse id.
+                var msg = 'Unable to locate this order.  Check the number.';
+                duckburg.errorMessage(msg);
+              }
+            },
+            error: function(result, error) {
+
+              // No order exists with this parse id.
+              duckburg.errorMessage('Order not found.  Check the number.');
+            }
+          });
+        }
+
+      },
+      error: function(error) {
+        duckburg.errorMessage(error);
+      }
+    });
+  },
+
   // Quickly get an item using its id.
   quickFind: function(objectType, successCb, errorCb, id, itemId, pKey) {
 
@@ -168,7 +218,6 @@ duckburg.requests = {
         }
         result.save(null, {
           success: function(savedItem) {
-            console.log('saving design');
             // Design was saved.
           },
           error: function(error) {

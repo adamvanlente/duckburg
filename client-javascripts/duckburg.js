@@ -114,3 +114,25 @@ duckburg.successMessage = function(message) {
 duckburg.loadFirst = function() {
   // oh what to do....
 };
+
+/*
+ * New order form.  Don't open if order form is open.
+ */
+$('.menuAddNewOrderButton').click(function() {
+  var display = $('.orderForm').css('display');
+
+  if (display == 'block') {
+
+    // If order form is up and there is an active order, do not let the user
+    // navigate to a fresh form.
+    if (duckburg.orders.activeOrderExists) {
+      var msg = 'An order is being saved.  ' +
+          'Please wait until it finishes to navigate away.';
+      duckburg.errorMessage(msg);
+      return;
+    }
+  } else {
+    $('.objectMenu').hide();
+    duckburg.orders.launchForm();
+  }
+});

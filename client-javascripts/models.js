@@ -137,7 +137,9 @@ duckburg.models = {
         input: 'checkbox',
         input_size: 'third',
         options: null,
-        dbObject: null,
+        dbObject: {
+          type: 'BOOL'
+        },
       },
 
       'product_isindexed': {

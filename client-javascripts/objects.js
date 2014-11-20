@@ -52,7 +52,7 @@ duckburg.objects = {
   loadObjectViewForObjectFromEvent: function(event) {
 
     // Check if an order form is open.
-    if ($('.orderForm').length) {
+    if (duckburg.orders.activeOrderExists) {
       var msg = 'An order is being edited.  Please save it first.';
       duckburg.errorMessage(msg);
       $('.objectMenu').hide();
@@ -372,9 +372,7 @@ duckburg.objects = {
             // Get the object by its id, fetch our readable value.
             duckburg.requests.quickFind(type,
               function(result, returnedItem, key) {
-                console.log(result, pKey)
                 var readableValue = result.attributes[key];
-                console.log(readableValue)
                 $('#' + returnedItem + '_visible_readonly').val(readableValue);
               },
               function(error) {
@@ -412,6 +410,43 @@ duckburg.objects = {
     // Launch related items selector.
     duckburg.objects.launchRelatedItemSelector(event);
 
+    if (object.type == 'BOOL') {
+      console.log(event)
+      $('.inputPopupSelector')
+        .append($('<div>')
+          .attr('class', 'relatedObjectResultsHolder'));
+
+      $('.relatedObjectResultsHolder')
+        .append($('<span>')
+          .html('YES')
+          .attr('id', 'YES')
+          .click(function(e) {
+            var obj = {
+              currentTarget: {
+                id: 'YES',
+                innerHTML: 'YES'
+              }
+            }
+            duckburg.objects.selectRelatedObject(obj, event);
+          }));
+
+      $('.relatedObjectResultsHolder')
+        .append($('<span>')
+          .html('NO')
+          .attr('id', 'NO')
+          .click(function(e) {
+            var obj = {
+              currentTarget: {
+                id: 'NO',
+                innerHTML: 'NO'
+              }
+            }
+            duckburg.objects.selectRelatedObject(obj, event);
+          }));
+
+      return;
+    }
+
     // Set a header and filter input.
     duckburg.objects.loadInputPopupHeader(object, event);
 
@@ -420,6 +455,7 @@ duckburg.objects = {
   },
 
   loadInputPopupHeader: function(object, event) {
+
     var type = duckburg.models[object.type].display_name;
 
     $('.inputPopupSelector')
@@ -500,9 +536,17 @@ duckburg.objects = {
 
   selectRelatedObject: function(event, originalEvent) {
 
+
     // Remove the selector.
     $('.inputPopupSelector').remove();
     $('.offClicker').hide();
+
+    if ($('.orderForm').length > 0) {
+
+      // We're in an order, kick back to order form for simple value drop.
+      duckburg.orders.simplePlaceObject(event.currentTarget, originalEvent);
+      return;
+    }
 
     // Drop a readable value into the input field.
     var targetField = originalEvent.currentTarget;
