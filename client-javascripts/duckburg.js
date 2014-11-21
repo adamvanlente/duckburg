@@ -112,7 +112,7 @@ duckburg.successMessage = function(message) {
 }
 
 duckburg.loadFirst = function() {
-  // oh what to do....
+  duckburg.main.launch();
 };
 
 /*
@@ -131,8 +131,8 @@ $('.menuAddNewOrderButton').click(function() {
       duckburg.errorMessage(msg);
       return;
     }
-  } else {
-    $('.objectMenu').hide();
-    duckburg.orders.launchForm();
   }
+
+  $('.objectMenu').hide();
+  duckburg.orders.launchForm();
 });

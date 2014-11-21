@@ -23,9 +23,13 @@ var duckburg = duckburg || {};
      // A mode that helps us run certain functions only when orders are up.
      duckburg.orders.orderMode = true;
 
+     // Keep track of customers, items and designs selected.
+     duckburg.orders.currentlyVisibleCustomers = {};
+     duckburg.orders.currentlyVisibleDesigns = {};
+     duckburg.orders.currentlyVisibleItems = {};
+
      // Standard sizes for new order items.  Easily edited by users.
      duckburg.orders.standardSizes = {
-       'XS': 0,
        'S': 0,
        'M': 0,
        'L': 0,
@@ -35,12 +39,11 @@ var duckburg = duckburg || {};
 
      // Order statuses.
      duckburg.orders.statuses = {
-
        'quote': 'rgb(184, 184, 184)',
        'open': 'rgb(130, 153, 200)',
        'approved': '#66c08d',
        'ordered': 'rgb(195, 202, 87)',
-       'received': 'rgb(231, 165, 46)',
+       'received': 'rgb(226, 177, 101)',
        'printing': 'rgb(239, 116, 116)',
        'completed': 'rgb(54, 179, 202)',
       //  'shipped'
@@ -54,7 +57,7 @@ var duckburg = duckburg || {};
         '5XL', '5X', 'XXXXXL', '6X', '6XL', 'XXXXXXL'];
 
      // Interval by which a form is saved if typing is occurring.
-     duckburg.orders.saveInterval = 2500;
+     duckburg.orders.saveInterval = 500;
 
      // If orderId is passed, populate the form with the order details.
      if (orderId) {
@@ -132,7 +135,7 @@ var duckburg = duckburg || {};
      parent.append($('<input>')
        .attr('type', 'text')
        .attr('name', 'order_form_field')
-       .attr('class', 'orderDueDate')
+       .attr('class', 'orderPrintDate')
        .attr('placeholder', 'print date')
        .attr('id', 'order_print_date'));
      var cal = new Highsmith('order_print_date', calConfig);
@@ -250,6 +253,13 @@ var duckburg = duckburg || {};
         var idx = this.id.replace('design_no_', '');
         if (idx == count) {
           $('#' + this.id)
+
+            // Textarea for design notes.
+            .append($('<textarea>')
+              .attr('class', 'designNotesWithinOrderForm')
+              .attr('id', 'designNotesWithinOrderForm_' + count)
+              .attr('placeholder', 'Design notes'))
+
             .append($('<div>')
              .attr('class', 'pertinentInfo')
              .attr('id', 'pertinentInfo_' + count)
@@ -349,7 +359,7 @@ var duckburg = duckburg || {};
         success: function(count) {
           duckburg.orders.placeOrderNumberInUI(count);
         },
-        error: function(error) {
+        error: function(result, error) {
           duckburg.errorMessage(error.message);
         }
       });
@@ -518,6 +528,12 @@ var duckburg = duckburg || {};
    // Add a customer to an open order - place it in the form..
    addCustomerToOrder: function(customer, shipTo, billTo) {
 
+     // Store the customer.
+     if (!duckburg.orders.currentlyVisibleCustomers[customer.id]) {
+       duckburg.orders.currentlyVisibleCustomers[customer.id] =
+          customer.attributes;
+     }
+
      // Get attributes and set display values of empty values.
      var attribs = customer.attributes;
      var phone =
@@ -685,6 +701,12 @@ var duckburg = duckburg || {};
      var index = event.currentTarget.id;
      $('.customerWithinOrder').each(function(item) {
         if (item == index) {
+
+          // Remove customer from memory.
+          if (duckburg.orders.currentlyVisibleCustomers[this.id]) {
+            delete duckburg.orders.currentlyVisibleCustomers[this.id];
+          }
+
           this.remove();
         }
      });
@@ -706,9 +728,7 @@ var duckburg = duckburg || {};
      duckburg.requests.quickFind('dbCustomer',
        function(result) {
          duckburg.orders.populateNewCustomerForm(result);
-       },
-       duckburg.errorMessage,
-       customer.id);
+       }, customer.id);
    },
 
    // Populate the new customer form with an existing customer's details
@@ -804,7 +824,7 @@ var duckburg = duckburg || {};
            .attr('type', 'text')
            .attr('class', 'designInFormDesignName')
            .attr('id', 'designInFormDesignName_' + designCount)
-           .attr('placeholder', 'Name of item'))
+           .attr('placeholder', 'name for design'))
 
          // Button for removing (unstaging) the design from the order.
          .append($('<button>')
@@ -892,6 +912,11 @@ var duckburg = duckburg || {};
          .attr('placeholder', 'Color')
        )
 
+
+       .append($('<em>')
+         .attr('class', 'dollarSignOrderForm')
+         .html('$'))
+
        // Standard price
        .append($('<input>')
          .attr('class', 'designInFormPiecePrice')
@@ -899,12 +924,20 @@ var duckburg = duckburg || {};
          .attr('placeholder',  'Piece price')
        )
 
+       .append($('<em>')
+         .attr('class', 'dollarSignOrderForm')
+         .html('$'))
+
        // Sale price
        .append($('<input>')
          .attr('class', 'designInFormSalePrice')
          .attr('type', 'text')
          .attr('placeholder', 'Sale price')
        )
+
+       .append($('<em>')
+         .attr('class', 'dollarSignOrderForm')
+         .html('$'))
 
        // Social price
        .append($('<input>')
@@ -1036,7 +1069,7 @@ var duckburg = duckburg || {};
           ' add a new size';
        duckburg.errorMessage(msg);
        return;
-     }f
+     }
 
      // If the new size is not blank (and it is not already shown)
      // add it to the sizes.
@@ -1072,7 +1105,7 @@ var duckburg = duckburg || {};
 
        // Holder for size information.
        .append($('<div>')
-         .attr('id', 'size_' + size + '_' + count)
+        //  .attr('id', 'size_' + size + '_' + count)
          .attr('class','sizeLabelAndCountHolder')
 
          // Span that holds the name of the size, eg 'S:' or 'XL:'.
@@ -1091,7 +1124,7 @@ var duckburg = duckburg || {};
            .attr('class', 'sizeRemoveButton')
            .html('<i class="fa fa-trash-o"></i>')
            .click(function(e) {
-             $('#' + e.currentTarget.parentElement.id).remove();
+             $(e.currentTarget.parentElement).remove();
            })
      ));
    },
@@ -1175,19 +1208,47 @@ var duckburg = duckburg || {};
              .attr('id', counter)
              .html('reset design images')
              .click(function(e) {
-               duckburg.orders.appendDesignOptions(e.currentTarget.id);
+
+                $('.designWithinOrderFormVariables').each(function() {
+                  var idx = this.id.replace('designWithinOrderFormVariables', '');
+                  if (idx == counter) {
+                    for (var i = 0; i < this.children.length; i++) {
+                      if (this.children[i].id == 'design_id') {
+                        if (duckburg.orders.currentlyVisibleDesigns[this.children[i].value]) {
+                          delete duckburg.orders.currentlyVisibleDesigns[this.children[i].value];
+                        }
+                      }
+                    }
+                  }
+                });
+
+                //  duckburg.orders.appendDesignOptions(e.currentTarget.id);
+                var parent = $(e.currentTarget.parentElement);
+                parent
+                  .html('')
+                  // User can create a new design from images.
+                  .append($('<button>')
+                    .attr('id', counter)
+                    .html('<i class="fa fa-file"></i> new design')
+                    .attr('class', 'chooseNewDesignButton')
+                    .click(function(e) {
+                      duckburg.orders.appendImagePickerForOrderForm(e);
+                    }))
+
+                  // User can choose a design that already exists.
+                  .append($('<button>')
+                    .attr('id', counter)
+                    .html('<i class="fa fa-folder-open"></i> existing design')
+                    .attr('class', 'chooseExistingDesignButton')
+                    .click(function(e) {
+                      duckburg.orders.launchExistingDesignFinder(e);
+                    }));
              }))
 
            // Div in which the images will reside.
            .append($('<div>')
              .attr('class', 'designImagesWithinOrderForm')
              .attr('id', 'designImagesWithinOrderForm_' + counter))
-
-           // Textarea for design notes.
-           .append($('<textarea>')
-             .attr('class', 'designNotesWithinOrderForm')
-             .attr('id', 'designNotesWithinOrderForm_' + counter)
-             .attr('placeholder', 'Design notes'))
 
            // A div that holds a set of hidden fields, which will each
            // inherit information about the design/catalog item.
@@ -1203,7 +1264,8 @@ var duckburg = duckburg || {};
              // Comma separated list of urls for the images.
              .append($('<input>')
                .attr('type', 'hidden')
-               .attr('id', 'design_images_list'))
+               .attr('id', 'design_images_list')
+               .attr('class', 'designImagesList'))
 
              // Name of the design.
              .append($('<input>')
@@ -1418,7 +1480,8 @@ var duckburg = duckburg || {};
          duckburg.requests.files.save(e.currentTarget, function(
             result, input) {
 
-           var inputCounter = input.id.replace('newInputFilePicker_', '')
+           var inputCounter =
+              e.currentTarget.id.replace('newInputFilePicker_', '');
            duckburg.orders.updateDesignImageInfo(inputCounter, result);
 
          })
@@ -1759,8 +1822,8 @@ var duckburg = duckburg || {};
       success: function(result) {
         duckburg.orders.storeDesignDetails(result, count + 1);
       },
-      error: function(error) {
-        duckburg.errorMessage(error);
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
       }
     });
   },
@@ -1787,49 +1850,48 @@ var duckburg = duckburg || {};
         // Store the catalog item number.  If it doesn't exist, a new catalog
         // item will be created.
         if (el.className == 'catalogItemId') {
+          itemId = el.value;
           if (el.value != '') {
-            itemId = el.value;
             paramCount++;
           }
         }
 
         // Get the product type.
         if (el.id == 'product_type') {
-
+          catalogItem.product_type = el.value;
           if (el.value != '') {
-              catalogItem.product_type = el.value;
               paramCount++;
           }
         }
 
         // Store the product color.
         if (el.className == 'designInFormProductColor') {
+          catalogItem.product_colors = el.value;
           if (el.value != '') {
-            catalogItem.product_colors = el.value;
             paramCount++;
           }
         }
 
         // Store the product price.
         if (el.className == 'designInFormPiecePrice') {
+          catalogItem.product_price = el.value;
           if (el.value != '') {
-            catalogItem.product_price = el.value;
             paramCount++;
           }
         }
 
         // Store the product social price.
         if (el.className == 'designInFormSocialPrice') {
+          catalogItem.product_socialprice = el.value;
           if (el.value != '') {
-            catalogItem.product_socialprice = el.value;
             paramCount++;
           }
         }
 
         // Store the product sale price.
         if (el.className == 'designInFormSalePrice') {
+          catalogItem.product_saleprice = el.value;
           if (el.value != '') {
-            catalogItem.product_salepriceprice = el.value;
             paramCount++;
           }
         }
@@ -1849,23 +1911,23 @@ var duckburg = duckburg || {};
           }
         }
 
+        // Look for notes/description.
+        if (el.className == 'designNotesWithinOrderForm') {
+          catalogItem.product_description = el.value;
+        }
+
         // Go within the design to get some items.
         if (el.className == 'orderFormImagePickerHolder') {
           for (var j = 0; j < el.children.length; j++) {
             var child = el.children[j];
-
-            // Look for notes/description.
-            if (child.className == 'designNotesWithinOrderForm') {
-              catalogItem.product_description = child.value;
-            }
 
             // Look to see if a design / design ID exists.
             if (child.className == 'designWithinOrderFormVariables') {
               for (var k = 0; k < child.children.length; k++) {
                 var kid = child.children[k];
                 if (kid.id == 'design_id') {
+                  catalogItem.design = kid.value;
                   if (kid.value != '') {
-                    catalogItem.design = kid.value;
                     paramCount++;
                   }
                 }
@@ -1939,14 +2001,18 @@ var duckburg = duckburg || {};
         result.save(null, {
           success: function(savedItem) {
             // updated catalog item
+            if (!duckburg.orders.currentlyVisibleItems[savedItem.id]) {
+              duckburg.orders.currentlyVisibleItems[savedItem.id] =
+                  savedItem.attributes;
+            }
           },
-          error: function(error) {
+          error: function(result, error) {
             // pass
           }
         });
       },
-      error: function(error) {
-        duckburg.errorMessage(error);
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
       }
     });
   },
@@ -1977,8 +2043,8 @@ var duckburg = duckburg || {};
         // Set the id of the newly created item in a hidden field.
         duckburg.orders.setIdOfNewCatalogItem(result, count);
       },
-      error: function(error) {
-        duckburg.errorMessage(error);
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
       }
     });
   },
@@ -2127,6 +2193,19 @@ var duckburg = duckburg || {};
     // list for easy evaluation below.
     orderObject.customers = $('#order_customer_object').val() || [];
 
+    // Store some easily accessible customer details.
+    var custCount = 0;
+    for (var customer in duckburg.orders.currentlyVisibleCustomers) {
+      if (custCount == 0) {
+        var cust = duckburg.orders.currentlyVisibleCustomers[customer];
+        orderObject.primary_customer = {}
+        orderObject.primary_customer.name = cust.first_name;
+        orderObject.primary_customer.email = cust.email_address;
+        orderObject.primary_customer.phone = cust.phone_number;
+      }
+      custCount++;
+    }
+
     // If no customers and no items.
     if (!orderObject.items.length && !orderObject.customers.length) {
 
@@ -2159,7 +2238,7 @@ var duckburg = duckburg || {};
     }
 
     if (!duckburg.orders.savingOrder) {
-      console.log(orderObject);
+
       // Note that an order is being saved (prevents same order from being
       // saved twice in an instant).
       duckburg.orders.savingOrder = true;
@@ -2208,7 +2287,7 @@ var duckburg = duckburg || {};
           duckburg.orders.currentOrder = result;
           duckburg.orders.saveOrderDetails(parseId, orderObject);
         },
-        error: function(error) {
+        error: function(result, error) {
           errorCb(error.message);
         }
       });
@@ -2228,12 +2307,12 @@ var duckburg = duckburg || {};
     var newItem = new DbObject();
 
     // Create a new order with the info from the form.
-    duckburg.orders.finishSavingOrder(newItem, orderObject);
+    duckburg.orders.finishSavingOrder(newItem, orderObject, true);
   },
 
   // Save an order with the prase dbItem and an orderObject containing all the
   // values within the form.
-  finishSavingOrder: function(dbItem, orderObject) {
+  finishSavingOrder: function(dbItem, orderObject, created) {
 
     // Set the order parameters.
     for (var param in orderObject) {
@@ -2249,6 +2328,10 @@ var duckburg = duckburg || {};
       // Set the value.
       dbItem.set(param, val);
 
+      // Add teh readable order id and parse id to searchable values.
+      val += ' ' + $('#parse_order_id').val();
+      val += ' ' + $('#readable_order_id').val();
+
       // set the parse search string.
       if (param == 'order_name') {
         dbItem.set('parse_search_string', val.toLowerCase());
@@ -2259,11 +2342,17 @@ var duckburg = duckburg || {};
     dbItem.save(null, {
       success: function(result) {
 
+        duckburg.requests.logOrder(result, created);
+
         // Save the current order globally.
         duckburg.orders.currentOrder = result;
 
         // Set the hidden input which contains the order id.
         $('#parse_order_id').val(result.id);
+
+        // Make sure the url bar now reads /orders/ORDER-NUMBER
+        var orderUrl = '/order/' + result.attributes.readable_id;
+        window.history.replaceState('Object', 'Title', orderUrl);
 
         // User can now navigate away if they like, order is not 'actively'
         // being saved.
@@ -2281,11 +2370,11 @@ var duckburg = duckburg || {};
           $('.orderSavedStatusNub')
             .attr('class', 'orderSavedStatusNub visible green')
             .html('<i class="fa fa-save"></i> order saved');
-        }, 2000)
+        }, 500)
 
       },
-      error: function(error) {
-        duckburg.errorMessage(error);
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
 
         // Allow the order to be saved/updated.  This var, when set to true,
         // is blocking the order from being saved from other function calls.
@@ -2303,3 +2392,32 @@ $(document).keypress(function(e) {
 $(document).click(function(e) {
   duckburg.orders.autoSave();
 });
+
+// // Constantly check the design images.  If they're changed, run autosave.
+// duckburg.orders.watchImages = setInterval(function() {
+//   var newList = [];
+//   $('.designImagesList').each(function() {
+//     newList.push(String(this.value));
+//   });
+//
+//   if (duckburg.orders.designImagesInMemory) {
+//     for (var i = 0; i < newList.length; i++) {
+//
+//       // If there are new images, save and quit this loop.
+//       if (!duckburg.orders.designImagesInMemory[i]) {
+//         duckburg.orders.autoSave();
+//         duckburg.orders.designImagesInMemory = newList;s
+//         return;
+//       }
+//
+//       // If the images have changes, run autosave and quit loop.
+//       if (newList[i] != duckburg.orders.designImagesInMemory[i]) {
+//         duckburg.orders.autoSave();
+//         duckburg.orders.designImagesInMemory = newList;
+//         return;
+//       }
+//     }
+//   }
+//
+//   duckburg.orders.designImagesInMemory = newList;
+// }, 10000);

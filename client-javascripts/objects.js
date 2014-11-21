@@ -69,6 +69,8 @@ duckburg.objects = {
   // Load the object view.
   beginLoadingObjectView: function(objectType) {
 
+    window.history.replaceState('Object', 'Title', '/');
+
     // Hide the menu of object types.
     $('.objectMenu').hide();
 
@@ -374,11 +376,7 @@ duckburg.objects = {
               function(result, returnedItem, key) {
                 var readableValue = result.attributes[key];
                 $('#' + returnedItem + '_visible_readonly').val(readableValue);
-              },
-              function(error) {
-                duckburg.errorMessage(error.messge);
-              },
-              attribs[item], item, pKey);
+              }, attribs[item], item, pKey);
           }
         }
       }

@@ -74,8 +74,8 @@ duckburg.requests = {
       success: function(result) {
         successCb(result, verb)
       },
-      error: function(error) {
-        errorCb(error);
+      error: function(result, error) {
+        errorCb(error.message);
       }
     });
   },
@@ -124,7 +124,7 @@ duckburg.requests = {
       success: function(results) {
         successCb(results);
       },
-      error: function(error) {
+      error: function(result, error) {
         errorCb(error.message);
       }
     });
@@ -174,14 +174,14 @@ duckburg.requests = {
         }
 
       },
-      error: function(error) {
-        duckburg.errorMessage(error);
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
       }
     });
   },
 
   // Quickly get an item using its id.
-  quickFind: function(objectType, successCb, errorCb, id, itemId, pKey) {
+  quickFind: function(objectType, successCb, id, itemId, pKey) {
 
     // Build a query from the object type.
     var DbObject = Parse.Object.extend(objectType);
@@ -196,8 +196,88 @@ duckburg.requests = {
           successCb(results, itemId, pKey);
         }
       },
-      error: function(error) {
-        errorCb(error.message);
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
+      }
+    });
+  },
+
+  // Quickly get a customer using its id.
+  findCustomer: function(customer, successCb) {
+
+    // Customer can be object or string id.
+    var id = typeof customer == 'object' ? customer.id : customer;
+
+    // Get a customer record.  Return along with the response the customer
+    // params sent for search.
+    var DbObject = Parse.Object.extend('dbCustomer');
+    var query = new Parse.Query(DbObject);
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.get(id, {
+      success: function(results) {
+        successCb(results, customer);
+      },
+      error: function(result, error) {
+        var msg = ' Issue fetching customer from DB (' + id + ')';
+        duckburg.errorMessage(error.message + msg);
+      }
+    });
+  },
+
+  // Get a product.
+  findProduct: function(id, successCb, element) {
+
+    var DbObject = Parse.Object.extend('dbProduct');
+    var query = new Parse.Query(DbObject);
+
+    query.get(id, {
+      success: function(results) {
+        successCb(results, element);
+      },
+      error: function(result, error) {
+        var msg = ' Issue fetching product from DB (' + id + ')';
+        duckburg.errorMessage(error.message + msg);
+      }
+    });
+  },
+
+  // Get a Store
+  findStore: function(id, successCb, element) {
+
+    var DbObject = Parse.Object.extend('dbStorefront');
+    var query = new Parse.Query(DbObject);
+
+    query.get(id, {
+      success: function(results) {
+        successCb(results, element);
+      },
+      error: function(result, error) {
+        var msg = ' Issue fetching store from DB (' + id + ')';
+        duckburg.errorMessage(error.message + msg);
+      }
+    });
+  },
+
+  // Quickly get a customer using its id.
+  findCatalogItem: function(item, successCb) {
+
+    // Customer can be object or string id.
+    var id = typeof item == 'object' ? item.id : item;
+
+    // Get a customer record.  Return along with the response the customer
+    // params sent for search.
+    var DbObject = Parse.Object.extend('dbCatalogItem');
+    var query = new Parse.Query(DbObject);
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.get(id, {
+      success: function(results) {
+        successCb(results, item);
+      },
+      error: function(result, error) {
+        var msg = ' Issue fetching item from DB (' + id + ')';
+        duckburg.errorMessage(error.message + msg);
       }
     });
   },
@@ -218,17 +298,85 @@ duckburg.requests = {
         }
         result.save(null, {
           success: function(savedItem) {
+
             // Design was saved.
+            var item = savedItem.attributes;
+            item.id = savedItem.id;
+            if (!duckburg.orders.currentlyVisibleDesigns[savedItem.id]) {
+              duckburg.orders.currentlyVisibleDesigns[savedItem.id] =
+                  savedItem.attributes;
+            }
+
           },
-          error: function(error) {
+          error: function(result, error) {
             // pass
           }
         });
       },
-      error: function(error) {
+      error: function(result, error) {
         duckburg.errorMessage(error.message);
       }
     });
+  },
+
+  logOrder: function(order, created) {
+
+    var DbObject = Parse.Object.extend('dbOrderHistory');
+    var newItem = new DbObject();
+
+    // Store what we know about the order
+    newItem.set('order_id', order.id)
+    newItem.set('order', JSON.stringify(order.attributes));
+    newItem.set('user', duckburg.curUser.attributes.username);
+    newItem.set('status', order.attributes.order_status);
+    newItem.set('designs', JSON.stringify(duckburg.orders.currentlyVisibleDesigns));
+    newItem.set('items', JSON.stringify(duckburg.orders.currentlyVisibleItems));
+    newItem.set('customers', JSON.stringify(duckburg.orders.currentlyVisibleCustomers));
+
+    // store an action.
+    var action = created ? 'created' : 'updated';
+    newItem.set('action', action);
+
+    // Save the dang thing.
+    newItem.save(null, {
+      success: function(result) {
+        // Stow and go.
+      },
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
+      }
+    });
+  },
+
+  // Get a list of orders with specific filters.
+  fetchOrders: function(statuses, sortBy, sortOrder, filters, successCb) {
+
+    // Build a query from the object type.
+    var DbObject = Parse.Object.extend('dbOrder');
+    var query = new Parse.Query(DbObject);
+
+    if (filters) {
+      query.matches('parse_search_string', filters.toLowerCase());
+    }
+
+    if (sortOrder == 'asc') {
+      query.descending(sortBy);
+    } else {
+      query.ascending(sortBy);
+    }
+
+    query.containedIn("order_status", statuses);
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.find({
+      success: function(results) {
+        successCb(results);
+      },
+      error: function(result, error) {
+        duckburg.errorMessage(error.message);
+      }
+    });
+
   },
 
   /*
@@ -298,7 +446,9 @@ duckburg.requests = {
         // Save the file and send it back, or throw error.
         parseFile.save().then(function(response) {
           successCb(response, fileInput);
-        }, function(error) {
+        },
+
+        function(reuslt, error) {
           duckburg.errorMessage(error.message);
         });
       } else {

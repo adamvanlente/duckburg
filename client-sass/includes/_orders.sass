@@ -15,11 +15,12 @@
   position: fixed
   border-bottom: 4px solid
   width: 900px
-  border-top: 50px solid #fafafa
+  border-top: 70px solid #fafafa
   top: 0
   label
-    color: rgba(51, 51, 51, 0.57)
+    color: rgba(51, 51, 51, 0.33)
     margin-left: 8px
+
 
 .jobStatusField
   @extend .light-font
@@ -55,16 +56,27 @@
   border: none
   background: none
 
-.orderDueDate
+.orderDueDate,
+.orderPrintDate
   @extend .basicFormItem
   @extend .light-font
   display: inline-block
   margin-top: 4px
   padding: 2px
   font-size: 13px
-  color: #4CB66E
   width: 85px
   text-align: center
+  cursor: pointer
+
+.orderPrintDate::-webkit-input-placeholder,
+.orderDueDate::-webkit-input-placeholder
+  color: #E4E4E4
+
+.orderDueDate
+  color: #FF1C1C
+
+.orderPrintDate
+  color: #2EA666
 
 .orderJobName
   @extend .basicFormItem
@@ -430,21 +442,42 @@
 
 .designInFormProductName,
 .designInFormProductNumber,
+.designInFormProductColor
+  border-radius: 4px
+  margin-top: 8px
+  width: 150px
+
+.designInFormPiecePrice,
+.designInFormSalePrice,
+.designInFormSocialPrice
+  border-radius: 0px 4px 4px 0px
+  width: 80px
+
+.dollarSignOrderForm
+  display: inline-block
+  padding: 8px
+  font-size: 13px
+  background: rgb(153, 153, 210)
+  font-style: normal
+  color: white
+  border-radius: 4px 0px 0px 4px
+
+.designInFormProductName,
+.designInFormProductNumber,
 .designInFormProductColor,
 .designInFormPiecePrice,
 .designInFormSalePrice,
 .designInFormSocialPrice
+  @extend .light-font
   -webkit-appearance: none
   display: inline-block
   border: none
+  text-align: center
   padding: 8px
-  margin-top: 8px
   font-size: 13px
-  margin-right: 8px
-  border-radius: 2px
   cursor: pointer
   color: white
-  width: 100px
+  margin-right: 8px
   +trans($easybreezy)
   &.designInFormProductName::-webkit-input-placeholder,
   &.designInFormProductNumber::-webkit-input-placeholder,
@@ -583,10 +616,11 @@
 
   span
     display: inline-block
-    width: 75px
-    height: 75px
+    width: 150px
+    overflow: hidden
+    height: 150px
     margin-right: 8px
-    border: 5px solid #DCDCDC
+    border: 5px solid gainsboro
     vertical-align: top
     &:hover
       label
@@ -594,7 +628,7 @@
 
     label
       display: none
-      padding: 10px
+      padding: 30px
       text-align: center
       color: #fff
       cursor: pointer
@@ -614,15 +648,15 @@
 .designNotesWithinOrderForm
   @extend .light-font
   font-size: 13px
-  color: #777
+  color: #777777
   padding: 8px
   -webkit-appearance: none
   border: none
-  background: #FCFCFC
+  background: rgba(252, 252, 252, 0.87)
   margin-top: 12px
   display: block
-  width: 720px
   height: 50px
+  width: 868px
 
 .orderSavedStatusNub
   @extend .light-font
@@ -659,7 +693,7 @@
 .catItemWithinOrderSizeOptions
   display: inline-block
   margin-top: 12px
-  margin-bottom: 16px
+  margin-bottom: 12px
   background: rgba(255, 255, 255, 0.56)
   padding: 4px
   border-radius: 2px
@@ -745,10 +779,12 @@
   display: none
   width: 130px
   position: fixed
-  top: 82px
+  top: 103px
   left: 939px
   z-index: 5
+  box-shadow: 0 2px 2px rgba(0,0,0,0.2)
   cursor: pointer
+  +trans($easybreezy)
 
   span
     display: block

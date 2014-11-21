@@ -2,6 +2,7 @@
   position: fixed
   display: block
   top: 30px
+  z-index: 5
   +break-for(iphone)
     margin-top: 39px
 
@@ -9,6 +10,7 @@
     display: inline
     -webkit-appearance: none
     border: none
+    text-align: center
     cursor: pointer
     padding: 4px 12px
     +trans($easybreezy)
@@ -24,10 +26,20 @@
 
 .menuObjectsButton
   color: #333
-  background: #F1F1F1
+  background: #CFCDCD
   &:hover
     color: #F1F1F1
     background: #333
+
+.menuMainButton
+  color: white
+  background: #6C94D2
+  &:hover
+    color: #F1F1F1
+    background: #333
+  i
+    margin-right: 4px
+
 
 
 .objectMenu
