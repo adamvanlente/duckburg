@@ -112,7 +112,27 @@ duckburg.successMessage = function(message) {
 }
 
 duckburg.loadFirst = function() {
-  duckburg.main.launch();
+
+  var orderId = $('#launchOrderForm').val();
+  var makeNewObjectInput = $('#makerInput').val();
+
+  // Launch the order form if needed.
+  if (orderId) {
+    if (orderId == 'newOrder') {
+      duckburg.orders.launchForm();
+    } else {
+      duckburg.orders.launchForm(orderId);
+    }
+
+  // If the route is requesting the ability to make a new object, let it!
+  } else if (makeNewObjectInput) {
+    duckburg.objects.beginLoadingObjectView(makeNewObjectInput);
+    var id = 'objectListCreateNewButton';
+    document.getElementsByClassName(id)[0].click();
+  } else {
+
+    duckburg.main.launch();
+  }
 };
 
 /*

@@ -22,6 +22,10 @@ duckburg.fillOrder = {
     duckburg.orders.currentOrder = order;
     var attributes = order.attributes;
 
+    // Make sure the url bar now reads /orders/ORDER-NUMBER
+    var orderUrl = '/order/' + attributes.readable_id;
+    window.history.replaceState('Object', 'Title', orderUrl);
+
     // Global functions for loading an order, whether new or existing.
     duckburg.orders.globalLoad();
 
@@ -66,10 +70,6 @@ duckburg.fillOrder = {
     // Fetch the customer from the database.
     duckburg.requests.findCustomer(customer,
       function(result, cust) {
-        if (!duckburg.orders.currentlyVisibleCustomers[result.id]) {
-          duckburg.orders.currentlyVisibleCustomers[result.id] =
-              result.attributes;
-        }
         duckburg.orders.addCustomerToOrder(result, cust.isShip, cust.isBill);
       });
   },
@@ -82,6 +82,7 @@ duckburg.fillOrder = {
 
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
+      console.log(item, i, items);
       item.idx = i + 1;
       duckburg.requests.findCatalogItem(
           item, duckburg.fillOrder.fillInCatalogItem);

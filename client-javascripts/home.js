@@ -128,7 +128,7 @@ duckburg.main = {
 
       // Order name label.
       .append($('<label>')
-        .attr('class', 'orderListOrdeName')
+        .attr('class', 'orderListOrderName')
         .html(o.order_name))
 
       // Customer name label.

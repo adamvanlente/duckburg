@@ -17,16 +17,17 @@ var duckburg = duckburg || {};
  */
  duckburg.orders = {
 
+   homePage: 'http://localhost:3000/',
+
    // Launch the form and set some global variables.
    launchForm: function(orderId) {
 
-     // A mode that helps us run certain functions only when orders are up.
-     duckburg.orders.orderMode = true;
-
      // Keep track of customers, items and designs selected.
      duckburg.orders.currentlyVisibleCustomers = {};
-     duckburg.orders.currentlyVisibleDesigns = {};
      duckburg.orders.currentlyVisibleItems = {};
+
+     // A mode that helps us run certain functions only when orders are up.
+     duckburg.orders.orderMode = true;
 
      // Standard sizes for new order items.  Easily edited by users.
      duckburg.orders.standardSizes = {
@@ -156,6 +157,7 @@ var duckburg = duckburg || {};
       .attr('id', 'order_job_name')
       .click(function() {
         duckburg.orders.showOrderStatusSelector();
+        duckburg.orders.updatingOrderStatus = true;
       }));
 
    },
@@ -202,6 +204,12 @@ var duckburg = duckburg || {};
             .css({'background': bgColor })
             .click(function(e) {
               duckburg.orders.setOrderStatus(e.currentTarget.innerHTML);
+
+              // Force a new autosave.
+              duckburg.orders.activeOrderExists = false;
+              duckburg.orders.autoSave();
+
+              // Hide the elements.
               $('.offClicker').hide();
               $('.orderStatusPopup').hide();
             }));
@@ -532,6 +540,11 @@ var duckburg = duckburg || {};
      if (!duckburg.orders.currentlyVisibleCustomers[customer.id]) {
        duckburg.orders.currentlyVisibleCustomers[customer.id] =
           customer.attributes;
+
+      delete duckburg.orders.currentlyVisibleCustomers[customer.id].parse_search_string;
+
+     } else {
+       return;
      }
 
      // Get attributes and set display values of empty values.
@@ -551,6 +564,7 @@ var duckburg = duckburg || {};
      // Set shipping and billing customer.
      shipTo = shipTo || custIndex == 0;
      billTo = billTo || custIndex == 0;
+     var custCount = $('.customerWithinOrder').length + 1;
 
      // Set the customer info div.
      $('.customerInfo')
@@ -583,6 +597,7 @@ var duckburg = duckburg || {};
           .append($('<input>')
             .attr('type', 'radio')
             .attr('checked', shipTo)
+            .attr('class', 'cwoIsShipping_' + custCount)
             .attr('id', 'is_shipping_cust')
             .attr('name', 'is_shipping_cust'))
             .click(function () {
@@ -596,6 +611,7 @@ var duckburg = duckburg || {};
             .html('Bill to'))
           .append($('<input>')
             .attr('type', 'radio')
+            .attr('class', 'cwoIsBilling_' + custCount)
             .attr('checked', billTo)
             .attr('id', 'is_billing_cust')
             .attr('name', 'is_billing_cust'))
@@ -784,14 +800,14 @@ var duckburg = duckburg || {};
    // Button to add a new item/design to the order.
    setDesignInfo: function() {
      $('.designInfo')
+       .append($('<div>')
+         .attr('class', 'openOrderCatalogItemHolder'))
        .append($('<button>')
          .attr('class', 'addNewDesignToOrderButton')
          .html('<i class="fa fa-plus"></i> add item')
          .click(function() {
            duckburg.orders.addNewCatalogItemToOrderForm();
-         }))
-       .append($('<div>')
-         .attr('class', 'openOrderCatalogItemHolder'));
+         }));
    },
 
    // Allow the customer to configure a new item for their order.
@@ -829,7 +845,7 @@ var duckburg = duckburg || {};
          // Button for removing (unstaging) the design from the order.
          .append($('<button>')
            .attr('class', 'designInFormRemoveButton')
-           .html('remove <i class="fa fa-times"></i>')
+           .html('<i class="fa fa-times"></i>')
            .click(function(e) {
              duckburg.orders.unstageItemFromOrder(e);
            }))
@@ -1209,19 +1225,6 @@ var duckburg = duckburg || {};
              .html('reset design images')
              .click(function(e) {
 
-                $('.designWithinOrderFormVariables').each(function() {
-                  var idx = this.id.replace('designWithinOrderFormVariables', '');
-                  if (idx == counter) {
-                    for (var i = 0; i < this.children.length; i++) {
-                      if (this.children[i].id == 'design_id') {
-                        if (duckburg.orders.currentlyVisibleDesigns[this.children[i].value]) {
-                          delete duckburg.orders.currentlyVisibleDesigns[this.children[i].value];
-                        }
-                      }
-                    }
-                  }
-                });
-
                 //  duckburg.orders.appendDesignOptions(e.currentTarget.id);
                 var parent = $(e.currentTarget.parentElement);
                 parent
@@ -1365,10 +1368,8 @@ var duckburg = duckburg || {};
        }
      });
 
-     // Update the stored information.  Give images a second to load.
-     setTimeout(function() {
-        duckburg.orders.autoSave();
-     }, 500);
+     // Once images have been rendered, do an autoSave just in case.
+     duckburg.orders.autoSave();
    },
 
    // Actively store each used design's details as the user edits the order.
@@ -1397,8 +1398,8 @@ var duckburg = duckburg || {};
        }
      });
 
-     // After any design is updated, save the current order and all designs.
-     duckburg.orders.autoSave();
+    //  // After any design is updated, save the current order and all designs.
+    //  duckburg.orders.autoSave();
    },
 
    // Remove an image from within a design.
@@ -1501,18 +1502,20 @@ var duckburg = duckburg || {};
          for (var i = 0; i < kids.length; i++) {
            var el = kids[i];
            if (el.id == 'design_images_list')  {
+
               var imgList = el.value;
-              var imgArray = imgList.split(',');
-              imgArray.push(result._url);
 
-              if (imgArray[0] == '') {
-                imgArray.splice(0, 1);
+              if (result) {
+                  var imgArray = imgList.split(',');
+                  imgArray.push(result._url);
+                  if (imgArray[0] == '') {
+                    imgArray.splice(0, 1);
+                  }
+                  // Append the images to the div.
+                  duckburg.orders.appendImagesToDesignImageHolder(
+                      imgArray, inputCounter);
+                  el.value = imgArray.join(',');
               }
-
-              // Append the images to the div.
-              duckburg.orders.appendImagesToDesignImageHolder(
-                  imgArray, inputCounter);
-              el.value = imgArray.join(',');
            }
          }
        }
@@ -1682,8 +1685,16 @@ var duckburg = duckburg || {};
 
    // Unstage a design from the current order.
    unstageItemFromOrder: function(e) {
+
+     // Remove item from memory.
+     var itemId = $(e.currentTarget).next().val();
+     if (duckburg.orders.currentlyVisibleItems[itemId]) {
+       delete duckburg.orders.currentlyVisibleItems[itemId];
+     }
+
      var parent = e.currentTarget.parentElement;
      $('#' + parent.id).remove();
+
    },
 
    // Iterate over all designs and set a readable design id.
@@ -1719,6 +1730,9 @@ var duckburg = duckburg || {};
     $('.designWithinOrderFormVariables').each(function(item) {
       duckburg.orders.saveDesignDetails(this, item);
     });
+
+    // Now save all the orders.
+    duckburg.orders.saveGlobalOrderDetails();
   },
 
   // Save the details of a design.
@@ -1742,7 +1756,7 @@ var duckburg = duckburg || {};
 
       // Store key/values for each input id and its value.
       } else {
-          designObj[input.id] = input.value;
+        designObj[input.id] = input.value;
       }
     }
 
@@ -1821,6 +1835,7 @@ var duckburg = duckburg || {};
     newItem.save(null, {
       success: function(result) {
         duckburg.orders.storeDesignDetails(result, count + 1);
+        duckburg.orders.autoSave();
       },
       error: function(result, error) {
         duckburg.errorMessage(error.message);
@@ -1832,6 +1847,9 @@ var duckburg = duckburg || {};
   // create catalog items for them.
   storeAndSaveAllCatalogItems: function() {
 
+    // Need this scoped outside the loop.
+    var paramCount = 0;
+
     // Iterate over each open catalog item.  Store name last.  That way,
     // if name is the only parameter, we know if is not worth storing this
     // catalog item, as it has no content.
@@ -1839,7 +1857,7 @@ var duckburg = duckburg || {};
 
       var itemId;
       var catalogItem = {};
-      var paramCount = 0;
+      paramCount = 0;
 
       // Pass over all child elements of a catalog item and get details from them.
       var kids = this.children;
@@ -1960,6 +1978,10 @@ var duckburg = duckburg || {};
       // determine if this is an item in need of creating or updating.
       duckburg.orders.saveOrUpdateCatalogItem(itemId, catalogItem, currentCount);
     });
+
+    if (paramCount == 0) {
+      duckburg.orders.saveGlobalOrderDetails();
+    }
   },
 
   // Given a catalog item, its id and location (count), updated or create
@@ -1969,52 +1991,37 @@ var duckburg = duckburg || {};
 
     // If there is an id, it is an existing design.  Else we create one.
     if (id) {
-      duckburg.orders.updateExistingCatalogItem(id, catalogItem, count);
+      catalogItem.sizes = duckburg.orders.getItemSizes(count);
+      duckburg.orders.currentlyVisibleItems[id] = catalogItem;
     } else {
       duckburg.orders.saveNewCatalogItem(catalogItem, count);
     }
 
-    // Take another pass at saving the entire order.
-    duckburg.orders.saveGlobalOrderDetails();
+    // Next save all the designs.
+    duckburg.orders.storeAndSaveAllDesigns();
   },
 
-  // Update an existing catalog item.
-  updateExistingCatalogItem: function(id, catalogItem, count) {
-
-    // Instantiate a catalog item.
-    var DbObject = Parse.Object.extend('dbCatalogItem');
-    var query = new Parse.Query(DbObject);
-
-    // Get the actual parse object by its ID.
-    query.get(id, {
-      success: function(result) {
-
-        // Update the parameters of the existing Item that was just returned.
-        for (var param in catalogItem) {
-          result.set(param, catalogItem[param]);
-          if (param == 'item_name') {
-            result.set('parse_search_string', catalogItem[param].toLowerCase());
+  // Get sizes for a catalog item.
+  getItemSizes: function(count) {
+    var sizeObj = {};
+    var sizeDiv = $('#catItemWithinOrderSizeOptions_' + count).children();
+    for (var i = 0; i < sizeDiv.length; i++) {
+      var el = sizeDiv[i];
+      if (el.className == 'sizeLabelAndCountHolder') {
+        for (var j = 0; j < $(el).children().length; j++) {
+          var item = $(el).children()[j];
+          if (item.className == 'sizeNameLabel') {
+            var size = item.innerHTML;
+            size = size.replace(/:/g, '');
+            size = size.replace(/ /g, '');
+          }
+          if (item.className == 'sizeInput') {
+            sizeObj[size] = item.value || 0;
           }
         }
-
-        // After existing item is updated, save it.
-        result.save(null, {
-          success: function(savedItem) {
-            // updated catalog item
-            if (!duckburg.orders.currentlyVisibleItems[savedItem.id]) {
-              duckburg.orders.currentlyVisibleItems[savedItem.id] =
-                  savedItem.attributes;
-            }
-          },
-          error: function(result, error) {
-            // pass
-          }
-        });
-      },
-      error: function(result, error) {
-        duckburg.errorMessage(error.message);
       }
-    });
+    }
+    return sizeObj;
   },
 
   // Create a new catalog item.
@@ -2039,9 +2046,16 @@ var duckburg = duckburg || {};
     // Save new object.
     newItem.save(null, {
       success: function(result) {
-
+        // updated catalog item
+        if (!duckburg.orders.currentlyVisibleItems[result.id]) {
+          duckburg.orders.currentlyVisibleItems[result.id] =
+              result.attributes;
+        }
         // Set the id of the newly created item in a hidden field.
         duckburg.orders.setIdOfNewCatalogItem(result, count);
+
+        // Save the lastest info.
+        duckburg.orders.autoSave();
       },
       error: function(result, error) {
         duckburg.errorMessage(error.message);
@@ -2081,20 +2095,49 @@ var duckburg = duckburg || {};
       return;
     }
 
+    // Store a global that tells us that an active order is up.  This helps
+    // us stop the user from navigating away from this page.
+    if (!duckburg.orders.activeOrderExists) {
+      duckburg.orders.activeOrderExists = true;
+    }
+
     // Clear the timer that is attempting to save the order.
     if (duckburg.orders.timerForSavingOrder) {
       window.clearInterval(duckburg.orders.timerForSavingOrder);
+    }
+
+    // Don't autosave if the last button clicked was the order status updater.
+    if (duckburg.orders.updatingOrderStatus) {
+      duckburg.orders.updatingOrderStatus = false;
+      return;
     }
 
     // With an initial timer, save the design info, then the catalog
     // item info.
     duckburg.orders.timerForSavingOrder = setTimeout(function() {
 
-        duckburg.orders.storeAndSaveAllDesigns();
+        // Keep track of customers, items and designs selected.
+        duckburg.orders.getBillingAndShippingCustomer();
+
+        // Store and save all designs and items, then save the order itself.
+        // Call to global order save gives a server side save of the
+        // designs and items.  We wrap it all in one request so we don't have
+        // to sit waiting on multiple callbacks.
         duckburg.orders.storeAndSaveAllCatalogItems();
-        duckburg.orders.saveGlobalOrderDetails();
 
     }, duckburg.orders.saveInterval);  // Pause so that saving isn't constant.
+  },
+
+  // Record the billing/shipping customer.
+  getBillingAndShippingCustomer: function() {
+    var i = 1;
+    for (var cust in duckburg.orders.currentlyVisibleCustomers) {
+        duckburg.orders.currentlyVisibleCustomers[cust].isShip =
+          $('.cwoIsShipping_' + i).is(':checked');
+        duckburg.orders.currentlyVisibleCustomers[cust].isBill =
+          $('.cwoIsBilling_' + i).is(':checked');
+        i++;
+    }
   },
 
   // Get the list of item ids (and sizes) for saving.
@@ -2125,6 +2168,7 @@ var duckburg = duckburg || {};
                 var sizeBox = sizeBoxes[j];
                 if (sizeBox.className == 'sizeNameLabel') {
                   var sizeName = sizeBox.innerHTML.replace(':', '');
+                  sizeName = sizeBox.innerHTML.replace(/ /g, '');
                 }
                 if (sizeBox.className == 'sizeInput') {
                   var quantity = sizeBox.value || 0;
@@ -2155,15 +2199,11 @@ var duckburg = duckburg || {};
 
   // Save/update the current order.
   saveGlobalOrderDetails: function() {
+
+    // Set an 'order saving' notification.
     $('.orderSavedStatusNub')
       .attr('class', 'orderSavedStatusNub visible gray')
       .html('<i class="fa fa-circle-o-notch fa-spin"></i> saving order...');
-
-    // Store a global that tells us that an active order is up.  This helps
-    // us stop the user from navigating away from this page.
-    if (!duckburg.orders.activeOrderExists) {
-      duckburg.orders.activeOrderExists = true;
-    }
 
     // Get parse object id.
     var parseId = $('#parse_order_id').val();
@@ -2186,29 +2226,27 @@ var duckburg = duckburg || {};
     // Set an order status.
     orderObject.order_status = $('.jobStatusField').html();
 
-    // Get the catalog items for the orders.
-    orderObject.items = duckburg.orders.getItemsForSaving();
+    // Get some globally available order details.
+    orderObject.items = duckburg.orders.currentlyVisibleItems;
+    orderObject.customers = duckburg.orders.currentlyVisibleCustomers;
 
-    // Get the customer info for the order.  If none exists, make it an empty
-    // list for easy evaluation below.
-    orderObject.customers = $('#order_customer_object').val() || [];
+    // Check if there are any customers and/or items.
+    var noprops = true;
+    var hasCustomers = false;
+    var hasItems = false;
 
-    // Store some easily accessible customer details.
-    var custCount = 0;
-    for (var customer in duckburg.orders.currentlyVisibleCustomers) {
-      if (custCount == 0) {
-        var cust = duckburg.orders.currentlyVisibleCustomers[customer];
-        orderObject.primary_customer = {}
-        orderObject.primary_customer.name = cust.first_name;
-        orderObject.primary_customer.email = cust.email_address;
-        orderObject.primary_customer.phone = cust.phone_number;
-      }
-      custCount++;
+    for (var cust in duckburg.orders.currentlyVisibleCustomers) {
+      noprops = false;
+      hasCustomers = true;
+    }
+
+    for (var cust in duckburg.orders.currentlyVisibleItems) {
+      noprops = false;
+      hasItems = true;
     }
 
     // If no customers and no items.
-    if (!orderObject.items.length && !orderObject.customers.length) {
-
+    if (noprops) {
       duckburg.orders.hideSavingProgressNub();
       return;
 
@@ -2219,7 +2257,7 @@ var duckburg = duckburg || {};
       if (!orderObject.order_name || orderObject.order_name == '') {
 
         // An item has been added, but its nothing yet, don't save.
-        if (orderObject.items.length == 1 && orderObject.items[0] == '') {
+        if (!hasItems) {
 
           duckburg.orders.hideSavingProgressNub();
           return;
@@ -2242,16 +2280,7 @@ var duckburg = duckburg || {};
       // Note that an order is being saved (prevents same order from being
       // saved twice in an instant).
       duckburg.orders.savingOrder = true;
-
-      if (parseId && parseId != '') {
-
-        // Save an existing order's details.
-        duckburg.orders.saveOrderDetails(parseId, orderObject);
-      } else {
-
-        // Create the new order.
-        duckburg.orders.createNewOrder(orderObject);
-      }
+      duckburg.orders.saveOrderDetails(parseId, orderObject);
     }
   },
 
@@ -2268,35 +2297,76 @@ var duckburg = duckburg || {};
   // Save an existing order's details.
   saveOrderDetails: function(parseId, orderObject) {
 
-    // This should only fail on the first save.  Once we've loaded an
-    // order, it is stored in this variable.
-    if (!duckburg.orders.currentOrder) {
+    var objToSend = {};
+    objToSend.id = parseId;
+    objToSend.obj = orderObject;
+    console.log(objToSend);
+    var json = JSON.stringify(objToSend);
 
-      // Instantiate a parse order object.
-      var DbObject = Parse.Object.extend('dbOrder');
-      var query = new Parse.Query(DbObject);
+    $.ajax({
+         url: '/saveOrder/',
+         contentType: 'application/json',
+         type: 'GET',
+         data: json,
+         success: function(msg) {
+           if (!msg.success) {
+             duckburg.orders.errorSavingProcedure();
+           } else {
 
-      // Get the order, and store it in the currentOrder global above.  Then,
-      // we can recursively call this function.  This routine stops us from
-      // having to fetch the order object from the db every time we want to
-      // save it.  It turns saving an object into a 1 call routine.
-      query.get(parseId, {
-        success: function(result) {
+             var result = msg.order;
 
-          // Store the object globally and save the new details.
-          duckburg.orders.currentOrder = result;
-          duckburg.orders.saveOrderDetails(parseId, orderObject);
-        },
-        error: function(result, error) {
-          errorCb(error.message);
-        }
+             // Set the hidden input which contains the order id.
+             $('#parse_order_id').val(result.objectId);
+
+             // User can now navigate away if they like, order is not 'actively'
+             // being saved.
+             duckburg.orders.activeOrderExists = false;
+
+             // Now that order has finished saving, a new request to save/update
+             // will not be blocked.
+             duckburg.orders.savingOrder = false;
+
+             // Redirect to the home page.
+             if (duckburg.orders.exitOnSave) {
+               window.location.href = duckburg.orders.homePage;
+             }
+
+             // Wait 2 sec and then note that the order is updated.  Without this
+             // timer, the notification nub updates a bit too frequently.  This way
+             // if the user continues to type, the 'order saving' progress indicator
+             // will appear constantly.
+             setTimeout(function() {
+               $('.orderSavedStatusNub')
+                 .attr('class', 'orderSavedStatusNub visible green')
+                 .html('<i class="fa fa-save"></i> order saved')
+                 .click(function(e) {
+                   duckburg.orders.exitOnSave = true;
+                   duckburg.orders.autoSave();
+                 });
+             }, 200);
+           }
+
+         },
+         error: function(err) {
+           duckburg.orders.errorSavingProcedure();
+         }
       });
-    } else {
+  },
 
-      // Finish the process of saving an order.
-      duckburg.orders.finishSavingOrder(
-          duckburg.orders.currentOrder, orderObject);
-    }
+  // There was an error saving the order.
+  errorSavingProcedure: function() {
+
+    // User can now navigate away if they like, order is not 'actively'
+    // being saved.
+    duckburg.orders.activeOrderExists = false;
+
+    // Now that order has finished saving, a new request to save/update
+    // will not be blocked.
+    duckburg.orders.savingOrder = false;
+
+    $('.orderSavedStatusNub')
+      .attr('class', 'orderSavedStatusNub visible red')
+      .html('<i class="fa fa-warning"></i> issue saving');
   },
 
   // Create a new order.
@@ -2342,17 +2412,11 @@ var duckburg = duckburg || {};
     dbItem.save(null, {
       success: function(result) {
 
-        duckburg.requests.logOrder(result, created);
-
         // Save the current order globally.
         duckburg.orders.currentOrder = result;
 
         // Set the hidden input which contains the order id.
         $('#parse_order_id').val(result.id);
-
-        // Make sure the url bar now reads /orders/ORDER-NUMBER
-        var orderUrl = '/order/' + result.attributes.readable_id;
-        window.history.replaceState('Object', 'Title', orderUrl);
 
         // User can now navigate away if they like, order is not 'actively'
         // being saved.

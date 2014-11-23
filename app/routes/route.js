@@ -2,7 +2,16 @@
 // Main route handler.
 // __________________________________________
 
-module.exports = function(app, passport) {
+// Get the Parse API set up.
+var config 				= require('../config');
+
+var Parse 				= require('parse').Parse;
+Parse.initialize(config.key, config.token);
+
+// Import some helpers.
+var orderSaver 		= require('../orderSaver');
+
+module.exports = function(app) {
 
 	//***********************
 	//***********************
@@ -10,7 +19,6 @@ module.exports = function(app, passport) {
 	//***********************
 	//***********************
 	app.get('/', function(req, res) {
-
 			// Render something to a jade template.
 			res.render('index.jade');
 	});
@@ -70,6 +78,23 @@ module.exports = function(app, passport) {
 
 			// Render something to a jade template.
 			res.render('index.jade', { object : objectType });
+	});
+
+
+	// Saving an order.
+	app.get('/saveOrder/', function(req, res) {
+
+			var json;
+			for (var item in req.query) {
+				json = JSON.parse(item);
+			}
+
+			if (json.id) {
+				orderSaver.saveOrder(json, res, Parse);
+			} else {
+				orderSaver.createOrder(json.obj, res, Parse);
+			}
+
 	});
 
 };

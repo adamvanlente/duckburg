@@ -302,45 +302,11 @@ duckburg.requests = {
             // Design was saved.
             var item = savedItem.attributes;
             item.id = savedItem.id;
-            if (!duckburg.orders.currentlyVisibleDesigns[savedItem.id]) {
-              duckburg.orders.currentlyVisibleDesigns[savedItem.id] =
-                  savedItem.attributes;
-            }
-
           },
           error: function(result, error) {
             // pass
           }
         });
-      },
-      error: function(result, error) {
-        duckburg.errorMessage(error.message);
-      }
-    });
-  },
-
-  logOrder: function(order, created) {
-
-    var DbObject = Parse.Object.extend('dbOrderHistory');
-    var newItem = new DbObject();
-
-    // Store what we know about the order
-    newItem.set('order_id', order.id)
-    newItem.set('order', JSON.stringify(order.attributes));
-    newItem.set('user', duckburg.curUser.attributes.username);
-    newItem.set('status', order.attributes.order_status);
-    newItem.set('designs', JSON.stringify(duckburg.orders.currentlyVisibleDesigns));
-    newItem.set('items', JSON.stringify(duckburg.orders.currentlyVisibleItems));
-    newItem.set('customers', JSON.stringify(duckburg.orders.currentlyVisibleCustomers));
-
-    // store an action.
-    var action = created ? 'created' : 'updated';
-    newItem.set('action', action);
-
-    // Save the dang thing.
-    newItem.save(null, {
-      success: function(result) {
-        // Stow and go.
       },
       error: function(result, error) {
         duckburg.errorMessage(error.message);
