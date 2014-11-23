@@ -24,6 +24,7 @@ var duckburg = duckburg || {};
 
      // Keep track of customers, items and designs selected.
      duckburg.orders.currentlyVisibleCustomers = {};
+     duckburg.orders.currentlyVisibleDesigns = {};
      duckburg.orders.currentlyVisibleItems = {};
 
      // A mode that helps us run certain functions only when orders are up.
@@ -428,6 +429,7 @@ var duckburg = duckburg || {};
      $('.popupItemHolder')
        .html('')
        .show()
+       .css({'left': '10%', 'right': '10%'})
        .append($('<div>')
          .attr('class', 'newCustomerForm'))
        .append($('<div>')
@@ -813,9 +815,6 @@ var duckburg = duckburg || {};
    // Allow the customer to configure a new item for their order.
    addNewCatalogItemToOrderForm: function() {
 
-     // Set all the form elements for a new item/design within
-     // the order form.
-     var formDiv = $('.catalogItemWithinOrder');
      var model = duckburg.models['dbCatalogItem'];
      var values = model.values;
 
@@ -827,11 +826,14 @@ var duckburg = duckburg || {};
      var bgColor = designCount % 2 == 0 ?
         'rgb(216, 216, 216)' : 'rgb(229, 229, 229)';
 
-     $('.openOrderCatalogItemHolder')
-       .append($('<div>')
-         .attr('class', 'catalogItemWithinOrder')
-         .attr('id', 'design_no_' + designCount)
-         .css({'background': bgColor })
+    // Set all the form elements for a new item/design within
+    // the order form.
+    var formDiv = $('<div>')
+      .attr('class', 'catalogItemWithinOrder')
+      .attr('id', 'design_no_' + designCount)
+      .css({'background': bgColor });
+
+       formDiv
          .append($('<span>')
            .attr('class', 'designInFormDesignId'))
 
@@ -842,41 +844,48 @@ var duckburg = duckburg || {};
            .attr('id', 'designInFormDesignName_' + designCount)
            .attr('placeholder', 'name for design'))
 
+         // Button for minimizing the order details.
+         .append($('<button>')
+           .attr('class', 'designInFormMinimizeButton')
+           .html('<i class="fa fa-minus"></i>')
+           .click(function(e) {
+             console.log('min')
+           }))
+
          // Button for removing (unstaging) the design from the order.
          .append($('<button>')
            .attr('class', 'designInFormRemoveButton')
            .html('<i class="fa fa-times"></i>')
            .click(function(e) {
-             duckburg.orders.unstageItemFromOrder(e);
+             duckburg.orders.confirmUnstageItemFromOrder(e);
            }))
 
          // Hidden field to holde the catalog item id.
          .append($('<input>')
            .attr('type', 'hidden')
            .attr('class', 'catalogItemId')
-           .attr('id', 'catalogItemId_' + designCount))
-         );
+           .attr('id', 'catalogItemId_' + designCount));
+
+     $('.openOrderCatalogItemHolder').append(formDiv);
 
      // Append inputs for product details and product price.
-     duckburg.orders.appendProductInfoInputs();
+     duckburg.orders.appendProductInfoInputs(designCount);
 
      // Append some options for the sizes.
-     duckburg.orders.appendSizeOptions();
+     duckburg.orders.appendSizeOptions(designCount);
 
      // Append two design choices: new or existing
-     duckburg.orders.appendDesignOptions();
+     duckburg.orders.appendDesignOptions(designCount);
 
      // Set ids for each present design.
-     duckburg.orders.setDesignIdsForUI();
+     duckburg.orders.setDesignIdsForUI(designCount);
 
      // Set the various order options for selection.
-     duckburg.orders.setOrderOptions();
+     duckburg.orders.setOrderOptions(designCount);
    },
 
    // Append inputs for product type, color, price, etc.
-   appendProductInfoInputs: function() {
-
-     var designCount = $('.catalogItemWithinOrder').length;
+   appendProductInfoInputs: function(designCount) {
 
      $('#design_no_' + designCount)
 
@@ -1089,25 +1098,31 @@ var duckburg = duckburg || {};
 
      // If the new size is not blank (and it is not already shown)
      // add it to the sizes.
-     if (newSizeVal && newSizeVal != '') {
-       var sizeHolder = spanWithInput.parentElement;
-       for (var j = 0; j < sizeHolder.children.length; j++) {
-          var sizeSpan = sizeHolder.children[j];
-          var sizeId = sizeSpan.id;
-          var size = sizeId.replace('size_', '').split('_')[0];
-          for (var k = 0; k < sizeSpan.children.length; k++) {
-            var sizeArea = sizeSpan.children[k];
-            if (sizeArea.className == 'sizeInput') {
-              currentSizes[size] = sizeArea.value || 0;
-            }
-          }
-       }
+     var sizeHolder = spanWithInput.parentElement;
+     for (var j = 0; j < sizeHolder.children.length; j++) {
 
-       // Don't add a size if it already exists.
-       if (!currentSizes[newSizeVal]) {
-         currentSizes[newSizeVal] = 0;
-       }
+        var sizeSpan = sizeHolder.children[j];
+        var sizeId = sizeSpan.id;
+        var size = sizeId.replace('size_', '').split('_')[0];
+        for (var k = 0; k < sizeSpan.children.length; k++) {
+          var sizeArea = sizeSpan.children[k];
+
+          if (sizeArea.className == 'sizeNameLabel') {
+            var sizeName =
+                sizeArea.innerHTML.replace(/ /g, '').replace(/:/g, '');
+          }
+
+          if (sizeArea.className == 'sizeInput') {
+            currentSizes[sizeName] = sizeArea.value || 0;
+          }
+        }
      }
+
+     // Don't add a size if it already exists.
+     if (!currentSizes[newSizeVal]) {
+       currentSizes[newSizeVal] = 0;
+     }
+
 
      // Now we have a dictionary of all sizes and their quantities.  Add
      // this dictionary into the UI.
@@ -1224,6 +1239,19 @@ var duckburg = duckburg || {};
              .attr('id', counter)
              .html('reset design images')
              .click(function(e) {
+
+                $('.designWithinOrderFormVariables').each(function() {
+                  var idx = this.id.replace('designWithinOrderFormVariables', '');
+                  if (idx == counter) {
+                    for (var i = 0; i < this.children.length; i++) {
+                      if (this.children[i].id == 'design_id') {
+                        if (duckburg.orders.currentlyVisibleDesigns[this.children[i].value]) {
+                          delete duckburg.orders.currentlyVisibleDesigns[this.children[i].value];
+                        }
+                      }
+                    }
+                  }
+                });
 
                 //  duckburg.orders.appendDesignOptions(e.currentTarget.id);
                 var parent = $(e.currentTarget.parentElement);
@@ -1538,7 +1566,7 @@ var duckburg = duckburg || {};
      $('.popupItemHolder')
        .show()
        .html('')
-
+       .css({'left': '10%', 'right': '10%'})
        // Input for the user to enter their search term.
        .append($('<input>')
          .attr('type', 'text')
@@ -1686,6 +1714,10 @@ var duckburg = duckburg || {};
    // Unstage a design from the current order.
    unstageItemFromOrder: function(e) {
 
+     e = e || duckburg.orders.currentUnstageEvent;
+
+     $('.popupItemHolder').hide();
+     $('.offClicker').hide();
      // Remove item from memory.
      var itemId = $(e.currentTarget).next().val();
      if (duckburg.orders.currentlyVisibleItems[itemId]) {
@@ -1694,7 +1726,44 @@ var duckburg = duckburg || {};
 
      var parent = e.currentTarget.parentElement;
      $('#' + parent.id).remove();
+   },
 
+   // Confirm that a user wants to unstage an order item.
+   confirmUnstageItemFromOrder: function(e) {
+
+     duckburg.orders.currentUnstageEvent = e;
+
+     // Create an offclicker to hide the design.
+     $('.offClicker')
+       .show()
+       .click(function() {
+         duckburg.orders.currentUnstageEvent = false;
+         $('.popupItemHolder').hide();
+         $('.offClicker').hide();
+       });
+
+    $('.popupItemHolder')
+      .css({'left': '35%', 'right': '35%'})
+      .show()
+      .html('')
+      .append($('<span>')
+        .append($('<label>')
+          .html('Are you sure you want to remove this design?'))
+        .attr('class', 'confirmRemoveDesignDialog')
+        .append($('<button>')
+          .html('cancel')
+          .attr('class', 'cancel')
+          .click(function() {
+            duckburg.orders.currentUnstageEvent = false;
+            $('.popupItemHolder').hide();
+            $('.offClicker').hide();
+          }))
+        .append($('<button>')
+          .html('remove')
+          .attr('class', 'remove')
+          .click(function() {
+            duckburg.orders.unstageItemFromOrder();
+          })));
    },
 
    // Iterate over all designs and set a readable design id.
@@ -1764,6 +1833,7 @@ var duckburg = duckburg || {};
     // can simply be updated.  Otherwise, it is a new design and must be
     // created.
     if (id && id != '') {
+      duckburg.orders.currentlyVisibleDesigns[id] = designObj;
       duckburg.requests.updateDesign(id, designObj);
     } else {
       duckburg.orders.createNewDesign(designObj, count);
@@ -2118,6 +2188,7 @@ var duckburg = duckburg || {};
 
         // Keep track of customers, items and designs selected.
         duckburg.orders.getBillingAndShippingCustomer();
+        duckburg.orders.currentlyVisibleDesigns = {};
 
         // Store and save all designs and items, then save the order itself.
         // Call to global order save gives a server side save of the
@@ -2229,6 +2300,20 @@ var duckburg = duckburg || {};
     // Get some globally available order details.
     orderObject.items = duckburg.orders.currentlyVisibleItems;
     orderObject.customers = duckburg.orders.currentlyVisibleCustomers;
+    orderObject.designs = duckburg.orders.currentlyVisibleDesigns;
+
+    if ($('.customerWithinOrder').length > 0) {
+      var custElements = $('.customerWithinOrder')[0].children;
+      for (var i = 0; i < custElements.length; i++) {
+        var el = custElements[i];
+        if (el.className == 'cwoName') {
+          orderObject.cust_name = el.innerHTML;
+        }
+        if (el.className == 'cwoPhone') {
+          orderObject.phone_number = el.innerHTML;
+        }
+      }
+    }
 
     // Check if there are any customers and/or items.
     var noprops = true;
@@ -2280,7 +2365,13 @@ var duckburg = duckburg || {};
       // Note that an order is being saved (prevents same order from being
       // saved twice in an instant).
       duckburg.orders.savingOrder = true;
-      duckburg.orders.saveOrderDetails(parseId, orderObject);
+
+      if (parseId) {
+        duckburg.orders.saveOrderDetails(parseId, orderObject);
+      } else {
+        duckburg.orders.createNewOrder(orderObject);
+      }
+
     }
   },
 
@@ -2300,7 +2391,8 @@ var duckburg = duckburg || {};
     var objToSend = {};
     objToSend.id = parseId;
     objToSend.obj = orderObject;
-    console.log(objToSend);
+    console.log(objToSend.obj.items);
+
     var json = JSON.stringify(objToSend);
 
     $.ajax({
@@ -2312,7 +2404,7 @@ var duckburg = duckburg || {};
            if (!msg.success) {
              duckburg.orders.errorSavingProcedure();
            } else {
-
+             console.log(msg);
              var result = msg.order;
 
              // Set the hidden input which contains the order id.

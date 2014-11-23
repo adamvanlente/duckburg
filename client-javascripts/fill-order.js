@@ -82,7 +82,6 @@ duckburg.fillOrder = {
 
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
-      console.log(item, i, items);
       item.idx = i + 1;
       duckburg.requests.findCatalogItem(
           item, duckburg.fillOrder.fillInCatalogItem);
@@ -92,6 +91,11 @@ duckburg.fillOrder = {
 
 
   fillInCatalogItem: function(result, item) {
+
+    // Load up the catalog items.
+    if (!duckburg.orders.currentlyVisibleItems[result.id]) {
+      duckburg.orders.currentlyVisibleItems[result.id] = result.attributes;
+    }
 
     // Create the holder for the catalog item.
     duckburg.orders.addNewCatalogItemToOrderForm();
@@ -113,13 +117,23 @@ duckburg.fillOrder = {
     // Fill in the design (images).
     duckburg.fillOrder.populateDesignImages(item.idx, atrb.design);
 
-    // Load sizes.
+
     duckburg.fillOrder.populateSizes(item.idx, item.sizes);
   },
 
   // Populate the size fields.
   populateSizes: function(index, sizes) {
       sizes = JSON.parse(sizes);
+
+      var sizeProp = 0;
+      for (var size in sizes) {
+        sizeProp++;
+      }
+
+      if (sizeProp == 0) {
+        sizes = duckburg.orders.standardSizes;
+      }
+
       var parent = $('#catItemWithinOrderSizeOptions_' + index);
       duckburg.orders.addSizesToAnOrderItem(index, sizes, parent);
   },

@@ -15,6 +15,10 @@ orderSave = {
     var id = orderObject.id;
     var attribs = orderObject.obj;
 
+    // Save customers and catalog items.
+    orderSave.saveCustomers(attribs.customers, Parse, res);
+    orderSave.saveCatalogItems(attribs.items, Parse, res);
+
     // Store the attribues.
     orderSave.attribs = attribs;
 
@@ -66,8 +70,10 @@ orderSave = {
         // Save the updated order Object.
         orderSave.existingOrder = existingOrder;
 
-        // Kick off the side tasks of updating the sub-objects.
-        orderSave.saveCustomers(attribs.customers, Parse, res);
+        res.json({
+          'success': true,
+          'order': orderSave.existingOrder
+        });
       },
 
       error: function(object, error) {
@@ -82,58 +88,52 @@ orderSave = {
 
   saveCatalogItems: function(items, Parse, res) {
 
+    for (var item in items) {
+      orderSave.catalogItemRequest(item, items, Parse);
+    }
+  },
+
+  catalogItemRequest: function(item, items, Parse) {
     // Create a new order object.
     var CatalogItem = Parse.Object.extend("dbCatalogItem");
     var query = new Parse.Query(CatalogItem);
 
-    for (var item in items) {
-      query.get(item, {
-        success: function(existingItem) {
+    query.get(item, {
+      success: function(existingItem) {
 
-          // Update the existing order.
-          var parseSearchString = '';
+        // Update the existing order.
+        var parseSearchString = '';
 
-          var props = items[item];
-          for (var prop in props) {
-            var val = props[prop];
-            existingItem.set(prop, val);
-            if (prop == 'item_name') {
-              parseSearchString = val;
-            }
+        var props = items[item];
+
+        for (var prop in props) {
+
+          var val = props[prop];
+          console.log(item, prop, val);
+          existingItem.set(prop, val);
+          if (prop == 'item_name') {
+            parseSearchString = val;
           }
-
-          existingItem.set('parse_search_string', parseSearchString);
-          existingItem.save();
-
-          res.json({
-            'success': true,
-            'order': orderSave.existingOrder
-          });
-
-          return;
-        },
-
-        error: function(object, error) {
-          res.json({
-            'success': false,
-            'order': error.message
-          });
-          return;
         }
-      });
-    }
 
-    res.json({
-      'success': true,
-      'order': orderSave.existingOrder
+        existingItem.set('parse_search_string', parseSearchString);
+        existingItem.save();
+      },
+
+      error: function(object, error) {
+        res.json({
+          'success': false,
+          'order': error.message
+        });
+      }
     });
-
   },
 
   saveCustomers: function(customers, Parse, res) {
 
+    var custCount = 0;
     for (var customer in customers) {
-
+      custCount++;
       var attributes = customers[customer];
 
       // Create a new order object.
@@ -154,10 +154,6 @@ orderSave = {
           }
           existingCustomer.set('parse_search_string', parseSearchString);
           existingCustomer.save();
-
-          // Save the catalog items.
-          orderSave.saveCatalogItems(orderSave.attribs.items, Parse, res);
-          return
         },
 
         error: function(object, error) {
@@ -165,12 +161,8 @@ orderSave = {
             'success': false,
             'order': error.message
           });
-          return;
         }
       });
     }
-
-    // Save the catalog items.
-    orderSave.saveCatalogItems(orderSave.attribs.items, Parse, res);
   }
 }

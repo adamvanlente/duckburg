@@ -91,7 +91,8 @@ duckburg.main = {
     var o = order.attributes;
 
     // For displaying number of items.
-    var items = JSON.parse(o.items);
+    var items = o.items || [];
+    items = JSON.parse(items);
     items.length = items.length || 0;
     var designCountLabel = items.length == 1 ? ' design' : ' designs';
 
@@ -99,16 +100,16 @@ duckburg.main = {
     var totalItems = 0;
     for (var i = 0; i < items.length; i++) {
       var catItem = items[i];
-      var sizes = JSON.parse(catItem.sizes);
-
-      for (var size in sizes) {
-        totalItems += parseInt(sizes[size]);
+      if (catItem.sizes) {
+        var sizes = JSON.parse(catItem.sizes);
+        for (var size in sizes) {
+          totalItems += parseInt(sizes[size]);
+        }
       }
     }
 
-    var customer = JSON.parse(o.primary_customer);
-    var name = customer.name || '<em>(no name)</em>';
-    var phone = customer.phone || '<em>(no phone)</em>';
+    var name = o.cust_name || '(no name)';
+    var phone = o.phone_number || '(phone number)';
 
     // Outer holder for the order.
     var div = $('<div>')
@@ -153,7 +154,4 @@ duckburg.main = {
     $('.wrapper-content').append(div);
 
   }
-
-
-
 };
