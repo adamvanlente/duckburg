@@ -102,14 +102,14 @@ duckburg.models = {
       'product_family': {
         placeholder: 'Family for product ',
         input: 'text',
-        input_size: 'third',
+        input_size: 'half',
         options: null,
         dbObject: null
       },
       'product_store': {
         placeholder: 'Product store',
         input: 'text',
-        input_size: 'third',
+        input_size: 'half',
         options: null,
         dbObject: {
           type: 'dbStorefront',
@@ -119,7 +119,7 @@ duckburg.models = {
       'product_tags': {
         placeholder: 'Comma separated list of tags',
         input: 'text',
-        input_size: 'third',
+        input_size: 'half',
         options: null,
         dbObject: null,
       },
@@ -127,7 +127,7 @@ duckburg.models = {
       'item_expiration_date': {
         placeholder: 'Items expires on date',
         input: 'date',
-        input_size: 'full',
+        input_size: 'half',
         options: null,
         dbObject: null,
       },
@@ -473,4 +473,4 @@ duckburg.models = {
   // }
 
 
-}
+};

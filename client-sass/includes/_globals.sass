@@ -58,10 +58,20 @@ $doc-width: 800px
 $tablet-width: 600px
 $phone-width: 275px
 
-// Text sizes
-$doc-font-size: 16px
-$tablet-font-size: 18px
-$phone-font-size: 24px
+// Some general width constraints
+// Desktop
+$d-width: 850px
+// Tablet
+$t-width: 600px
+// Phone
+$p-width: 300px
+
+.traditional-width
+  width: $d-width
+  +break-for(ipad)
+    width: $t-width
+  +break-for(iphone)
+    width: $p-width
 
 // Fonts
 .light-font
@@ -106,21 +116,39 @@ body
   z-index: 11
   +trans($easybreezy)
 
-.imageLightboxBlackout
-  @extend .blockOut
-  background: rgba(255,255,255,0.9)
-  z-index: 10001
+.popupDiv
+  display: none
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  z-index: 20
 
-.imageLightboxHolder
+.messageHolder
+  @extend .light-font
+  font-size: 13px
   display: block
-  margin: 50px auto
+  position: fixed
+  left: 40%
+  right: 40%
   padding: 8px
-  height: 350px
-  width: 350px
-  background: white
-  border: 10px solid #E5E5E5
-  box-shadow: 0 0 20px rgba(0,0,0,0.1)
-  // TODO global for image dimensions once we settle on that.
+  color: white
+  text-align: center
+  z-index: 25
+  +trans($easyslider)
+  +break-for(ipad)
+    left: 35%
+    right: 35%
   +break-for(iphone)
-    height: 200px
-    width: 200px
+    left: 10%
+    right: 10%
+
+  &.invisible
+    top: -500px
+  &.visible
+    top: 10px
+  &.success
+    background: $minty-green
+  &.error
+    background: $cancel-red

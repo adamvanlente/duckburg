@@ -1,14 +1,13 @@
-div.menu
-  button.menuAddNewOrderButton
-    | new order
+div.menu.invisible
   
-  button.menuMainButton(onclick="duckburg.main.launch();")
-    i.fa.fa-home
-    | home
-  
-  button.menuObjectsButton
+  a.menuOrdersButton.standardMenuItem(href="/")
+    | orders
+  a.menuPrintingButton.standardMenuItem(href="/printing")
+    | printing
+  a.menuUsersButton.adminOnlyMenuItem(href="/users")
+    | users
+  a.menuObjectsButton.adminOnlyMenuItem(href="/objects")
     | objects
 
-div.objectMenu
-
-div.popupItemHolder
+button.mobileMenuToggler(onclick="duckburg.menu.toggleForMobile()")
+  | menu

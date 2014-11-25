@@ -1,0 +1,100 @@
+.objectsMenu
+  @extend .traditional-width
+  display: block
+  margin: 75px auto 0 auto
+  background: #F1F1F1
+  padding: 4px
+  border-radius: 1px
+  overflow: scroll
+  white-space: nowrap
+  +break-for(iphone)
+    margin: 45px auto 0 auto
+
+  span
+    @extend .light-font
+    @extend .basic-button
+    display: inline-block
+    font-size: 13px
+    margin: 4px 16px
+    color: #333
+    padding: 4px 8px
+    &:hover
+      background: $minty-green
+      color: white
+
+    &.selectedObjectMenuItem
+      background: rgba(51, 51, 51, 0.34)
+      color: white
+
+      &:hover
+        background: $minty-green
+        color: white
+
+.objectsFilter,
+.objectList
+  @extend .traditional-width
+  display: block
+  margin: 8px auto
+
+  span
+    white-space: nowrap
+    &.searchingMessage
+      @extend .light-font
+      display: block
+      color: #777
+      padding: 8px
+      margin: 8px
+      border-radius: 2px
+      font-size: 13px
+      border: 1px solid
+      text-align: center
+
+    &.objectListResultItem
+      @extend .light-font
+      @extend .basic-button
+      display: block
+      color: #333
+      padding: 8px
+      margin: 2px
+      font-size: 13px
+      &:hover
+        background: $minty-green
+        color: white
+
+      &.legend
+        color: #DCDCDC
+        &:hover
+          background: none
+          color: #DCDCDC
+
+      label
+        display: inline-block
+        width: 150px
+        margin-right: 12px
+        overflow: hidden
+        white-space: nowrap
+        cursor: pointer
+
+.objectListFilterInput
+  @extend .light-font
+  @extend .basic-button
+  display: inline-block
+  background: none
+  margin: 10px
+  font-size: 13px
+  padding: 8px 0
+  color: $minty-green
+  border-bottom: 2px solid
+  width: 200px
+
+.objectListAddNewButton
+  @extend .light-font
+  @extend .basic-button
+  font-size: 13px
+  background: #4A8DBD
+  color: white
+  padding: 8px
+  margin-left: 20px
+  &:hover
+    background: #333
+    color: #4A8DBD

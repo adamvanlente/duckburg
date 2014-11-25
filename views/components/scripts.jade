@@ -1,14 +1,6 @@
-if (object)
-  input(type="hidden", value="#{object}", id="makerInput")
-    
-if (order)
-  input(type="hidden", value="#{order}", id="launchOrderForm")
-
 script(type="text/javascript", src="//www.parsecdn.com/js/parse-1.3.1.min.js")
 script(type="text/javascript", src="/js/jquery-min.js")
 script(type="text/javascript", src="/js/production.js")
-
-script(type='text/javascript').
-  duckburg.load();
   
-  
+script(type="text/javascript").
+  duckburg.utils.checkForUser();  

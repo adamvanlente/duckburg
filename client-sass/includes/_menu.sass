@@ -1,69 +1,56 @@
 .menu
-  position: fixed
   display: block
-  top: 30px
-  z-index: 5
-  +break-for(iphone)
-    margin-top: 39px
-
-  button
-    display: inline
-    -webkit-appearance: none
-    border: none
-    text-align: center
-    cursor: pointer
-    padding: 4px 12px
-    +trans($easybreezy)
-    @extend .light-font
-
-// Buttons
-.menuAddNewOrderButton
-  color: #fff
-  background: $minty-green
-  &:hover
-    color: $minty-green
-    background: #333
-
-.menuObjectsButton
-  color: #333
-  background: #CFCDCD
-  &:hover
-    color: #F1F1F1
-    background: #333
-
-.menuMainButton
-  color: white
-  background: #6C94D2
-  &:hover
-    color: #F1F1F1
-    background: #333
-  i
-    margin-right: 4px
-
-
-
-.objectMenu
-  display: none
-  z-index: 1
   position: fixed
-  top: 53px
-  background: rgb(242, 242, 242)
+  left: 0
+  right: 0
+  top: 30px
+  background: $light-gray
 
-  button
-    display: inline
-    -webkit-appearance: none
-    border: none
-    cursor: pointer
-    padding: 4px 12px
-    +trans($easybreezy)
+  +break-for(iphone)
+    top: 0px
+    position: fixed
+    width: 320px
+    max-height: 450px
+    overflow: scroll
+    background: #F1F1F1
+    +trans($easyslider)
+
+    &.invisible
+      left: -1500px
+    &.visible
+      left: 0
+
+  a
+    @extend .basic-button
     @extend .light-font
-
-    &.evenClass
-      color: #333333
-      background: #E2DCDC
-    &.oddClass
-      color: #333333
-      background: #D8D0D0
+    display: inline-block
+    font-size: 12px
+    padding: 8px
+    text-decoration: none
+    color: #333
     &:hover
-      color: #E2DCDC
-      background: #333333
+      color: white
+      background: $minty-green
+
+    +break-for(iphone)
+      font-size: 16px
+      display: block
+      color: white
+      background: $minty-green
+      margin: 4px 0
+
+.mobileMenuToggler
+  @extend .basic-button
+  @extend .light-font
+  display: none
+
+  +break-for(iphone)
+    display: block
+    position: fixed
+    font-size: 18px
+    bottom: 10px
+    right: 10px
+    padding: 4px
+    width: 80px
+    background: $minty-green
+    color: white

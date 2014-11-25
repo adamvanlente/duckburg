@@ -1,7 +1,11 @@
 div.loginForm
-
-  input(type="text", id="login-name", placeholder="name")
-  input(type="password", id="login-pass", placeholder="password")
-
-  button.loginButton
+  
+  input(placeholder="username", id="login_form_username", type="text")
+    
+  input(placeholder="password", id="login_form_pass", type="password")
+    
+  button(onclick="duckburg.utils.login()")
     | login
+    
+div.forgotPassword(onclick="duckburg.utils.forgotPasswordPopup()")
+  | forgot password?

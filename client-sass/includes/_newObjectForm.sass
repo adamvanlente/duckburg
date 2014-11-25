@@ -1,0 +1,98 @@
+.newObjectFormPopup
+  @extend .traditional-width
+  @extend .light-font
+  display: block
+  background: white
+  padding: 8px
+  margin: 50px auto
+  box-shadow: 0 1px 1px rgba(0,0,0,0.2)
+  text-align: center
+  max-height: 500px
+  overflow: scroll
+
+  h3
+    display: block
+    margin: 0 auto
+    text-align: center
+    font-size: 14px
+    text-shadow: 0 1px 1px rgba(0,0,0,0.1)
+    color: #333
+    padding: 4px
+
+  textarea
+    @extend .light-font
+    @extend .basic-button
+    color: #333333
+    padding: 8px 0
+    font-size: 13px
+    border-bottom: 1px solid #dcdcdc
+    margin: 8px
+
+  label
+    color: #333
+    font-size: 13px
+
+  input
+    &[type="text"],
+    &[type="email"],
+    &[type="tel"],
+    &[type="password"],
+    &[type="date"],
+      @extend .light-font
+      @extend .basic-button
+      color: #333333
+      padding: 8px 0
+      font-size: 13px
+      border-bottom: 1px solid #dcdcdc
+      margin: 8px
+
+  textarea,
+  input
+    &.full
+      display: inline-block
+      width: 800px
+      margin: 4px 8px
+      +break-for(ipad)
+        width: 90%
+        margin: 8px auto
+        display: block
+    &.half
+      display: inline-block
+      width: 392px
+      margin: 4px 8px
+      +break-for(ipad)
+        width: 90%
+        margin: 8px auto
+        display: block
+    &.third
+      display: inline-block
+      width: 30%
+      margin: 4px 8px
+      +break-for(ipad)
+        width: 90%
+        margin: 8px auto
+        display: block
+
+.objectFormButtonHolder
+  display: block
+
+.cancelNewObjectForm,
+.submitNewObjectForm
+  @extend .light-font
+  @extend .basic-button
+  padding: 8px
+  margin: 8px
+  color: white
+  font-size: 13px
+
+.cancelNewObjectForm
+  background: $cancel-red
+  &:hover
+    background: #333
+    color: $cancel-red
+
+.submitNewObjectForm
+  background: $minty-green
+  &:hover
+    background: #333
+    color: $minty-green

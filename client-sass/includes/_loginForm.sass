@@ -1,47 +1,100 @@
 .loginForm
-  display: none
-  width: 200px
-  margin: 100px auto
-  padding: 8px
-  border-radius: 1px
+  display: block
+  margin: 60px auto 12px auto
+  width: 250px
   background: $med-light-gray
-
-  +break-for(ipad)
-    width: 400px
-
-  +break-for(iphone)
-    width: $phone-width
-
-  input
-    @extend .serif-font
-    display: block
-    -webkit-appearance: none
-    border: none
-    background: none
-    border-bottom: 1px solid gainsboro
-    width: 95%
-    font-size: 14px
-    margin: 0 auto
-    padding: 16px 0 8px
-    color: #666262
-
-    +break-for(ipad)
-      font-size: 16px
-    +break-for(iphone)
-      font-size: 20px
+  padding: 8px
 
   button
     @extend .light-font
+    @extend .basic-button
     display: block
-    background: $minty-green
-    -webkit-appearance: none
-    border: none
-    margin: 8px auto
-    width: 96%
+    width: 244px
     padding: 8px
-    color: white
+    margin: 0 auto
+    font-size: 13px
     cursor: pointer
-    font-size: 12px
+    background: $minty-green
+    color: white
+    +trans($easybreezy)
+    &:hover
+      background: #333
+      color: $minty-green
 
+  input
+    @extend .light-font
+    @extend .basic-button
+    display: block
+    padding: 8px
+    margin: 4px auto
+    width: 228px
+    font-size: 13px
+
+.forgotPassword
+  @extend .light-font
+  font-size: 13px
+  color: #777
+  display: block
+  width: 250px
+  margin: 0 auto
+  +trans($easybreezy)
+  cursor: pointer
+  text-align: center
+  &:hover
+    opacity: 0.8
+
+.forgotPasswordPopup
+  display: block
+  background: white
+  padding: 24px
+  margin: 50px auto
+  width: 250px
+  border: 1px solid rgba(220, 220, 220, 0.35)
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+
+  label
+    @extend .light-font
+    display: block
+    padding: 4px
+    color: #838181
+    text-align: center
+    font-size: 13px
+
+  input
+    @extend .light-font
+    @extend .basic-button
+    font-size: 13px
+    display: block
+    padding: 8px
+    background: #F1F1F1
+    margin: 4px auto
+    width: 235px
+    +break-for(iphone)
+      font-size: 18px
+
+  button
+    @extend .light-font
+    @extend .basic-button
+    font-size: 13px
+    display: block
+    background: #66c08d
+    color: white
+    padding: 8px
+    width: 250px
+    margin: 4px auto
+    &:hover
+      color: $minty-green
+      background: #333
+    +break-for(iphone)
+      font-size: 18px
+
+  em
+    @extend .light-font
+    display: block
+    font-size: 13px
+    font-style: normal
+    color: $cancel-red
+    text-align: center
+    cursor: pointer
     +break-for(iphone)
       font-size: 18px
