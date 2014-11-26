@@ -31,6 +31,9 @@
   label
     color: #333
     font-size: 13px
+    color: #5141B5
+    display: inline-block
+    padding: 8px
 
   input
     &[type="text"],
@@ -45,6 +48,7 @@
       font-size: 13px
       border-bottom: 1px solid #dcdcdc
       margin: 8px
+      cursor: normal
 
   textarea,
   input
@@ -56,6 +60,8 @@
         width: 90%
         margin: 8px auto
         display: block
+      +break-for(iphone)
+        width: 275px
     &.half
       display: inline-block
       width: 392px
@@ -64,6 +70,8 @@
         width: 90%
         margin: 8px auto
         display: block
+      +break-for(iphone)
+        width: 275px
     &.third
       display: inline-block
       width: 30%
@@ -72,18 +80,22 @@
         width: 90%
         margin: 8px auto
         display: block
+      +break-for(iphone)
+        width: 275px
 
 .objectFormButtonHolder
   display: block
+  padding: 12px
 
 .cancelNewObjectForm,
 .submitNewObjectForm
   @extend .light-font
   @extend .basic-button
-  padding: 8px
+  padding: 4px 12px
   margin: 8px
   color: white
   font-size: 13px
+  width: 100px
 
 .cancelNewObjectForm
   background: $cancel-red
@@ -96,3 +108,131 @@
   &:hover
     background: #333
     color: $minty-green
+
+.inputPopupSelector
+  display: block
+  padding: 4px
+  background: #F1F1F1
+  z-index: 5
+  box-shadow: 0 0 2px rgba(0,0,0,0.1)
+  border: 1px solid rgb(216, 215, 215)
+  z-index: 35
+
+  span
+    @extend .light-font
+    display: block
+    color: #333333
+    background: #E8E7E7
+    padding: 4px 12px
+    margin: 4px 0px
+    font-size: 12px
+    cursor: pointer
+    +trans($easybreezy)
+
+    &:hover
+      color: #fff
+      background: $minty-green
+.relatedObjectResultsHolder
+  display: block
+  min-width: 150px
+  max-height: 150px
+  overflow: scroll
+
+.filterForRelatedObjectPicker
+  @extend .light-font
+  -webkit-appearance: none
+  background: none
+  display: inline-block
+  margin: 2px
+  padding: 2px
+  font-size: 14px
+  color: #777777
+  border: none
+  border-bottom: 2px solid #DCDCDC
+  width: 200px
+
+.makeNewObjectInNewWindow
+  display: inline-block
+  -webkit-appearance: none
+  border: none
+  padding: 5px 8px
+  color: #fff
+  background: $minty-green
+  cursor: pointer
+  text-decoration: none
+  font-size: 12px
+  +trans($easybreezy)
+  &:hover
+    color: $minty-green
+    background: #333
+
+.formImageHolder
+  display: block
+  background: rgb(249, 244, 244)
+  padding: 8px
+  width: 787px
+  margin: 8px auto
+  text-align: left
+  overflow: scroll
+  white-space: nowrap
+  +break-for(ipad)
+    width: 525px
+  +break-for(iphone)
+    width: 275px
+
+  span
+    display: inline-block
+    width: 100px
+    height: 100px
+    border: 2px solid #B3AFAF
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+    vertical-align: top
+    margin-right: 12px
+
+    &:hover
+      label
+        display: block
+
+    label
+      @extend .basic-button
+      display: none
+      text-align: center
+      padding: 16px
+
+      &.delete
+        background: $cancel-red
+        color: white
+        &:hover
+          background: #333
+          color: $cancel-red
+      &.view
+        background: $minty-green
+        color: white
+        &:hover
+          background: #333
+          color: $minty-green
+
+.filePicker
+  @extend .light-font
+  display: block
+  width: 800px
+  margin: 8px auto
+  font-size: 13px
+  color: #fff
+  +break-for(ipad)
+    width: 540px
+  +break-for(iphone)
+    width: 275px
+
+.imgViewer
+  display: none
+  position: fixed
+  z-index: 40
+  background: rgb(237, 237, 237)
+  padding: 10px
+  top: 10px
+  left: 30%
+  right: 30%
+  height: 500px
+  border: 3px solid #333
+  box-shadow: 0 1px 22px rgba(0,0,0,0.1)

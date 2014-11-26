@@ -82,6 +82,9 @@ duckburg.objects = {
     // Load a filter input for searching.
     duckburg.objects.createFilterInputAndAddNewButton();
 
+    // Load a legend for the list of results.
+    duckburg.objects.loadObjectListLegend();
+
     // Perform a search for the objects.
     duckburg.objects.searchForObjects(type, filters);
   },
@@ -156,9 +159,6 @@ duckburg.objects = {
       // Capture the current set of results.
       duckburg.objects.lastReturnedResults = results;
 
-      // Load a legend for the list of results.
-      duckburg.objects.loadObjectListLegend();
-
       // Iterate over all results.
       for (var i = 0; i < results.length; i++) {
         var result = results[i];
@@ -184,6 +184,7 @@ duckburg.objects = {
         }))
       .append($('<button>')
         .attr('class', 'objectListAddNewButton')
+        .html('add new&nbsp;&nbsp;&nbsp;&nbsp;')
         .append($('<i>')
           .attr('class', 'fa fa-file-o'))
         .click(function() {
@@ -215,15 +216,27 @@ duckburg.objects = {
     var counter = 0;
     for (var param in model.values) {
       if (counter < 5) {
+
+        // Check if we should reveal the parameter, or a readable related obj.
+        var obj = model.values[param];
+        var key = obj.dbObject ? obj.dbObject.primary_key : param;
+
+        // Append a label for the legend/header, such as 'item_name'
         span.append($('<label>')
-          .html(param));
-        duckburg.objects.currentViewingObjectTopProperties.push(param);
+          .html(key));
+
+        // Push this parameter to a holder, so we know which value to pull
+        // off the object and display within the list of items.  IE, push
+        // 'item_name' to this list so we can pull item_name: 'T-Shirt' off
+        // of a database item and show it in the list.
+        duckburg.objects.currentViewingObjectTopProperties.push(key);
         counter++;
       }
     }
 
     // Append the legend to the object list.
-    $('.objectList')
+    $('.objectsHeader')
+      .html('')
       .append(span);
   },
 
@@ -244,7 +257,22 @@ duckburg.objects = {
 
     // Set a span for the current item.
     var span = $('<span>')
-      .attr('class', 'objectListResultItem');
+      .attr('class', 'objectListResultItem')
+      .attr('id', index)
+      .click(function(e) {
+
+        // Get the item represented by the span that was just clicked.
+        var index = e.currentTarget.id;
+        duckburg.objects.currentEditingItem =
+            duckburg.objects.lastReturnedResults[index];
+
+        // Launch the form.
+        var type = duckburg.objects.currentlyViewingModelType;
+        duckburg.utils.createNewObjectForm(type, 'objectPage');
+
+        // Populate the form.
+        duckburg.objects.populateObjectForm();
+      });
 
     // Iterate over the properties captured in loadObjectListLegend and get
     // each result's values.
@@ -260,6 +288,37 @@ duckburg.objects = {
     // Append the span to the list.
     $('.objectList')
       .append(span);
+  },
+
+  /**
+   * Populate a new object form with details of an existing item.
+   * @function populates object form with item details
+   * @param object Object parse db object for item.
+   *
+   */
+  populateObjectForm: function(object, objType) {
+    object = object || duckburg.objects.currentEditingItem;
+    objType = objType || duckburg.objects.currentlyViewingModelType;
+
+    // Set the current object as current editing item, as it may not be.
+    duckburg.objects.currentEditingItem = object;
+
+    // Get the current model type.
+    var model = duckburg.models[objType];
+
+    var attribs = object.attributes;
+    for (var attribute in attribs) {
+      var val = attribs[attribute];
+      $('#' + attribute).val(val);
+
+      // Add images to the form if they exist.
+      var modelVals = model.values[attribute];
+      if (modelVals && modelVals.input == 'image') {
+        var imgArray = val.split(',');
+        var parent = attribute + '_img_holder'
+        duckburg.utils.addImagesToObjectFormElement(parent, imgArray);
+      }
+    }
   },
 
   /**
@@ -282,7 +341,6 @@ duckburg.objects = {
 
     // Get the search term.
     duckburg.objects.filteredSearchTimer = setTimeout(function() {
-      console.log(filter, 'searching');
       var type = duckburg.objects.currentlyViewingModelType;
       duckburg.objects.searchForObjects(type, filter);
     }, 500);
@@ -298,10 +356,23 @@ duckburg.objects = {
     // Hide the popup.
     duckburg.utils.hidePopup();
 
+    // Remove the editing object global.
+    duckburg.objects.currentEditingItem = false;
+
     // Search again for items, which will place the newest one at the top.
     var type = duckburg.objects.currentlyViewingModelType;
     duckburg.objects.searchForObjects(type, false);
+  },
 
+  /**
+   * Automatically launch a form.
+   * @function launches form to create a new item.
+   * @param type String type of object for which to launch form
+   *
+   */
+  launchNewObjectFormForType: function(type) {
+    $('#' + type).click();
+    $('.objectListAddNewButton').click();
   }
 
 };

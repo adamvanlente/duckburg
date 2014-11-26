@@ -65,6 +65,28 @@ duckburg.requests = {
   },
 
   /**
+   * Get an object by its id.
+   * @function simple Parse find event for an object with known type & id.
+   * @param id String id of item in Parse db
+   * @param type String type of db item.
+   * @successCb Object function for success.
+   *
+   */
+  findById: function(id, type, successCb) {
+    var Item = Parse.Object.extend(type);
+    var query = new Parse.Query(Item);
+
+    query.get(id, {
+      success: function(result) {
+        successCb(result);
+      },
+      error: function(object, error) {
+        duckburg.utils.errorMessage(error.message);
+      }
+    });
+  },
+
+  /**
    * Find objects
    * @function get objects of a certain type
    * @param objectType String type of object as know to Parse
@@ -93,7 +115,7 @@ duckburg.requests = {
     }
 
     // Always sort newest first.
-    query.descending("createdAt");
+    query.descending("updatedAt");
 
     // Perform the queries and continue with the help of the callback functions.
     query.find({
@@ -105,5 +127,82 @@ duckburg.requests = {
         duckburg.utils.errorMessage(errorMsg);
       }
     });
+  },
+
+  /**
+   * Find orders
+   * @function find orders
+   * @param statuses Array of statuses to look for
+   * @param sortParam String param to sort by, eg item_name
+   * @param sortDirection, either asc or dsc
+   * @param filters String search params to filter by
+   * @param successCb Object function for success
+   *
+   */
+  findOrders: function(statuses, sortParam, sortDirection, filters, successCb) {
+
+    // Build a query from the object type.
+    var DbObject = Parse.Object.extend('dbOrder');
+    var query = new Parse.Query(DbObject);
+
+    // Check for filters.
+    if (filters) {
+      query.matches('parse_search_string', filters.toLowerCase());
+    }
+
+    // Set sort direction, and which param to sort by.
+    if (sortDirection == 'asc') {
+      query.ascending(sortParam);
+    } else {
+      query.descending(sortParam);
+    }
+
+    // Make sure we are only getting the statuses we want.
+    query.containedIn("order_status", statuses);
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.find({
+      success: function(results) {
+        successCb(results);
+      },
+      error: function(result, error) {
+        var errorMsg = 'Error gettting objects: ' + error.message;
+        duckburg.utils.errorMessage(errorMsg);
+      }
+    });
+  },
+
+  /**
+   * Save a file
+   * @function saves a file that has just been selected with an input.
+   * @param fileInput Object dom element for a file selector
+   * @param successCb Object function for success.
+   *
+   */
+  saveFileFromInput: function(fileInput, successCb) {
+
+    // Get the list of files.
+    if (fileInput.files.length > 0) {
+
+      // Get the file, give it a name and a Parse instance.
+      var file = fileInput.files[0];
+      var name = 'design_image.jpg';
+      var parseFile = new Parse.File(name, file);
+
+      // Save the file and send it back, or throw error.
+      parseFile.save().then(function(response) {
+        successCb(response);
+      },
+
+      function(reuslt, error) {
+        duckburg.errorMessage(error.message);
+      });
+    } else {
+
+      // Return, but with nothing.
+      successCb(false);
+    }
   }
+
+
 };

@@ -39,6 +39,24 @@ module.exports = function(app) {
 
 	//***********************
 	//***********************
+	//***** MAKE OBJECT *****
+	//***********************
+	//***********************
+	app.get('/makeObject/:objectType', function(req, res) {
+			res.render('objects.jade');
+	});
+
+	//***********************
+	//***********************
+	//***** VIEW OBJECT *****
+	//***********************
+	//***********************
+	app.get('/viewObject/:objectType/:objectId', function(req, res) {
+			res.render('objects.jade');
+	});
+
+	//***********************
+	//***********************
 	//**** LOGIN PAGE *******
 	//***********************
 	//***********************

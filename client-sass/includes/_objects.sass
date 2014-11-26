@@ -30,7 +30,12 @@
         background: $minty-green
         color: white
 
+.objectList
+  max-height: 400px
+  overflow: scroll
+
 .objectsFilter,
+.objectsHeader,
 .objectList
   @extend .traditional-width
   display: block
@@ -91,10 +96,10 @@
   @extend .light-font
   @extend .basic-button
   font-size: 13px
-  background: #4A8DBD
+  background: $minty-green
   color: white
   padding: 8px
   margin-left: 20px
   &:hover
     background: #333
-    color: #4A8DBD
+    color: $minty-green
