@@ -2,7 +2,7 @@
   @extend .traditional-width
   display: block
   margin: 0 auto
-  padding-top: 60px
+  padding-top: 80px
   background: #Fafafa
 
   div
@@ -20,6 +20,13 @@
       color: $cancel-red
     &.orderFormLoadingOrderNote
       color: $minty-green
+    &.orderDetailsHolder
+      display: block
+      background: #fafafa
+      padding-top: 20px
+      position: fixed
+      top: 60px
+      width: 100%
 
     &.orderFormOrderDetailsDiv
       @extend .light-font
@@ -346,7 +353,7 @@
         width: 100%
         padding: 1px
         margin-top: 8px
-        max-height: 350px
+        max-height: 190px
         overflow: scroll
 
         label

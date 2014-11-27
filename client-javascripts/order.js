@@ -97,67 +97,142 @@ duckburg.order = {
 
     $('.orderWrapper')
 
-      // Create main holder.
+      // Append a holderDiv
       .append($('<div>')
-        .attr('class', 'orderFormOrderDetailsDiv')
+        .attr('class', 'orderDetailsHolder')
 
-        // Readable order ID field.
-        .append($('<span>')
-          .attr('class', 'orderFormReadableOrderId')
-          .attr('id', 'readable_order_id')
-          .attr('name', 'order_form_field'))
-
-        // Due Date label & input.
-        .append($('<label>')
-          .html('due date')
-          .attr('class', 'dueDateLabel'))
-
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'due_date')
-          .attr('class', 'dueDateInput')
-          .attr('placeholder', '00/00/00')
-          .attr('name', 'order_form_field')
-          .change(function(e) {
-            duckburg.order.updateObjectParameter(e, 'dbOrder');
-          }))
-
-        // Print Date label & input.
-        .append($('<label>')
-          .html('print date')
-          .attr('class', 'printDateLabel'))
-
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'print_date')
-          .attr('class', 'printDateInput')
-          .attr('placeholder', '00/00/00')
-          .attr('name', 'order_form_field'))
-
-        // Job name input
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'order_name')
-          .attr('placeholder', 'order name')
-          .attr('class', 'orderNameInput')
-          .attr('name', 'order_form_field'))
-
-        // Order Status label
-        .append($('<span>')
-          .attr('class', 'orderFormOrderStatusLabel')
-          .attr('id', 'order_status')
-          .attr('name', 'order_form_field')
-          .click(function() {
-            duckburg.order.launchOrderStatusSelector();
-          }))
-
-        // Append a status selector div.
+        // Create main holder.
         .append($('<div>')
-          .attr('class', 'statusSelector'))
+          .attr('class', 'orderFormOrderDetailsDiv')
+
+          // Readable order ID field.
+          .append($('<span>')
+            .attr('class', 'orderFormReadableOrderId')
+            .attr('id', 'readable_id')
+            .attr('name', 'order_form_field'))
+
+          // Due Date label & input.
+          .append($('<label>')
+            .html('due date')
+            .attr('class', 'dueDateLabel'))
+
+          .append($('<input>')
+            .attr('type', 'text')
+            .attr('id', 'due_date')
+            .attr('class', 'dueDateInput')
+            .attr('placeholder', '00/00/00')
+            .attr('name', 'order_form_field')
+            .click(function() {
+
+              // After a breif wait, set a function to update the due date
+              // after any document click.
+              setTimeout(function() {
+                $(document).bind('click', duckburg.order.updateDueDate);
+              }, 200);
+            }))
+
+          // Print Date label & input.
+          .append($('<label>')
+            .html('print date')
+            .attr('class', 'printDateLabel'))
+
+          .append($('<input>')
+            .attr('type', 'text')
+            .attr('id', 'print_date')
+            .attr('class', 'printDateInput')
+            .attr('placeholder', '00/00/00')
+            .attr('name', 'order_form_field')
+            .click(function() {
+
+              // After a breif wait, set a function to update the print date
+              // after any document click.
+              console.log('clicked print date')
+              setTimeout(function() {
+                $(document).bind('click', duckburg.order.updatePrintDate);
+              }, 200);
+            }))
+
+          // Job name input
+          .append($('<input>')
+            .attr('type', 'text')
+            .attr('id', 'order_name')
+            .attr('placeholder', 'order name')
+            .attr('class', 'orderNameInput')
+            .attr('name', 'order_form_field')
+            .keyup(function(e) {
+              duckburg.order.updateObjectParameter(e, 'dbOrder');
+            }))
+
+          // Order Status label
+          .append($('<span>')
+            .attr('class', 'orderFormOrderStatusLabel')
+            .attr('id', 'order_status')
+            .attr('name', 'order_form_field')
+            .click(function() {
+              duckburg.order.launchOrderStatusSelector();
+            }))
+
+          // Append a status selector div.
+          .append($('<div>')
+            .attr('class', 'statusSelector'))
+        )
     );
 
     // Add highsmith calendars to due date and print date.
     duckburg.utils.addHighsmithCalendars(['due_date', 'print_date']);
+  },
+
+  /**
+   * Updates due date.
+   * @function updates the due date of an order in the database.  Since our
+   *           Highsmith picker autofills the input, attaching a listener
+   *           event is difficult to do.  Instead, we bind a listener to the
+   *           document so that after the calendar is launched, any click in
+   *           the doc will kick off this function.  If there is no order, or
+   *           no update has been made, no harm is done by this function.
+   *
+   */
+  updateDueDate: function() {
+
+    // If the click has closed the calendar, remove listener.
+    if (!$('#highsmithCal').length) {
+
+      // Only update if an order exists.
+      if (duckburg.order.currentOrder) {
+
+        // Get due date.
+        var dueDate = $('#due_date').val();
+
+        // Update and save.
+        duckburg.order.currentOrder.set('due_date', dueDate);
+        duckburg.order.currentOrder.save();
+      }
+
+      // Remove the listener that kicked off this function.
+      $(document).unbind('click', duckburg.order.updateDueDate);
+    }
+  },
+
+  /** Identical to updateDueDate method, but used for print date. **/
+  updatePrintDate: function() {
+
+    // If the calendar is still visible, then don't do anything.
+    if (!$('#highsmithCal').length) {
+
+      // Only update if an order exists.
+      if (duckburg.order.currentOrder) {
+
+        // Get due date.
+        var printDate = $('#print_date').val();
+
+        // Update and save.
+        duckburg.order.currentOrder.set('print_date', printDate);
+        duckburg.order.currentOrder.save();
+      }
+
+      // Remove the listener that kicked off this function.
+      $(document).unbind('click', duckburg.order.updatePrintDate);
+    }
   },
 
   /**
@@ -173,26 +248,31 @@ duckburg.order = {
        count++;
        var orderId = '000000' + count;
        orderId = orderId.slice(orderId.length - 6, orderId.length);
-       $('#readable_order_id').html(orderId);
+       $('#readable_id').html(orderId);
      });
 
      // Assign an initial status.
      var status = duckburg.utils.defaultNewOrderStatus;
      var bgColor = duckburg.utils.orderStatusMap[status];
-     duckburg.order.updateStatusDiv(status, bgColor);
+     duckburg.order.updateOrderStatus(status, bgColor);
    },
 
    /**
-    * Updates the status in the order.
+    * Updates the status in the order, in the ui and in database.
     * @function updates the value and view of status.
     * @param status String status of the order
     * @param bgColor String color/background for status & status div
     *
     */
-    updateStatusDiv: function(status, bgColor) {
+    updateOrderStatus: function(status, bgColor) {
       $('#order_status')
         .html(status)
         .css({'background': bgColor});
+
+      if (duckburg.order.currentOrder) {
+        duckburg.order.currentOrder.set('order_status', status);
+        duckburg.order.currentOrder.save();
+      }
     },
 
    /**
@@ -223,7 +303,7 @@ duckburg.order = {
             var el = e.currentTarget;
             var color = el.id;
             var orderStatus = el.innerHTML;
-            duckburg.order.updateStatusDiv(orderStatus, color);
+            duckburg.order.updateOrderStatus(orderStatus, color);
          }));
     }
 
@@ -498,6 +578,13 @@ duckburg.order = {
       // Add customer to list of current customers.
       duckburg.order.currentCustomers[customer.id] = customer;
 
+      // Update the current customer's length property.
+      if (duckburg.order.currentCustomers.length) {
+        duckburg.order.currentCustomers.length++;
+      } else {
+        duckburg.order.currentCustomers.length = 1;
+      }
+
       // Alias for customer details.
       var c = customer.attributes;
       var custCount = $('.customerRecordWithinDetailsHolder').length;
@@ -519,7 +606,7 @@ duckburg.order = {
             .attr('id', 'first_name')
             .val(c.first_name)
             .keyup(function(e) {
-              duckburg.order.updateObjectParameter(e, 'dbCustomer');
+              duckburg.order.updateCustomerObject(e);
             }))
           .append($('<input>')
             .attr('class', 'lastNameField')
@@ -529,7 +616,7 @@ duckburg.order = {
             .attr('id', 'last_name')
             .val(c.last_name)
             .keyup(function(e) {
-              duckburg.order.updateObjectParameter(e, 'dbCustomer');
+              duckburg.order.updateCustomerObject(e);
             }))
 
           // Phone number
@@ -544,7 +631,7 @@ duckburg.order = {
             .attr('id', 'phone_number')
             .val(c.phone_number)
             .keyup(function(e) {
-              duckburg.order.updateObjectParameter(e, 'dbCustomer');
+              duckburg.order.updateCustomerObject(e);
             }))
 
           // Email
@@ -559,7 +646,7 @@ duckburg.order = {
             .attr('id', 'email_address')
             .val(c.email_address)
             .keyup(function(e) {
-              duckburg.order.updateObjectParameter(e, 'dbCustomer');
+              duckburg.order.updateCustomerObject(e);
             }))
 
           // Ship checkbox
@@ -571,7 +658,10 @@ duckburg.order = {
             .attr('name', 'isShippingCustomer')
             .attr('class', 'isShippingCustomer')
             .attr('id', 'is_ship')
-            .attr('checked', isShip))
+            .attr('checked', isShip)
+            .click(function() {
+              duckburg.order.collectOrderInformation();
+            }))
 
           // Bill checkbox
           .append($('<label>')
@@ -582,7 +672,10 @@ duckburg.order = {
             .attr('name', 'isBillingCustomer')
             .attr('class', 'isBillingCustomer')
             .attr('id', 'is_bill')
-            .attr('checked', isBill))
+            .attr('checked', isBill)
+            .click(function() {
+              duckburg.order.collectOrderInformation();
+            }))
 
           // Add button to remove item.
           .append($('<label>')
@@ -594,6 +687,9 @@ duckburg.order = {
               duckburg.order.removeCustomerFromOrder(custId);
             }))
         );
+
+      // Update the order information.
+      duckburg.order.collectOrderInformation();
     }
   },
 
@@ -608,6 +704,7 @@ duckburg.order = {
     // Remove the object from the holder.
     if (duckburg.order.currentCustomers[custId]) {
       delete duckburg.order.currentCustomers[custId];
+      duckburg.order.currentCustomers.length--;
     }
 
     // Remove the dom element.
@@ -619,6 +716,9 @@ duckburg.order = {
 
     // Update which customer is shipping and billing
     duckburg.order.updateBillingAndShippingRadios();
+
+    // Update the order information.
+    duckburg.order.collectOrderInformation();
   },
 
   /**
@@ -707,7 +807,7 @@ duckburg.order = {
      // Update the current order, if it exists
      if (type == 'dbOrder') {
        if (duckburg.order.currentOrder) {
-
+         console.log('updating current order w', param, newVal);
          // Update this param.
          duckburg.order.currentOrder.set(param, newVal);
          duckburg.order.currentOrder.save();
@@ -720,6 +820,102 @@ duckburg.order = {
        customer.save();
      }
    },
+
+  /**
+   * Update a parameter on a dbCustomer object.
+   * @function update a parameter on a Parse dbCustomer object.
+   * @param event Object that contains a dom element, the id of which bears
+   *              the parse id, id of which is the param key, and value of
+   *              which is the value to be updated.
+   *
+   */
+  updateCustomerObject: function(event) {
+    duckburg.order.updateObjectParameter(event, 'dbCustomer');
+  },
+
+  /**
+   * Collects order details
+   * @function to collect order information away from keyup events.  This
+   *           includes customer and item information.
+   *
+   */
+  collectOrderInformation: function() {
+
+    // Create an order if there isn't one
+    if (!duckburg.order.currentOrder) {
+      duckburg.order.createOrder();
+    } else {
+
+      // Build the current customer object.
+      var customers = [];
+      for (var customer in duckburg.order.currentCustomers) {
+
+        if (customer != 'length') {
+          var custObject = {};
+          custObject.id = customer;
+          custObject.isShip = false;
+          custObject.isBill = false;
+          customers.push(custObject);
+        }
+      }
+
+      $('.isShippingCustomer').each(function(item) {
+        customers[item].isShip = this.checked;
+      });
+
+      $('.isBillingCustomer').each(function(item) {
+        customers[item].isBill = this.checked;
+      });
+
+      // Stringify the customer info and save the item.
+      duckburg.order.currentOrder.set('customers', JSON.stringify(customers));
+      duckburg.order.currentOrder.save();
+    }
+  },
+
+  /**
+   * Creates an order
+   * @function create an order from the information provided.  This requires
+   *           only an order number and job name.  If no job name exists,
+   *           create one from the order number.
+   *
+   */
+  createOrder: function() {
+
+    // Order number.
+    var orderNumber = $('#readable_id').html();
+
+    // Order name.
+    var orderName = $('#order_name').val();
+
+    // Dates.
+    var dueDate = $('#due_date').val();
+    var printDate = $('#print_date').val();
+
+    // Order status.
+    var orderStatus = $('#order_status').html();
+
+    // If order name is empty, create a generic one.
+    if (orderName == '') {
+      orderName = 'Order No. ' + orderNumber;
+      $('#order_name').val(orderName);
+    }
+
+    // Store these params with their Parse keys.
+    var params = {
+      readable_id: orderNumber,
+      order_name: orderName,
+      due_date: dueDate,
+      print_date: printDate,
+      order_status: orderStatus
+    };
+
+    // Create an order item.
+    duckburg.requests.createNewObject('dbOrder', params, function(order) {
+      duckburg.order.currentOrder = order;
+      duckburg.order.collectOrderInformation();
+    });
+  },
 
   /**
    * Set a loading message

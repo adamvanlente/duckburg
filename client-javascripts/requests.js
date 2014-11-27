@@ -42,7 +42,7 @@ duckburg.requests = {
     for (var param in params) {
       if (param != 'parse_search_string') {
         newItem.set(param, params[param]);
-        searchString += params[param];
+        searchString += params[param] + ' ';
       }
     }
 
@@ -52,8 +52,6 @@ duckburg.requests = {
     // Save the dang thing.
     newItem.save(null, {
       success: function(result) {
-        var msg = 'New object ' + verb;
-        duckburg.utils.successMessage(msg);
         successCb(result);
       },
 

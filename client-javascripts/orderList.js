@@ -185,7 +185,7 @@ duckburg.orderList = {
     var o = order.attributes;
 
     // Calculate total designs and items.
-    var items = JSON.parse(o.items);
+    var items = o.items ? JSON.parse(o.items) : [];
     var totalItems = 0;
     var totalDesigns = items.length;
 
