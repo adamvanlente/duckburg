@@ -1,0 +1,399 @@
+.orderWrapper
+  @extend .traditional-width
+  display: block
+  margin: 0 auto
+  padding-top: 60px
+  background: #Fafafa
+
+  div
+
+    &.orderFormLoadingOrderNote,
+    &.orderFormLoadingOrderErrorNote
+      @extend .light-font
+      display: block
+      padding: 12px
+      font-size: 12px
+      border: 1px solid
+      text-align: center
+
+    &.orderFormLoadingOrderErrorNote
+      color: $cancel-red
+    &.orderFormLoadingOrderNote
+      color: $minty-green
+
+    &.orderFormOrderDetailsDiv
+      @extend .light-font
+      display: block
+      position: fixed
+      padding: 8px
+      background: #F1F1F1
+      box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+      text-align: center
+
+      span
+        vertical-align: middle
+
+        &.orderFormReadableOrderId
+          display: inline-block
+          font-size: 10px
+          background: rgb(201, 202, 205)
+          padding: 4px
+          height: 13px
+          width: 45px
+          text-align: center
+          color: rgba(255, 255, 255, 0.6)
+
+        &.orderFormOrderStatusLabel
+          @extend .basic-button
+          display: inline-block
+          font-size: 10px
+          padding: 6px
+          height: 13px
+          width: 105px
+          text-align: center
+          text-transform: uppercase
+          color: rgba(255, 255, 255, 0.95)
+          &:hover
+            opacity: 0.6
+
+      label
+        vertical-align: middle
+        &.dueDateLabel,
+        &.printDateLabel
+          font-size: 12px
+          display: inline-block
+          width: 55px
+          text-align: center
+          color: #C7C6C6
+          margin-left: 12px
+
+
+      input
+        @extend .basic-button
+        @extend .light-font
+        vertical-align: middle
+
+        &.dueDateInput,
+        &.printDateInput
+          display: inline-block
+          background: none
+          border-bottom: 1px solid #DCDCDC
+          text-align: center
+          font-size: 11px
+          width: 65px
+
+        &.orderNameInput
+          display: inline-block
+          background: #eaeaea
+          color: #4B91B0
+          padding: 1px
+          font-size: 16px
+          margin: 0 16px
+          width: 379px
+          text-transform: uppercase
+          text-align: center
+
+.statusSelector
+  display: none
+  z-index: 40
+  position: absolute
+  right: 9px
+  top: 37px
+
+  label
+    @extend .light-font
+    @extend .basic-button
+    display: block
+    font-size: 11px
+    color: white
+    text-transform: uppercase
+    text-align: center
+    width: 116px
+    padding: 4px 0
+    &:hover
+      color: #333
+
+.orderFormCustomerDetailsHolder
+  @extend .traditional-width
+  display: block
+  margin-top: 50px
+  text-align: center
+
+  div
+    @extend .light-font
+
+    &.customerDetailsCustomerHolder
+      display: block
+      div
+        &.customerRecordWithinDetailsHolder
+          @extend .light-font
+          display: inline-block
+          background: #C7E5E4
+          width: 98%
+          margin-left: 13px
+          margin-top: 8px
+          text-align: right
+          box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+
+          input
+            &[type="text"],
+            &[type="email"],
+            &[type="tel"],
+            &[type="password"],
+            &[type="date"]
+              @extend .light-font
+              @extend .basic-button
+
+              &.firstNameField,
+              &.lastNameField
+                font-size: 13px
+                background: none
+                width: 122px
+                overflow: visible
+                text-align: center
+              &.phoneNumberField
+                width: 90px
+                overflow: visible
+                text-align: center
+                background: none
+                font-size: 13px
+                text-align: left
+                margin-left: 4px
+              &.emailAddressInput
+                width: 215px
+                overflow: visible
+                text-align: center
+                background: none
+                font-size: 13px
+                text-align: left
+                margin-left: 4px
+          i
+            display: inline-block
+            color: #5ec2be
+
+          label
+            @extend .light-font
+            @extend .basic-button
+            &.shipToLabel,
+            &.billToLabel
+              font-size: 13px
+              display: inline-block
+              text-align: center
+              width: 50px
+            &.removeCustomerFromOrderButton
+              display: inline-block
+              width: 86px
+              margin-left: 12px
+              background: $cancel-red
+              text-align: center
+              color: white
+              font-size: 11px
+              padding: 8px 0px
+              &:hover
+                background: #333
+                color: $cancel-red
+                i
+                  color: $cancel-red
+              i
+                color: white
+
+
+    &.customerDetailsTitle
+      @extend .traditional-width
+      background: #5EC2BE
+      text-align: right
+      padding: 0 8px
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1)
+
+      .customerDetailsHeading
+        font-size: 14px
+        display: inline-block
+        width: 725px
+        height: 20px
+        text-align: left
+        color: white
+        text-shadow: 0 1px 1px rgba(0,0,0,0.1)
+        text-transform: uppercase
+
+      .customerDetailsAddNewButton
+        @extend .basic-button
+        font-size: 12px
+        background: white
+        padding: 8px
+        color: #5EC2BE
+        width: 100px
+        display: inline-block
+        text-align: center
+        &:hover
+          background: #F1F1F1
+        i
+          display: inline-block
+          margin-left: 3px
+
+.orderFormDesignDetailsHolder
+  @extend .traditional-width
+  display: block
+  margin-top: 8px
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1)
+  text-align: center
+
+  div
+    @extend .light-font
+    &.designDetailsTitle
+      @extend .traditional-width
+      background: #5EB3C2
+      text-align: right
+      padding: 0 8px
+
+      .designDetailsHeading
+        font-size: 14px
+        display: inline-block
+        width: 725px
+        height: 20px
+        text-align: left
+        color: white
+        text-shadow: 0 1px 1px rgba(0,0,0,0.1)
+        text-transform: uppercase
+
+      .designDetailsAddNewButton
+        @extend .basic-button
+        font-size: 12px
+        background: white
+        padding: 8px
+        color: #5EB3C2
+        width: 100px
+        display: inline-block
+        text-align: center
+        &:hover
+          background: #F1F1F1
+        i
+          display: inline-block
+          margin-left: 3px
+
+
+    &.designDetailsCustomerHolder
+
+.orderFormCustomerSelector
+  display: block
+  background: white
+  width: 600px
+  margin: 52px auto
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2)
+  padding: 8px
+
+  div
+    @extend .light-font
+    display: inline-block
+    vertical-align: top
+
+    &.customerPopupCreateNewCustomerForm
+      width: 375px
+      margin: 0 12px
+      background: rgba(241, 241, 241, 0.22)
+      margin-bottom: 16px
+      border: 1px solid $minty-green
+
+      input
+        @extend .light-font
+        @extend .basic-button
+        display: inline-block
+        padding: 5px 4px
+        margin: 4px 8px
+        font-size: 12px
+        background: rgb(236, 236, 236)
+
+        &.full
+          width: 150px
+        &.half
+          width: 160px
+        &.third
+          width: 98px
+
+      textarea
+        @extend .light-font
+        @extend .basic-button
+        display: inline-block
+        padding: 5px 4px
+        margin: 4px 8px
+        font-size: 12px
+        width: 343px
+        background: rgb(236, 236, 236)
+
+    &.customerPopupSelectExistingHolder
+      width: 190px
+
+      input
+        @extend .light-font
+        @extend .basic-button
+        font-size: 12px
+        border-bottom: 1px solid #CFC3C3
+        text-align: center
+        padding: 4px 0
+        display: block
+        width: 100%
+
+    h3
+      display: block
+      font-size: 12px
+      margin: 4px
+      padding: 2px
+      color: #A59E9E
+
+    span
+      &.existingUserSearchResultsSpan
+        @extend .light-font
+        display: block
+        width: 100%
+        padding: 1px
+        margin-top: 8px
+        max-height: 350px
+        overflow: scroll
+
+        label
+          &.progressMsg
+            @extend .light-font
+            font-size: 12px
+            border: 1px solid
+            display: block
+            padding: 4px
+            text-align: center
+            color: #DCDCDC
+          &.existingCustomerResult
+            @extend .basic-button
+            font-size: 12px
+            border: 1px solid $minty-green
+            background: $minty-green
+            display: block
+            padding: 4px
+            text-align: center
+            color: white
+            margin-top: 4px
+            &:hover
+              background: none
+              color: $minty-green
+
+.searchExistingCustomersCancelButton
+  @extend .light-font
+  @extend .basic-button
+  display: block
+  padding: 8px
+  font-size: 12px
+  color: white
+  background: $cancel-red
+  text-align: center
+  &:hover
+    color: $cancel-red
+    background: #333
+
+.createNewCustomerFromForm
+  @extend .light-font
+  @extend .basic-button
+  display: block
+  padding: 8px
+  font-size: 12px
+  color: white
+  background: $minty-green
+  text-align: center
+  &:hover
+    color: $minty-green
+    background: #333

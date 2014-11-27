@@ -130,6 +130,57 @@ duckburg.requests = {
   },
 
   /**
+   * Fetch an order
+   * @function fetches an order using our local, readable id.
+   * @param orderId String readable order id
+   * @param successCb Object function for success
+   *
+   */
+  fetchOrderById: function(orderId, successCb) {
+
+    // Instantiate an order.
+    var Order = Parse.Object.extend("dbOrder");
+    var query = new Parse.Query(Order);
+
+    // Refine based on order id.
+    query.equalTo("readable_id", orderId);
+
+    // Get the order.
+    query.find({
+      success: function(order) {
+        successCb(order);
+      },
+      error: function(error) {
+        duckburg.utils.errorMessage(error.message);
+        successCb([]);
+      }
+    });
+  },
+
+  /**
+   * Count objects
+   * @function get a count of all objects
+   * @param type String type of object to count
+   *
+   */
+   countObjects: function(type, successCb) {
+
+     // Determine type.
+     var Obj = Parse.Object.extend(type);
+     var query = new Parse.Query(Obj);
+
+     // Get the count.
+     query.count({
+       success: function(count) {
+         successCb(count);
+       },
+       error: function(error) {
+         duckburg.utils.errorMessage(error.message);
+       }
+     });
+   },
+
+  /**
    * Find orders
    * @function find orders
    * @param statuses Array of statuses to look for

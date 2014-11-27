@@ -7,27 +7,33 @@ var duckburg = duckburg || {};
  *         Also contains main functions for building object forms.
  *
  */
+
+/** Base url off of which to build global paths. **/
+duckburg.baseUrl = window.location.protocol + '//' + window.location.host;
+
 duckburg.utils = {
 
   /** Globals for different routes/destinations **/
-  homePage: 'http://localhost:3000',
-  loginPage: 'http://localhost:3000/login',
+  homePage: duckburg.baseUrl,
+  loginPage: duckburg.baseUrl + '/login',
+  orderPage: duckburg.baseUrl + '/order/',
 
   /** Globals for sorting orders **/
   defaultSortStatuses: ['quote', 'open', 'approved', 'ordered'],
   defaultSortParam: 'due_date',
   defaultSortDirection: 'asc',
 
+  /** Default order status and order status map. **/
+  defaultNewOrderStatus: 'open',
 
   orderStatusMap: {
-    'quote': 'rgb(184, 184, 184)',
-    'open': 'rgb(130, 153, 200)',
-    'approved': '#66c08d',
-    'ordered': 'rgb(195, 202, 87)',
-    'received': 'rgb(226, 177, 101)',
-    'printing': 'rgb(239, 116, 116)',
-    'completed': 'rgb(54, 179, 202)',
-   //  'shipped'
+    'quote': 'rgba(184, 184, 184, 1.0)',
+    'open': 'rgba(130, 153, 200, 1.0)',
+    'approved': 'rgba(102, 192, 141, 1.0)',
+    'ordered': 'rgba(195, 202, 87, 1.0)',
+    'received': 'rgba(226, 177, 101, 1.0)',
+    'printing': 'rgba(239, 116, 116, 1.0)',
+    'completed': 'rgba(54, 179, 202, 1.0)'
   },
 
   /**
@@ -140,6 +146,11 @@ duckburg.utils = {
 
       // For objects route, load the basic object view.
       duckburg.objects.loadObjectView();
+
+    } else if (route.search('/order') != -1) {
+
+      // Load an order.
+      duckburg.order.load();
     } else if (route.search('/makeObject') != -1) {
 
       // To make an object, load object view and open an empty form.
@@ -273,7 +284,6 @@ duckburg.utils = {
   showPopup: function() {
     $('#popupDiv')
       .show();
-
     $('#popupContent')
       .html('');
   },
@@ -285,6 +295,7 @@ duckburg.utils = {
    */
   hidePopup: function() {
     $('#popupDiv').hide();
+    $('.offClicker').hide();
   },
 
   /**
@@ -327,6 +338,36 @@ duckburg.utils = {
         $('.messageHolder')
           .attr('class', className);
       }, 3000);
+   },
+
+   /**
+    * Add Highsmith calendards
+    * @function accepts ids of elements to add highsmith calendars to.
+    * @param idList Array of element ids.
+    *
+    */
+   addHighsmithCalendars: function(idList) {
+
+     // Config for calendars.
+     var calConfig = {
+
+       // Let me style it myself.
+       style: {
+         disable: true
+       },
+
+       // Allow user to kill the calendar.
+       killButton: true,
+
+       // If a date is in the input, open the calendar to that month.
+       customDate: true
+     };
+
+     // Iterate over the ids and assign a calendar to each.
+     for (var i = 0; i < idList.length; i++) {
+       var elementId = idList[i];
+       var cal = new Highsmith(elementId, calConfig);
+     }
    },
 
    /**
@@ -453,13 +494,7 @@ duckburg.utils = {
 
         // Create Highsmith calendars for all fields.
         if (fieldDetails.input == 'date') {
-           var calConfig = {
-             style: {
-               disable: true
-             },
-             killButton: true
-           };
-           var dueCal = new Highsmith(param, calConfig);
+           duckburg.utils.addHighsmithCalendars([param]);
         }
       }
     },

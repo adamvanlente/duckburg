@@ -51,14 +51,24 @@ duckburg.orderList = {
           .html('no orders were found matching these filters'))
     }
 
+    // Holder needed for highsmith calendars.
+    var ids = [];
+
     // Iterate over the orders.
     for (var i = 0; i < orders.length; i++) {
+
+      // Capture order.
       var order = orders[i];
+
+      // Capture id so that calendar can be assigned.
+      ids.push('cal_' + orders[i].id);
+
+      // Render order to list.
       duckburg.orderList.renderSingleOrderToList(order);
     }
 
     // Attach highsmith calendars to all the due date inputs.
-    duckburg.orderList.attachHighsmithCals(orders);
+    duckburg.utils.addHighsmithCalendars(ids);
   },
 
   /**
@@ -131,8 +141,9 @@ duckburg.orderList = {
 
     // Order name input
     span
-      .append($('<label>')
+      .append($('<a>')
         .html(o.order_name)
+        .attr('href', duckburg.utils.orderPage + o.readable_id)
         .attr('class', 'orderListOrderNameLabel'));
 
     // Customer name label
@@ -158,16 +169,6 @@ duckburg.orderList = {
         .html(o.order_status)
         .attr('class', 'orderStatusLabel')
         .css({'background': bgColor}));
-
-
-    // items: "[]"
-    // order_name: "New years shirts"
-    // order_status: "approved"
-    // parse_search_string: "New years shirts"
-    // phone_number: "911"
-    // print_date: ""
-    // readable_id: "000002"
-
   },
 
   /**
@@ -180,36 +181,51 @@ duckburg.orderList = {
    */
   populateBottomOrderSpan: function(order, span) {
 
-    // Go to order button
-    span
-      .append($('<label>')
-        .html('<i class="fa fa-arrow-circle-right"></i>')
-        .attr('class', 'goToOrderButton'));
+    // Easy to access alias for attributes.
+    var o = order.attributes;
 
-  },
+    // Calculate total designs and items.
+    var items = JSON.parse(o.items);
+    var totalItems = 0;
+    var totalDesigns = items.length;
 
-  /**
-   * Attach onclick events to all date inputs
-   * @function once orders are rendered, attach a Highsmith calendar to every
-   *           due date input that is found.
-   * @param orders Array list of orders.
-   *
-   */
-  attachHighsmithCals: function(orders) {
+    var innerLabel = $('<label>')
+      .attr('class', 'bottomSpanInnerLabel');
 
-    // Config for calendars.
-    var calConfig = {
-      style: {
-        disable: true
-      },
-      killButton: true
-    };
-
-    for (var i = 0; i < orders.length; i++) {
-      var id = 'cal_' + orders[i].id;
-      var cal = new Highsmith(id, calConfig);
+    // Add up the total items.
+    for (var i = 0; i < items.length; i++) {
+      var designItems = items[i];
+      if (designItems.sizes) {
+        var sizes = JSON.parse(designItems.sizes);
+        for (var size in sizes) {
+          totalItems += parseInt(sizes[size]);
+        }
+      }
     }
+
+    // Total designs label.
+    var totalDesignsLabel = totalDesigns == 1 ? ' design' : ' designs';
+    innerLabel
+      .append($('<label>')
+        .html(totalDesigns + totalDesignsLabel)
+        .attr('class', 'totalDesignsLabel'));
+
+    // // Total items label.
+    // var totalItemsLabel = totalItems == 1 ? ' item' : ' items';
+    // innerLabel
+    //   .append($('<label>')
+    //     .html(totalItems + totalItemsLabel)
+    //     .attr('class', 'totalItemsLabel'));
+
+
+    var bgColor = 'rgba(0,0,0,0.1)';
+    if (duckburg.utils.orderStatusMap[o.order_status]) {
+      bgColor = duckburg.utils.orderStatusMap[o.order_status];
+    }
+    bgColor = bgColor.replace('1.0', '0.5');
+    innerLabel
+      .css({'background': bgColor});
+
+    span.append(innerLabel);
   }
-
-
 };
