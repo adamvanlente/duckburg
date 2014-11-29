@@ -27,6 +27,7 @@
       position: fixed
       top: 60px
       width: 100%
+      z-index: 10
 
     &.orderFormOrderDetailsDiv
       @extend .light-font
@@ -241,16 +242,327 @@
   @extend .traditional-width
   display: block
   margin-top: 8px
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1)
   text-align: center
 
   div
     @extend .light-font
+    &.designsDetailsCustomerHolder
+      @extend .traditional-width
+      font-size: 13px
+      display: inline-block
+      padding: 8px
+
+      div
+        &.designFormWithinOrder
+          font-size: 13px
+          background: #F1F1F1
+          padding: 8px
+          text-align: left
+          margin-top: 8px
+          margin-bottom: 16px
+          border-bottom: 5px solid rgba(94, 179, 194, 0.41)
+
+          input
+            &.designFormItemNameInput
+              @extend .basic-button
+              @extend .light-font
+              font-size: 14px
+              padding: 8px
+              margin: 16px auto
+              margin-right: 24px
+              width: 612px
+              background: none
+              display: inline-block
+              color: #333
+              text-transform: uppercase
+              border-bottom: 1px solid rgba(0, 0, 0, 0.21)
+
+            &.itemTotalPriceInput
+              @extend .light-font
+              -webkit-appearance: none
+              border: none
+              font-size: 11px
+              padding: 8px
+              width: 60px
+              margin-right: 16px
+              background: rgb(229, 227, 227)
+              border-top-right-radius: 4px
+              border-bottom-right-radius: 4px
+              text-align: center
+              color: #333
+              cursor: normal
+          label
+            &.itemTotalPriceLabel
+              background: #9c7bc5
+              font-size: 11px
+              padding: 8px
+              color: white
+              border-bottom-left-radius: 4px
+              border-top-left-radius: 4px
+              width: 70px
+              display: inline-block
+              text-align: center
+
+          span
+            &.designFormIdSpan
+              font-size: 10px
+              padding: 4px
+              background: #d78a8a
+              border-radius: 1px
+              color: rgba(255, 255, 255, 0.82)
+              margin-left: -12px
+              width: 83px
+              text-align: center
+              margin-top: -16px
+              box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2)
+              height: 21px
+              display: block
+
+              label
+                @extend .basic-button
+                display: inline-block
+                font-size: 11px
+                padding: 2px 4px 4px
+                background: rgba(0, 0, 0, 0.27)
+                color: white
+                margin-left: 8px
+                &:hover
+                  background: #333
+                  color: #d78a8a
+          div
+            @extend .light-font
+
+            &.advancedSettingsHolder
+              display: block
+              margin: 0 auto
+              width: 800px
+              display: block
+              color: #333333
+              background: #9BA8CF
+              border-radius: 1px
+
+              span
+                &.advancedSettingsHeader
+                  @extend .basic-button
+                  font-size: 11px
+                  color: white
+                  text-align: center
+                  display: block
+                  padding: 8px
+                  &:hover
+                    background: rgb(191, 201, 229)
+                &.advancedSettingsDetail
+                  display: none
+                  background: rgba(255, 255, 255, 0.29)
+                  padding: 8px
+
+                  label
+                    display: inline-block
+                    padding: 4px
+                    color: white
+                  input
+                    @extend .basic-button
+                    font-size: 13px
+                    padding: 4px
+                    color: #333
+                    background: rgba(255, 255, 255, 0.72)
+                    width: 100px
+                    margin-right: 12px
+
+            &.designFormSizeHolder
+              display: block
+              padding: 8px
+              margin: 0 auto
+              width: 800px
+              display: block
+              color: #333
+
+              span
+                margin-right: 8px
+
+                label
+                  &.sizeLabel
+                    font-size: 11px
+                    display: inline-block
+                    background: #d5ca53
+                    padding: 7px
+                    width: 24px
+                    text-align: center
+                    border-top-left-radius: 4px
+                    border-bottom-left-radius: 4px
+                    color: white
+                  &.addSizeLabel
+                    font-size: 11px
+                    display: inline-block
+                    padding: 7px
+                    width: 50px
+                    text-align: center
+                    background: $minty-green
+                    color: white
+                    border-bottom-left-radius: 4px
+                    border-top-left-radius: 4px
+
+                input
+                  @extend .basic-button
+                  font-size: 11px
+                  width: 32px
+                  padding: 8px
+                  color: #746E6E
+                  text-align: center
+                  &.sizeInput
+                    background: rgba(213, 202, 83, 0.54)
+                  &.addSizeInput
+                    background: #B5DAC5
+                    padding: 8px
+
+                label
+                  font-size: 11px
+                  color: white
+                  padding: 8px
+                  &.removeSizeButton
+                    @extend .basic-button
+                    background: $cancel-red
+                    font-size: 11px
+                    padding: 7px
+                    border-bottom-right-radius: 4px
+                    border-top-right-radius: 4px
+                    &:hover
+                      background: #333
+                      color: $cancel-red
+                  &.addSizeButton
+                    background: $minty-green
+                    border-bottom-right-radius: 4px
+                    border-top-right-radius: 4px
+                    padding: 7px
+
+            &.designProductDetailInputs
+              padding: 8px
+              margin: 0 auto
+              width: 800px
+              display: block
+              color: #333
+
+              label
+                font-size: 11px
+                background: #79B693
+                padding: 8px
+                color: white
+                border-bottom-left-radius: 4px
+                border-top-left-radius: 4px
+                width: 70px
+                display: inline-block
+                text-align: center
+              input
+                @extend .basic-button
+                @extend .light-font
+                font-size: 11px
+                padding: 8px
+                width: 100px
+                margin-right: 16px
+                background: rgb(229, 227, 227)
+                border-top-right-radius: 4px
+                border-bottom-right-radius: 4px
+                text-align: center
+                color: #333
+
+            &.designPriceDetailInputs
+              padding: 8px
+              margin: 0 auto
+              width: 800px
+              display: block
+              color: #333
+
+              label
+                font-size: 11px
+                padding: 8px
+                color: white
+                border-bottom-left-radius: 4px
+                border-top-left-radius: 4px
+                width: 70px
+                display: inline-block
+                text-align: center
+                &.productPriceLabel
+                  background: #9C7BC5
+                &.productSalePriceLabel,
+                &.productSocialPriceLabel
+                  background: #C6B7DA
+
+              input
+                @extend .basic-button
+                @extend .light-font
+                font-size: 11px
+                padding: 8px
+                width: 60px
+                margin-right: 16px
+                background: rgb(229, 227, 227)
+                border-top-right-radius: 4px
+                border-bottom-right-radius: 4px
+                text-align: center
+                color: #333
+
+            &.designImageSelectorDiv
+              @extend .light-font
+              padding: 8px
+              margin: 12px auto
+              background: #e5e3e3
+              width: 800px
+              display: block
+              color: #333333
+              border-radius: 1px
+
+              em
+                font-size: 13px
+                font-style: normal
+                margin-left: -16px
+              button
+                @extend .light-font
+                @extend .basic-button
+                font-size: 12px
+                color: white
+                background: #D08691
+                padding: 4px 60px
+                display: inline-block
+                margin-top: 4px
+                border-radius: 1px
+                height: 24px
+                margin-left: 16px
+
+              h3
+                padding: 4px
+                margin: 4px
+                display: inline-block
+                text-transform: uppercase
+                font-size: 11px
+                color: #A19C9C
+              input
+                &.designImagesFilePicker::before
+                  @extend .basic-button
+                  @extend .light-font
+                  font-size: 12px
+                  color: white
+                  content: "add image"
+                  background: rgb(134, 169, 208)
+                  padding: 4px 60px
+                  vertical-align: top
+                  display: inherit
+                  position: absolute
+                  margin-top: -3px
+                  border-radius: 1px
+                  height: 16px
+                  &:hover
+                    opacity: 0.9
+              div
+                &.imagesWithinImageHolder
+                  @extend .light-font
+                  width: 800px
+                  display: block
+
     &.designDetailsTitle
       @extend .traditional-width
       background: #5EB3C2
       text-align: right
       padding: 0 8px
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1)
 
       .designDetailsHeading
         font-size: 14px
@@ -404,3 +716,31 @@
   &:hover
     color: $minty-green
     background: #333
+
+.confirmRemoveDesignPopup
+  background: white
+  padding: 12px
+  box-shadow: 0 1px 1px rgba(0,0,0,0.2)
+  top: 100px
+  position: fixed
+  left: 40%
+  right: 40%
+  text-align: center
+  span
+    @extend .light-font
+    font-size: 15px
+    display: block
+    color: #333
+    padding: 4px
+    margin-bottom: 16px
+  label
+    @extend .light-font
+    @extend .basic-button
+    font-size: 13px
+    color: white
+    padding: 4px 8px
+    margin: 8px
+    &.cancel
+      background: $cancel-red
+    &.remove
+      background: $minty-green

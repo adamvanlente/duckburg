@@ -146,7 +146,6 @@ duckburg.order = {
 
               // After a breif wait, set a function to update the print date
               // after any document click.
-              console.log('clicked print date')
               setTimeout(function() {
                 $(document).bind('click', duckburg.order.updatePrintDate);
               }, 200);
@@ -255,6 +254,15 @@ duckburg.order = {
      var status = duckburg.utils.defaultNewOrderStatus;
      var bgColor = duckburg.utils.orderStatusMap[status];
      duckburg.order.updateOrderStatus(status, bgColor);
+
+     // Collect the order values - save the order as a new order automatically.
+     // Though this will fill the database will potentially empty/incomplete
+     // orders, it will prevent two orders from being opened at once and being
+     // assigned the same 'readable' order number.  Delay this activity by
+     // a second.
+     setTimeout(function() {
+       duckburg.order.collectOrderInformation();
+     }, 1500);
    },
 
    /**
@@ -376,7 +384,10 @@ duckburg.order = {
             .attr('class', 'designDetailsHeading'))
           .append($('<label>')
             .html('add design <i class="fa fa-file-image-o"></i>')
-            .attr('class', 'designDetailsAddNewButton'))
+            .attr('class', 'designDetailsAddNewButton')
+            .click(function() {
+              duckburg.order.addDesignFormToOrder();
+            }))
 
          )
 
@@ -807,7 +818,7 @@ duckburg.order = {
      // Update the current order, if it exists
      if (type == 'dbOrder') {
        if (duckburg.order.currentOrder) {
-         console.log('updating current order w', param, newVal);
+
          // Update this param.
          duckburg.order.currentOrder.set(param, newVal);
          duckburg.order.currentOrder.save();
@@ -831,46 +842,6 @@ duckburg.order = {
    */
   updateCustomerObject: function(event) {
     duckburg.order.updateObjectParameter(event, 'dbCustomer');
-  },
-
-  /**
-   * Collects order details
-   * @function to collect order information away from keyup events.  This
-   *           includes customer and item information.
-   *
-   */
-  collectOrderInformation: function() {
-
-    // Create an order if there isn't one
-    if (!duckburg.order.currentOrder) {
-      duckburg.order.createOrder();
-    } else {
-
-      // Build the current customer object.
-      var customers = [];
-      for (var customer in duckburg.order.currentCustomers) {
-
-        if (customer != 'length') {
-          var custObject = {};
-          custObject.id = customer;
-          custObject.isShip = false;
-          custObject.isBill = false;
-          customers.push(custObject);
-        }
-      }
-
-      $('.isShippingCustomer').each(function(item) {
-        customers[item].isShip = this.checked;
-      });
-
-      $('.isBillingCustomer').each(function(item) {
-        customers[item].isBill = this.checked;
-      });
-
-      // Stringify the customer info and save the item.
-      duckburg.order.currentOrder.set('customers', JSON.stringify(customers));
-      duckburg.order.currentOrder.save();
-    }
   },
 
   /**
@@ -916,6 +887,502 @@ duckburg.order = {
       duckburg.order.collectOrderInformation();
     });
   },
+
+  /**
+   * Add an empty form so that a new design can be added to the screen.
+   * @function adds form to order form so that new design details can be added.
+   *
+   */
+  addDesignFormToOrder: function(sizes) {
+
+    sizes = sizes || duckburg.utils.standardOrderSizes;
+
+    // Number of designs
+    var numDesigns = $('.designFormWithinOrder').length;
+    var newDesignId = 'Design No.' + (numDesigns + 1);
+
+    // create a new form.
+    var newForm = $('<div>')
+      .attr('class', 'designFormWithinOrder')
+      .attr('id', numDesigns)
+        .append($('<span>')
+          .attr('class', 'designFormIdSpan')
+          .attr('title', '')
+          .html(newDesignId)
+          .append($('<label>')
+            .html('<i class="fa fa-times"></i>')
+            .attr('id', numDesigns)
+            .click(function(e) {
+              duckburg.order.removeDesignFromOrder(e);
+            })));
+
+    // Add the main design details inputs to the form.
+    duckburg.order.addDesignDetailInputsToDesignForm(newForm);
+
+    // Add the pricing input fields to the form.
+    duckburg.order.addDesignPriceInputsToDesignForm(newForm);
+
+    // Append size holder and sizes.
+    duckburg.order.addDesignSizeHolderToForm(newForm, sizes);
+
+    // Add the image fields (design)/
+    duckburg.order.addDesignImageHolderToDesignForm(newForm);
+
+    // Add advanced settings to the design.
+    duckburg.order.addAdvancedDesignSettings(newForm);
+
+    // Append the new form.
+    $('.designsDetailsCustomerHolder').append(newForm);
+
+    // Update the design globals in memory.
+    duckburg.order.collectDesignDetails();
+  },
+
+  /**
+   * Remove a design from the order.
+   * @function lets user remove design, after confirming the action.
+   * @param event Object dom element for the action
+   *
+   */
+   removeDesignFromOrder: function(event) {
+     var el = event.currentTarget;
+     var idx = el.id;
+     duckburg.utils.showPopup();
+
+     $('#popupContent')
+       .attr('class', 'confirmRemoveDesignPopup')
+
+       .append($('<span>')
+         .html('Are you sure you want to remove this design?'))
+
+       .append($('<label>')
+         .html('cancel')
+         .attr('class', 'cancel')
+         .click(function() {
+           duckburg.utils.hidePopup();
+         }))
+
+       .append($('<label>')
+         .html('remove')
+         .attr('class', 'remove')
+         .attr('id', idx)
+         .click(function(e) {
+           var index = e.currentTarget.id;
+           $('.designFormWithinOrder').each(function() {
+             if (this.id == index) {
+               $(this).remove();
+               duckburg.utils.hidePopup();
+               duckburg.order.collectDesignDetails();
+             }
+           })
+         }));
+   },
+
+  /**
+   * Add main detail inputs to a design form.
+   * @function when creating a new design form, add the inputs for product
+   *           type, color and pricing inputs.
+   * @param form Object dom element for form.
+   *
+   */
+  addDesignDetailInputsToDesignForm: function(form) {
+
+    var numDesigns = $('.designFormWithinOrder').length;
+
+    // Append input for the item name.
+    form
+      .append($('<input>')
+        .attr('type', 'text')
+        .attr('id', 'item_name')
+        .attr('class', 'designFormItemNameInput')
+        .attr('placeholder', 'name of design'))
+      .append($('<label>')
+        .attr('class', 'itemTotalPriceLabel')
+        .html('total price'))
+      .append($('<input>')
+        .attr('class', 'itemTotalPriceInput')
+        .attr('name', 'item_total_price_input_' + numDesigns)
+        .attr('placeholder', '0.00')
+        .attr('readonly', true));
+
+    // Append a product detail holder.
+    form
+      .append($('<div>')
+        .attr('class', 'designProductDetailInputs')
+        .attr('id', numDesigns)
+
+        // Product type label and input.
+        .append($('<label>')
+          .html('product type')
+          .attr('class', 'productTypeLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_type')
+          .attr('class', 'productTypeInputField'))
+
+        // Product type label and input.
+        .append($('<label>')
+          .html('product color')
+          .attr('class', 'productColorLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_color')
+          .attr('class', 'productColorInputField'))
+      );
+  },
+
+  /**
+  * Add pricing detail inputs to a design form.
+  * @function when creating a new design form, add the inputs for product
+  *           pricing to the form.
+  * @param form Object dom element for form.
+  *
+  */
+  addDesignPriceInputsToDesignForm: function(form) {
+
+    // Get number of designs.
+    var numDesigns = $('.designFormWithinOrder').length;
+
+    // Append a product detail holder.
+    form
+      .append($('<div>')
+        .attr('class', 'designPriceDetailInputs')
+
+        // Product type label and input.
+        .append($('<label>')
+          .html('piece price')
+          .attr('class', 'productPriceLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_price')
+          .attr('name', 'product_price_' + numDesigns)
+          .attr('class', 'productPriceInputField')
+          .attr('placeholder', '0.00')
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }))
+
+        // Product type label and input.
+        .append($('<label>')
+          .html('sale price')
+          .attr('class', 'productSalePriceLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_saleprice')
+          .attr('name', 'product_saleprice_' + numDesigns)
+          .attr('class', 'productSalePriceInputField')
+          .attr('placeholder', '0.00')
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }))
+
+        // Product type label and input.
+        .append($('<label>')
+          .html('social price')
+          .attr('class', 'productSocialPriceLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_socialprice')
+          .attr('name', 'product_socialprice_' + numDesigns)
+          .attr('class', 'productSocialPriceInputField')
+          .attr('placeholder', '0.00')
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }))
+     );
+   },
+
+   /**
+    * Add image holder to form.
+    * @function adds an image holder so that images can be added to a new
+    *           item.  This manages 'designs' associated with items.
+    * @param form Object the dom element for the design form.
+    *
+    */
+  addDesignImageHolderToDesignForm: function(form) {
+
+    // Append the holder element.
+    form
+      .append($('<div>')
+        .attr('class', 'designImageSelectorDiv')
+        .append($('<h3>')
+          .html('images'))
+        .append($('<input>')
+          .attr('class', 'designImagesFilePicker')
+          .attr('type', 'file'))
+        .append($('<em>')
+          .html('or'))
+        .append($('<button>')
+          .html('select existing design'))
+        .append($('<div>')
+          .attr('class', 'imagesWithinImageHolder'))
+    );
+  },
+
+  /**
+   * Add a holder for the design sizes.
+   * @function adds holder for the design sizes and, if no order exists,
+   *           adds default sizes to the holder.
+   * @param form Object dom element of form to append to.
+   *
+   */
+   addDesignSizeHolderToForm: function(form, sizes) {
+
+     // Create the holder.
+     var sizeHolder = $('<div>')
+       .attr('class', 'designFormSizeHolder');
+
+     // Append the sizeholder.
+     form.append(sizeHolder);
+
+     // If this is a new, blank order, append default size inputs.
+     duckburg.order.addSizeInputsToSizeHolder(sizeHolder, sizes);
+
+   },
+
+   /**
+    * Given a target element and list of sizes, create size inputs.
+    * @function adds size inputs to a design item.
+    * @param parent Object dom element to append size inputs to.
+    * @param sizes Object (optional) sizes to create inputs for.
+    *
+    */
+  addSizeInputsToSizeHolder: function(parent, sizes) {
+
+    // Get the current design index.
+    var designIndex = parent.parent()[0].id;
+
+    // Clear out the parent div.
+    parent.html('');
+
+    // Append the inputs.
+    for (var i = 0; i < duckburg.utils.orderSizeList.length; i++) {
+      var size = duckburg.utils.orderSizeList[i];
+
+      if (sizes[size] || sizes[size] == 0) {
+      var quantity = sizes[size] == 0 ? '' : sizes[size];
+        parent
+          .append($('<span>')
+            .attr('class', 'sizeLabelAndInputHolder')
+            .append($('<label>')
+              .attr('class', 'sizeLabel')
+              .html(size))
+            .append($('<input>')
+              .attr('type', 'text')
+              .attr('id', size)
+              .attr('name', 'size_for_item_' + designIndex)
+              .attr('placeholder', '0')
+              .attr('class', 'sizeInput')
+              .val(quantity)
+              .keyup(function(e) {
+                duckburg.order.collectDesignDetails();
+              }))
+            .append($('<label>')
+              .attr('class', 'removeSizeButton')
+              .html('<i class="fa fa-times"></i>'))
+          );
+       }
+    }
+
+    // Add an additional input for creating new sizes.
+    parent
+      .append($('<span>')
+        .attr('class', 'sizeLabelAndInputHolder')
+        .append($('<label>')
+          .attr('class', 'addSizeLabel')
+          .html('add size'))
+        .append($('<input>')
+          .attr('class', 'addSizeInput'))
+        .append($('<label>')
+          .attr('class', 'addSizeButton')
+          .html('<i class="fa fa-plus"></i>'))
+      );
+  },
+
+  /**
+   * Add advanced design settings.
+   * @function adds a dom element to a design form displaying advanced settings.
+   * @param form Object dom element, form to append to.
+   *
+   */
+   addAdvancedDesignSettings: function(form) {
+
+     var settings = {
+          'product_category': 'Category',
+          'product_store': 'Store',
+          'product_ishidden': 'Is hidden',
+          'product_isindexed': 'Is indexed'
+     };
+
+     // Make a div for the details
+     var settingsDetail = $('<span>')
+        .attr('class', 'advancedSettingsDetail');
+
+     // Add the holder div.
+     form
+       .append($('<div>')
+         .attr('class', 'advancedSettingsHolder')
+
+         .append($('<span>')
+           .attr('class', 'advancedSettingsHeader')
+           .html('advanced settings')
+           .click(function(e) {
+             duckburg.order.toggleAdvancedSettingsVisibility(e);
+           }))
+
+         .append(settingsDetail)
+        );
+
+     for (var setting in settings) {
+       var displayName = settings[setting];
+       settingsDetail
+         .append($('<label>')
+           .html(displayName))
+         .append($('<input>')
+           .attr('type', 'text')
+           .attr('id', setting));
+     }
+   },
+
+  /**
+   * Toggle visiblity of advanced settings div.
+   * @function toggles the visiblity of the advanced settings for an item.
+   * @param event Object dom element - advanced settings header.
+   *
+   */
+   toggleAdvancedSettingsVisibility: function(event) {
+
+     // Get the advanced settings details div.
+     var next = $(event.currentTarget).next()[0];
+
+     if (next.style.display != 'block') {
+       next.style.display = 'block';
+     } else {
+       next.style.display = 'none';
+     }
+   },
+
+  /**
+   * COLLECTING ORDER INFORMATION
+   *
+   * @module (of sorts)
+   * Area of order namespace where information is collected prior
+   * to making a request to parse.
+   *
+   */
+
+   /**
+   * Collects order details
+   * @function to collect order information away from keyup events.  This
+   *           includes customer and item information.
+   *
+   */
+   collectOrderInformation: function() {
+
+     // Create an order if there isn't one
+     if (!duckburg.order.currentOrder) {
+       duckburg.order.createOrder();
+     } else {
+
+       // Build the current customer object.
+       var customers = [];
+       for (var customer in duckburg.order.currentCustomers) {
+
+         if (customer != 'length') {
+           var custObject = {};
+           custObject.id = customer;
+           custObject.isShip = false;
+           custObject.isBill = false;
+
+           // Set the first one as the 'primary customer'.
+           if (customers.length == 0) {
+             var cust = duckburg.order.currentCustomers[customer];
+             var a = cust.attributes;
+             var name = a.first_name + ' ' + a.last_name;
+             duckburg.order.currentOrder.set('cust_name', name);
+             duckburg.order.currentOrder.set('cust_phone', a.phone_number);
+             duckburg.order.currentOrder.set('cust_email', a.email_address);
+           }
+
+           customers.push(custObject);
+         }
+       }
+
+       // If there are no customers currently, make sure the quick customer
+       // parameters are cleared out.
+       if (customers.length == 0) {
+         duckburg.order.currentOrder.set('cust_name', '');
+         duckburg.order.currentOrder.set('cust_phone', '');
+         duckburg.order.currentOrder.set('cust_email', '');
+       }
+
+
+       $('.isShippingCustomer').each(function(item) {
+         customers[item].isShip = this.checked;
+       });
+
+       $('.isBillingCustomer').each(function(item) {
+         customers[item].isBill = this.checked;
+       });
+
+       // Stringify the customer info and save the item.
+       duckburg.order.currentOrder.set('customers', JSON.stringify(customers));
+       duckburg.order.currentOrder.save();
+     }
+   },
+
+   /**
+    * Collect design details.
+    * @function iterate over all the visible designs, collecting their sizes,
+    *           item ids and total price (even if its 0.00).
+    *
+    */
+   collectDesignDetails: function() {
+
+    // Get number of designs.
+    var numDesigns = $('.designFormWithinOrder').length;
+
+    // Holder for the designs.
+    var items = [];
+
+    // For each item that exists, look for the design details.
+    for (var i = 0; i < numDesigns; i++) {
+      var item = {};
+
+      // Get size counts and total items.
+      var name = 'size_for_item_' + i;
+      item.sizes = {};
+      item.total_items = 0
+      $('[name="' + name + '"]').each(function() {
+        var sizeName = this.id;
+        var quantity = this.value == '' ? 0 : this.value;
+        item.total_items += parseInt(quantity);
+        item.sizes[sizeName] = quantity;
+      });
+
+      // Get pricing info and format it properly.
+      var price = $('[name="product_price_' + i + '"]').val();
+      price = price == '' ? 0 : price;
+      var totalCost = price * item.total_items;
+      costArray = String(totalCost).split('.');
+      var dollars = costArray[0];
+      var cents = costArray[1] ? costArray[1].substr(0, 2) : '00';
+      totalCost = dollars + '.' + cents;
+
+      // Set the total price in the ui and on the object.
+      item.totalCost = totalCost;
+      $('[name="item_total_price_input_' + i + '"]').val('$' + item.totalCost);
+    }
+
+    items.push(item);
+
+    if (duckburg.order.currentOrder) {
+      items = JSON.stringify(items);
+      duckburg.order.currentOrder.set('items', items);
+      duckburg.order.currentOrder.save();
+    }
+   },
+
 
   /**
    * Set a loading message

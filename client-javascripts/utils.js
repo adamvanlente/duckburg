@@ -33,8 +33,25 @@ duckburg.utils = {
     'ordered': 'rgba(195, 202, 87, 1.0)',
     'received': 'rgba(226, 177, 101, 1.0)',
     'printing': 'rgba(239, 116, 116, 1.0)',
-    'completed': 'rgba(54, 179, 202, 1.0)'
+    'completed': 'rgba(54, 179, 202, 1.0)',
+    'archived': 'rgba(0, 0, 0, 0.8)'
   },
+
+  // Standard order sizes.
+  standardOrderSizes: {
+    'S': 0,
+    'M': 0,
+    'L': 0,
+    'XL': 0,
+    '2X': 0
+  },
+
+  // Order in which sizes should be displayed.
+  orderSizeList: ['1T', '2T', '3T', '4T', '5T', '6T', 'YXS', 'YS', 'YM', 'YL',
+                  'YXL', 'YXXL', 'XXXS', 'XXS', 'XS', 'S', 'M', 'L', 'XL', '1X',
+                  '2X', '2XL', 'XXL', '3X', '3XL', 'XXXL', '4X', '4XL', 'XXXXL',
+                  '5X', 'XXXXXL', '5XL', '6X', '6XL', 'XXXXXXL', '7X', '7XL',
+                  'XXXXXXXL', '8X', '8XL', 'XXXXXXXXL'],
 
   /**
    * Object for new object callbacks
