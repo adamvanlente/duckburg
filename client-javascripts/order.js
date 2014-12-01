@@ -1128,9 +1128,13 @@ duckburg.order = {
    */
    addDesignSizeHolderToForm: function(form, sizes) {
 
+     // Get number of designs.
+     var numDesigns = $('.designFormWithinOrder').length;
+
      // Create the holder.
      var sizeHolder = $('<div>')
-       .attr('class', 'designFormSizeHolder');
+       .attr('class', 'designFormSizeHolder')
+       .attr('id', 'design_sizes_' + numDesigns);
 
      // Append the sizeholder.
      form.append(sizeHolder);
@@ -1150,7 +1154,7 @@ duckburg.order = {
   addSizeInputsToSizeHolder: function(parent, sizes) {
 
     // Get the current design index.
-    var designIndex = parent.parent()[0].id;
+    var index = parent.parent()[0].id;
 
     // Clear out the parent div.
     parent.html('');
@@ -1160,28 +1164,18 @@ duckburg.order = {
       var size = duckburg.utils.orderSizeList[i];
 
       if (sizes[size] || sizes[size] == 0) {
-      var quantity = sizes[size] == 0 ? '' : sizes[size];
-        parent
-          .append($('<span>')
-            .attr('class', 'sizeLabelAndInputHolder')
-            .append($('<label>')
-              .attr('class', 'sizeLabel')
-              .html(size))
-            .append($('<input>')
-              .attr('type', 'text')
-              .attr('id', size)
-              .attr('name', 'size_for_item_' + designIndex)
-              .attr('placeholder', '0')
-              .attr('class', 'sizeInput')
-              .val(quantity)
-              .keyup(function(e) {
-                duckburg.order.collectDesignDetails();
-              }))
-            .append($('<label>')
-              .attr('class', 'removeSizeButton')
-              .html('<i class="fa fa-times"></i>'))
-          );
-       }
+        var quantity = sizes[size] == 0 ? '' : sizes[size];
+        duckburg.order.addSizeInputFieldToForm(size, quantity, index, parent);
+      }
+    }
+
+    // Find odd sizes, as in non standard sizes, eg OSFA.
+    for (var sizeLabel in sizes) {
+      var isOddSize = duckburg.utils.orderSizeList.indexOf(sizeLabel) == -1;
+      if (isOddSize && sizeLabel != '') {
+        duckburg.order.addSizeInputFieldToForm(
+            sizeLabel, sizes[sizeLabel], index, parent);
+      }
     }
 
     // Add an additional input for creating new sizes.
@@ -1195,9 +1189,98 @@ duckburg.order = {
           .attr('class', 'addSizeInput'))
         .append($('<label>')
           .attr('class', 'addSizeButton')
-          .html('<i class="fa fa-plus"></i>'))
+          .attr('id', index)
+          .html('<i class="fa fa-plus"></i>')
+          .click(function(e) {
+            var el = e.currentTarget;
+            var size = $(el).prev().val();
+            duckburg.order.addSizeToDesignForm(size, el.id);
+          }))
       );
   },
+
+  /**
+   * Add an input for a size field to the design form.
+   * @function helper function that creates label, input and remove button for
+   *           a size for a particular design.
+   * @param size String size name
+   * @param quantity Int number of items for this size
+   * @param designIndex Int index of design among other designs
+   * @param parent Object dom element of parent holder object.
+   *
+   */
+  addSizeInputFieldToForm: function(size, quantity, designIndex, parent) {
+    parent
+      .append($('<span>')
+        .attr('class', 'sizeLabelAndInputHolder')
+        .attr('id', size + '_' + quantity)
+      .append($('<label>')
+        .attr('class', 'sizeLabel')
+        .html(size))
+      .append($('<input>')
+        .attr('type', 'text')
+        .attr('id', size)
+        .attr('name', 'size_for_item_' + designIndex)
+        .attr('placeholder', '0')
+        .attr('class', 'sizeInput')
+        .val(quantity)
+        .keyup(function(e) {
+          duckburg.order.collectDesignDetails();
+        }))
+      .append($('<label>')
+        .attr('class', 'removeSizeButton')
+        .html('<i class="fa fa-times"></i>')
+        .click(function(e) {
+          var el = e.currentTarget.parentElement;
+          $(el).remove();
+          duckburg.order.collectDesignDetails();
+        }))
+      );
+  },
+
+  /**
+   * Add a size option to the list of available.
+   * @function let a user add a size to the list of sizes currently shown.
+   * @param size String size to add to the list.
+   * @param index Int design index to insert size to.
+   *
+   */
+   addSizeToDesignForm: function(size, index) {
+
+     var parent = $('#design_sizes_' + index);
+     var children = parent.children();
+
+     // Make sure the size is a uppercase string.
+     size = size.toUpperCase();
+
+     // Collect the current list of sizes.
+     var sizeObj = {};
+     for (var i = 0; i < children.length; i++) {
+       var child = children[i];
+       var id = child.id;
+       var oldSize = id.split('_')[0];
+
+       var quantity = 0;
+       var labels = $(child).children();
+       for (var j = 0; j < labels.length; j++) {
+         var label = labels[j];
+         if (label.className == 'sizeInput') {
+           var val = label.value;
+           quantity = val;
+         }
+       }
+
+       sizeObj[oldSize] = quantity;
+     }
+
+     // Add the new size to the list.
+     if (!sizeObj[size]) {
+       sizeObj[size] = '';
+     }
+
+     // Reset the list in the UI.
+     duckburg.order.addSizeInputsToSizeHolder(parent, sizeObj);
+   },
 
   /**
    * Add advanced design settings.
@@ -1367,6 +1450,7 @@ duckburg.order = {
       costArray = String(totalCost).split('.');
       var dollars = costArray[0];
       var cents = costArray[1] ? costArray[1].substr(0, 2) : '00';
+      cents = cents.length == 1 ? cents + '0' : cents;
       totalCost = dollars + '.' + cents;
 
       // Set the total price in the ui and on the object.
