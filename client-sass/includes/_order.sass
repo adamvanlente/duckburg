@@ -505,7 +505,7 @@
             &.designImageSelectorDiv
               @extend .light-font
               padding: 8px
-              margin: 12px auto
+              margin: 0px auto 12px auto
               background: #e5e3e3
               width: 800px
               display: block
@@ -558,6 +558,37 @@
                   @extend .light-font
                   width: 800px
                   display: block
+                  margin: 8px auto
+                  background: rgba(255, 255, 255, 0.17)
+
+                  span
+                    display: inline-block
+                    margin: 8px
+                    height: 100px
+                    width: 100px
+                    border: 2px solid rgb(187, 177, 177)
+                    vertical-align: top
+                    &:hover
+                      label
+                        display: block
+                        padding: 16px
+                        text-align: center
+                    label
+                      display: none
+                      @extend .light-font
+                      @extend .basic-button
+                      &.delete
+                        background: $cancel-red
+                        color: white
+                        &:hover
+                          background: #333
+                          color: $cancel-red
+                      &.view
+                        background: $minty-green
+                        color: white
+                        &:hover
+                          background: #333
+                          color: $minty-green
 
     &.designDetailsTitle
       @extend .traditional-width
@@ -746,3 +777,87 @@
       background: $cancel-red
     &.remove
       background: $minty-green
+
+.designNotesWithinDesignForm
+  @extend .light-font
+  @extend .basic-button
+  display: block
+  width: 800px
+  margin: 0 auto
+  margin-bottom: 12px
+  padding: 8px
+  min-height: 62px
+  background: rgb(250, 250, 250)
+
+.existingDesignSearchBox
+  display: block
+  position: absolute
+  z-index: 42
+  background: white
+  padding: 12px
+  left: 20%
+  right: 20%
+  top: 75px
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1)
+  border: 1px solid rgba(51, 51, 51, 0.16)
+
+  button
+    @extend .light-font
+    @extend .basic-button
+    background: $cancel-red
+    color: white
+    font-size: 13px
+    display: block
+    width: 100%
+    margin-top: 16px
+    padding: 8px
+
+  input
+    &.designSearchInput
+      @extend .light-font
+      @extend .basic-button
+      display: block
+      padding: 8px
+      border-bottom: 1px solid #DCDCDC
+      width: 50%
+      font-size: 13px
+
+  div
+    @extend .light-font
+    @extend .basic-button
+    &.designSearchResults
+      display: block
+      max-height: 350px
+      overflow: scroll
+
+    span
+      &.searchingMessage,
+      &.noResultsMessage
+        display: block
+        padding: 8px
+        color: rgba(119, 119, 119, 0.55)
+        border: 1px solid
+        font-size: 12px
+        text-align: center
+        margin-top: 16px
+      &.designSearchResultSpan
+        display: block
+        background: #F1F1F1
+        margin: 16px
+        padding: 8px
+        &:hover
+          background: #DCDCDC
+          cursor: pointer
+
+        label
+          display: block
+          font-size: 15px
+          color: #777
+
+          span
+            display: inline-block
+            margin: 4px
+            height: 100px
+            width: 100px
+            background-repeat: none
+            border: 2px solid rgb(208, 205, 205)

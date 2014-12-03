@@ -42,7 +42,11 @@ duckburg.requests = {
     for (var param in params) {
       if (param != 'parse_search_string') {
         newItem.set(param, params[param]);
-        searchString += params[param] + ' ';
+
+        // Add to the search string.
+        if (params[param] && params[param] != '') {
+          searchString += params[param] + ' ';
+        }
       }
     }
 
@@ -240,7 +244,7 @@ duckburg.requests = {
 
       // Save the file and send it back, or throw error.
       parseFile.save().then(function(response) {
-        successCb(response);
+        successCb(response, fileInput);
       },
 
       function(reuslt, error) {

@@ -78,6 +78,7 @@ duckburg.order = {
 
       // Assign the order as the current order onload.
       duckburg.order.currentOrder = order;
+      console.log('loading order', order);
 
       // BE SURE when add order to customer, get the isShip/isBill params
       // from the cust collection and be sure to send them as the optional
@@ -928,6 +929,9 @@ duckburg.order = {
     // Add the image fields (design)/
     duckburg.order.addDesignImageHolderToDesignForm(newForm);
 
+    // Add a description area to the form.
+    duckburg.order.addDescriptionBlockToDesignForm(newForm);
+
     // Add advanced settings to the design.
     duckburg.order.addAdvancedDesignSettings(newForm);
 
@@ -949,12 +953,15 @@ duckburg.order = {
      var idx = el.id;
      duckburg.utils.showPopup();
 
+     // Populate a popup that confirms the user action of removing a design.
      $('#popupContent')
        .attr('class', 'confirmRemoveDesignPopup')
 
+       // Message for popup.
        .append($('<span>')
          .html('Are you sure you want to remove this design?'))
 
+       // Cancel action for popup.
        .append($('<label>')
          .html('cancel')
          .attr('class', 'cancel')
@@ -962,6 +969,7 @@ duckburg.order = {
            duckburg.utils.hidePopup();
          }))
 
+       // Confirm action for popup.
        .append($('<label>')
          .html('remove')
          .attr('class', 'remove')
@@ -970,11 +978,21 @@ duckburg.order = {
            var index = e.currentTarget.id;
            $('.designFormWithinOrder').each(function() {
              if (this.id == index) {
+
+               // Remove the object from the current list of objects.
+               var parseId = $(this).attr('name');
+               if (duckburg.order.currentItems[parseId]) {
+                 delete duckburg.order.currentItems[parseId];
+               }
+
+               // Remove div containing design.
                $(this).remove();
-               duckburg.utils.hidePopup();
-               duckburg.order.collectDesignDetails();
              }
-           })
+           });
+
+           // Hide the popup and collect the design details.
+           duckburg.utils.hidePopup();
+           duckburg.order.collectDesignDetails();
          }));
    },
 
@@ -995,7 +1013,11 @@ duckburg.order = {
         .attr('type', 'text')
         .attr('id', 'item_name')
         .attr('class', 'designFormItemNameInput')
-        .attr('placeholder', 'name of design'))
+        .attr('name', 'item_name_' + numDesigns)
+        .attr('placeholder', 'name of design')
+        .keyup(function() {
+          duckburg.order.collectDesignDetails();
+        }))
       .append($('<label>')
         .attr('class', 'itemTotalPriceLabel')
         .html('total price'))
@@ -1016,9 +1038,20 @@ duckburg.order = {
           .html('product type')
           .attr('class', 'productTypeLabel'))
         .append($('<input>')
-          .attr('type', 'text')
+          .attr('type', 'hidden')
           .attr('id', 'product_type')
-          .attr('class', 'productTypeInputField'))
+          .attr('class', 'productTypeWithinForm')
+          .attr('name', 'product_type_' + numDesigns))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_type_visible')
+          .attr('class', 'productTypeInputField')
+          .attr('name', 'product_type_visible_' + numDesigns)
+          .click(function(e) {
+            duckburg.order.lastClickedProduct = e.currentTarget.name;
+            duckburg.utils.launchRelatedItemSelector(
+                e, 'product_name', 'dbProduct', 'product_type');
+          }))
 
         // Product type label and input.
         .append($('<label>')
@@ -1027,7 +1060,11 @@ duckburg.order = {
         .append($('<input>')
           .attr('type', 'text')
           .attr('id', 'product_color')
-          .attr('class', 'productColorInputField'))
+          .attr('name', 'product_color_' + numDesigns)
+          .attr('class', 'productColorInputField')
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }))
       );
   },
 
@@ -1093,6 +1130,28 @@ duckburg.order = {
    },
 
    /**
+    * Add area for a design description.
+    * @function adds area for user to add an item description/notes.
+    * @param form Obj dom element, form to append to.
+    *
+    */
+  addDescriptionBlockToDesignForm: function(form) {
+
+    // Get number of designs.
+    var numDesigns = $('.designFormWithinOrder').length;
+
+    // Append field to form.
+    form
+      .append($('<textarea>')
+        .attr('class', 'designNotesWithinDesignForm')
+        .attr('name', 'design_notes_' + numDesigns)
+        .attr('placeholder', 'notes')
+        .keyup(function() {
+          duckburg.order.collectDesignDetails();
+        }));
+  },
+
+   /**
     * Add image holder to form.
     * @function adds an image holder so that images can be added to a new
     *           item.  This manages 'designs' associated with items.
@@ -1101,22 +1160,321 @@ duckburg.order = {
     */
   addDesignImageHolderToDesignForm: function(form) {
 
+    // Get number of designs.
+    var numDesigns = $('.designFormWithinOrder').length;
+
     // Append the holder element.
     form
       .append($('<div>')
         .attr('class', 'designImageSelectorDiv')
         .append($('<h3>')
           .html('images'))
+
+        // Append an image picker.
         .append($('<input>')
           .attr('class', 'designImagesFilePicker')
-          .attr('type', 'file'))
+          .attr('id', numDesigns)
+          .attr('type', 'file')
+
+          // Give the image picker an onchange function.
+          .change(function(e) {
+
+            // Using the input, upload the file that's been selected.
+            var file = event.currentTarget;
+            duckburg.requests.saveFileFromInput(file, function(result, input) {
+
+              // Mimic a parse design object.
+              var design = {
+                id: false,
+                attributes: {
+                  design_images_list: result._url
+                }
+              }
+
+              // Set this design as the current design.
+              duckburg.order.addDesignToOrder(design, input.id);
+            });
+          }))
         .append($('<em>')
           .html('or'))
         .append($('<button>')
-          .html('select existing design'))
+          .html('select existing design')
+          .attr('class', 'existingDesignButton')
+          .attr('id', numDesigns)
+          .click(function(e) {
+            duckburg.order.launchExistingDesignSearchBox(e);
+          }))
         .append($('<div>')
-          .attr('class', 'imagesWithinImageHolder'))
+          .attr('class', 'imagesWithinImageHolder')
+          .attr('id', 'imagesWithinImageHolder_' + numDesigns))
+        .append($('<input>')
+          .attr('type', 'hidden')
+          .attr('class', 'designImagesList')
+          .attr('id', 'design_images_list_' + numDesigns))
     );
+  },
+
+  /**
+   * Launch popup to search for existing designs.
+   * @function allows user to add existing design to order.
+   * @param event Obj dom element that caused event.
+   *
+   */
+  launchExistingDesignSearchBox: function(event) {
+    var id = event.currentTarget.id;
+    duckburg.order.performingExistingDesignSearchForDesignIndex = id;
+
+    // Show the popup.
+    duckburg.utils.showPopup();
+
+    // Assign class to popup content
+    $('#popupContent')
+      .attr('class', 'existingDesignSearchBox')
+
+      // Append a search input.
+      .append($('<input>')
+        .attr('class', 'designSearchInput')
+        .attr('placeholder', 'search for designs')
+        .keyup(function(e) {
+          duckburg.order.searchForDesigns(e);
+        }))
+      .append($('<div>')
+        .attr('class', 'designSearchResults'))
+      .append($('<button>')
+        .attr('class', 'cancelDesignSearch')
+        .html('cancel')
+        .click(function() {
+          duckburg.utils.hidePopup();
+        }));
+  },
+
+  /**
+   * Search for designs
+   * @function allows user to search through existing designs.
+   * @param event Obj dom element of input where search is occurring.
+   *
+   */
+  searchForDesigns: function(event) {
+    if (duckburg.order.filteredDesignSearchTimer) {
+      window.clearInterval(duckburg.order.filteredDesignSearchTimer);
+    }
+
+    duckburg.order.filteredDesignSearchTimer = setTimeout(function() {
+
+      $('.designSearchResults')
+        .html('')
+        .append($('<span>')
+          .attr('class', 'searchingMessage')
+          .html('searching for designs'));
+
+      var term = event.currentTarget.value.toLowerCase();
+      duckburg.requests.findObjects('dbDesign', term, function(results) {
+
+        if (!results || results.length == 0) {
+          $('.designSearchResults')
+            .html('')
+            .append($('<span>')
+              .attr('class', 'noResultsMessage')
+              .html('no results for that search'));
+
+        } else {
+
+          duckburg.order.currentlySearchingDesignResults = results;
+
+          $('.designSearchResults')
+            .html('');
+
+          for (var i = 0; i < results.length; i++) {
+            var design = results[i];
+            var atrib = design.attributes;
+            var imgList = atrib.design_images_list.split(',');
+
+            var designSpan = $('<span>')
+              .attr('class', 'designSearchResultSpan')
+              .attr('id', i)
+              .click(function(e) {
+                var id = e.currentTarget.id;
+                var design = duckburg.order.currentlySearchingDesignResults[id];
+                duckburg.order.addDesignToOrder(design);
+                duckburg.utils.hidePopup();
+              });
+
+            var titleLabel = $('<label>')
+              .html(atrib.design_name);
+
+            var imageLabel = $('<label>')
+              .attr('class', 'designSearchResultsImages');
+
+            for (var j = 0; j < imgList.length; j++) {
+              var img = imgList[j];
+              var imgSpan = $('<span>')
+                .css({'background': 'url(' + img + ')',
+                'background-size': '100%'});
+              imageLabel.append(imgSpan);
+            }
+
+            designSpan
+              .append(titleLabel)
+              .append(imageLabel);
+
+            $('.designSearchResults')
+              .append(designSpan);
+          }
+        }
+      });
+    }, 1000);
+  },
+
+  /**
+   * Add design to order.
+   * @function adds a design to an order item.
+   * @param design Object parse dbDesign object
+   * @param index Int index of item to add design to
+   *
+   */
+  addDesignToOrder: function(design, index) {
+
+    // Get item index (which of the visible items to add to);
+    index = index || duckburg.order.performingExistingDesignSearchForDesignIndex;
+
+    // Get and, if necessary, set design id.
+    var designId = $('#imagesWithinImageHolder_' + index).attr('name');
+    var isExistingDesign;
+    if (!designId || designId != '') {
+      if (design.id) {
+
+        // Store the design id as the name of the image holder.
+        $('#imagesWithinImageHolder_' + index).attr('name', design.id);
+
+        // Store the actual design object in the list of global design objects.
+        if (!duckburg.order.currentDesigns[result.id]) {
+          duckburg.order.currentDesigns[result.id] = result;
+        }
+        isExistingDesign = true;
+      }
+    }
+
+    // Add the image to the current list of images.
+    var existingImgArray = $('#design_images_list_' + index).val().split(',');
+    existingImgArray = existingImgArray.length == 1 &&
+        existingImgArray[0] == '' ? [] : existingImgArray;
+
+    // Place the images in the div.
+    var imgArray = design.attributes.design_images_list.split(',');
+    for (var i = imgArray.length - 1; i >= 0; i--) {
+      var img = imgArray[i];
+      existingImgArray.push(img);
+      $('#imagesWithinImageHolder_' + index)
+        .append($('<span>')
+          .css({'background': 'url(' + img + ')',
+          'background-size': '100%'})
+
+          .append($('<label>')
+            .attr('class', 'delete')
+            .html('remove')
+            .attr('id', String(img))
+            .click(function(e) {
+
+              // Remove an image from the list.
+              duckburg.order.removeImageFromOrder();
+            })
+          )
+          .append($('<label>')
+            .attr('class', 'view')
+            .attr('id', String(img))
+            .html('view')
+            .click(function(e) {
+
+              // Capture the image.
+              var img = e.currentTarget.id;
+              duckburg.utils.revealImageViewerWithImage(img);
+            })
+          )
+        );
+    }
+
+    // Remember the array of images in a hidden input.
+    var stringImages = existingImgArray.join(',');
+    $('#design_images_list_' + index).val(stringImages);
+
+    // Determine if a new design should be created.
+    if (!isExistingDesign) {
+      var params = {
+        design_images_list: stringImages,
+        design_name: $('[name="item_name_' + index + '"]').val(),
+        parse_search_string: $('#item_name_' + index).val(),
+        indexInList: index
+      };
+
+      duckburg.requests.createNewObject('dbDesign', params, function(result) {
+
+        // Store the parse ID as the name of the image holder.
+        $('#imagesWithinImageHolder_' + result.attributes.indexInList)
+          .attr('name', result.id);
+
+        // Store the actual object in our global list of design objects.
+        if (!duckburg.order.currentDesigns[result.id]) {
+          duckburg.order.currentDesigns[result.id] = result;
+        }
+
+      });
+    } else {
+      duckburg.order.currentDesigns[design.id].set(
+          'design_images_list', stringImages);
+    }
+
+    // Collect design details.
+    duckburg.order.collectDesignDetails();
+  },
+
+  /**
+   * Remove an image from an item.
+   * @function allows user to remove a selected image from an item's list.
+   * @param e Object event from clicking on image span.
+   *
+   */
+  removeImageFromOrder: function(e) {
+
+    // Image span.
+    var imageSpan = $(e.currentTarget).parent();
+
+    // Current target's id is the image url.
+    var removedImage = e.currentTarget.id;
+
+    // Span that holds all images.
+    var imageHolder = $(imageSpan).parent();
+
+    // Hidden input that holds stringed list of images.
+    var designImagesHolder = imageHolder.next();
+
+    // Remove the visible images from the list in the UI.
+    imageSpan.remove();
+
+    // Get the list of images as an array, and remove the image that has just
+    // been removed from the UI.
+    var designImageList = designImagesHolder.val().split(',');
+    var removedImageIndex = designImageList.indexOf(removedImage);
+    designImageList.splice(removedImageIndex, 1);
+
+    // Now, update the value in the ui.
+    designImagesHolder.val(designImageList.join(','));
+
+    // If all images have been removed, also remove the design id that is
+    // being stored in the main holder name.
+    if (designImageList.length == 0 || !designImageList.length) {
+
+      // Remove the object, if it is being stored.
+      var id = $(imageHolder).attr('name');
+      if (duckburg.order.currentDesigns[id]) {
+        delete duckburg.order.currentDesigns[id];
+      }
+
+      // Reset the name to null.
+      $(imageHolder).attr('name', '');
+    }
+
+    // Collect the design details again.
+    duckburg.order.collectDesignDetails();
   },
 
   /**
@@ -1290,12 +1648,21 @@ duckburg.order = {
    */
    addAdvancedDesignSettings: function(form) {
 
+     // The list of advanced settings.
      var settings = {
           'product_category': 'Category',
           'product_store': 'Store',
           'product_ishidden': 'Is hidden',
           'product_isindexed': 'Is indexed'
      };
+
+
+    // CLICK FUNCTION  FOR THESE TODO
+    //  .click(function(e) {
+    //    duckburg.order.lastClickedProduct = e.currentTarget.name;
+    //    duckburg.utils.launchRelatedItemSelector(
+    //      e, 'product_name', 'dbProduct', 'product_type');
+    //    })
 
      // Make a div for the details
      var settingsDetail = $('<span>')
@@ -1316,6 +1683,8 @@ duckburg.order = {
          .append(settingsDetail)
         );
 
+     var numDesigns = $('.designFormWithinOrder').length;
+
      for (var setting in settings) {
        var displayName = settings[setting];
        settingsDetail
@@ -1323,7 +1692,12 @@ duckburg.order = {
            .html(displayName))
          .append($('<input>')
            .attr('type', 'text')
-           .attr('id', setting));
+           .attr('id', setting + '_visible')
+           .attr('name', setting + '_visible_' + numDesigns))
+         .append($('<input>')
+           .attr('type', 'hidden')
+           .attr('id', setting)
+           .attr('name', setting + '_' + numDesigns));
      }
    },
 
@@ -1343,6 +1717,159 @@ duckburg.order = {
      } else {
        next.style.display = 'none';
      }
+   },
+
+   /** Resets the counters found in the ids of the design details.
+    *  @function when a design is removed, indexes of the current designs
+    *            can be thrown off.  Eg, if design #2 of 3 is deleted, now
+    *            design 3 should be updated and referred to as design 2.
+    *
+    */
+   resetDesignCounters: function() {
+
+     // Reset the names of the designs.
+     $('.designFormIdSpan').each(function(item) {
+       var designNumber = item + 1;
+       this.innerHTML = 'Design No.' + designNumber;
+       $(this)
+         .append($('<label>')
+           .html('<i class="fa fa-times"></i>')
+           .attr('id', item)
+           .click(function(e) {
+             duckburg.order.removeDesignFromOrder(e);
+           })
+         );
+     });
+
+     // Reset the id of the total price input.
+     $('.itemTotalPriceInput').each(function(item) {
+       $(this).attr('name', 'item_total_price_input_' + item);
+     });
+
+     // Reset id of the pricing inputs.
+     $('.designProductDetailInputs').each(function(item) {
+       $(this).attr('id', item);
+     });
+
+     // Reset id of image pickers.
+     $('.designImagesFilePicker').each(function(item) {
+       $(this).attr('id', item);
+     });
+
+     // Product type holders.
+     $('.productTypeWithinForm').each(function(item) {
+       $(this).attr('name', 'product_type_' + item);
+     });
+     $('.productTypeInputField').each(function(item) {
+       $(this).attr('name', 'product_type_visible_' + item);
+     });
+     $('.productColorInputField').each(function(item) {
+       $(this).attr('name', 'product_color_' + item);
+     });
+
+     // Update design name inputs.
+     $('.designFormItemNameInput').each(function(item) {
+       $(this).attr('name', 'item_name_' + item);
+     });
+
+     // Reset id of add size buttons.
+     $('.addSizeButton').each(function(item) {
+       $(this).attr('id', item);
+     });
+
+     // Reset notes fields.
+     $('.designNotesWithinDesignForm').each(function(item) {
+       $(this).attr('name', 'design_notes_' + item);
+     });
+
+     // Existing images button id.
+     $('.existingDesignButton').each(function(item) {
+       $(this).attr('id', item);
+     });
+
+     // Image holder div.
+     $('.imagesWithinImageHolder').each(function(item) {
+       $(this).attr('id', 'imagesWithinImageHolder_' + item);
+     });
+
+     $('.designImagesList').each(function(item) {
+       $(this).attr('id', 'design_images_list_' + item);
+     });
+
+     // Update price holder ids.
+     $('.designPriceDetailInputs').each(function(item) {
+       var itemIndex = item;
+       var children = $(this).children();
+       for (var i = 0; i < children.length; i++) {
+         var child = children[i];
+
+         // Update product price, sale price and social price.
+         if (child.id == 'product_price') {
+           $(child).attr('name', 'product_price_' + itemIndex);
+         }
+         if (child.id == 'product_saleprice') {
+           $(child).attr('name', 'product_saleprice_' + itemIndex);
+         }
+         if (child.id == 'product_socialprice') {
+           $(child).attr('name', 'product_socialprice_' + itemIndex);
+         }
+       }
+     });
+
+     // Update the advanced settings.
+     $('.advancedSettingsDetail').each(function(item) {
+       var children = $(this).children();
+       for (var i = 0; i < children.length; i++) {
+         var child = children[i];
+         if (child.type == 'text') {
+           child.name = child.id + '_' + item;
+         }
+       }
+     });
+
+     // Update the main and individual size ids.
+     $('.designFormSizeHolder').each(function(item) {
+       $(this).attr('id', 'design_sizes_' + item);
+       var itemIndex = item;
+
+       var kids = $(this).children();
+       for (var i = 0; i < kids.length; i++) {
+         var kid = kids[i];
+         var inputs = $(kid).children();
+         for (var j = 0; j < inputs.length; j++) {
+           var input = inputs[j];
+           if (input.className == 'sizeInput') {
+             $(input).attr('name', 'size_for_item_' + itemIndex);
+           }
+         }
+       }
+     });
+
+     // Reset the ids of the main divs.
+     $('.designFormWithinOrder').each(function(item) {
+       this.id = item;
+     });
+   },
+
+   /**
+    * Create a catalog item.
+    * @function as an order progresses, if an item needs to be created, use the
+    *           details that exist and create a catalog item.
+    * @param item Object catalog item object.
+    *
+    */
+   createCatalogItem: function(item) {
+
+    duckburg.requests.createNewObject('dbCatalogItem', item, function(result) {
+
+      // Assing the new item's id to the design div.
+      $('.designFormWithinOrder').each(function(count) {
+        if (count == item.indexInLoop) {
+          $(this).attr('name', result.id);
+          duckburg.order.currentItems[result.id] = result;
+        }
+      });
+    });
    },
 
   /**
@@ -1422,6 +1949,10 @@ duckburg.order = {
     */
    collectDesignDetails: function() {
 
+    // Reset the counter ids on all designs, in case one has been removed and
+    // the indexes are off.
+    duckburg.order.resetDesignCounters();
+
     // Get number of designs.
     var numDesigns = $('.designFormWithinOrder').length;
 
@@ -1431,6 +1962,88 @@ duckburg.order = {
     // For each item that exists, look for the design details.
     for (var i = 0; i < numDesigns; i++) {
       var item = {};
+
+      // Store the index within this loop.
+      item.indexInLoop = i;
+
+      // Get the item id, if it exists.
+      $('.designFormWithinOrder').each(function() {
+        if (this.id == i) {
+          item.id = $(this).attr('name');
+        }
+      });
+
+      // Remember the design id.
+      item.design_id = $('#imagesWithinImageHolder_' + i).attr('name');
+
+      // Remember the list of images.
+      item.design_images_list = $('#design_images_list_' + i).val();
+
+      // Get the item's name.
+      item.item_name = $('[name="item_name_' + i + '"]').val();
+
+      // Update the current design details after grabbing them.
+      duckburg.order.updateAndSaveDesignDetails(
+        item.design_id, item.design_images_list, item.item_name);
+
+      // Get the product type and id.
+      item.product_type_visible =
+          $('[name="product_type_visible_' + i + '"]').val();
+      item.product_type = $('[name="product_type_' + i + '"]').val();
+
+      // Get pricing info and format it properly.
+      var price = $('[name="product_price_' + i + '"]').val();
+      price = price == '' ? '0' : price;
+      item.product_price = price;
+
+      // Get the social and sale prices.
+      item.product_saleprice = $('[name="product_saleprice_' + i + '"]').val();
+      item.product_socialprice =
+          $('[name="product_socialprice_' + i + '"]').val();
+
+      // Notes
+      item.product_description = $('[name="design_notes_' + i + '"]').val();
+
+      // Product color
+      item.product_colors = $('[name="product_color_' + i + '"]').val();
+
+      // Product category
+      item.product_category = $('[name="product_category_' + i + '"]').val();
+      item.product_category_visible =
+          $('[name="product_category_visible_' + i + '"]').val();
+
+      // Product is hidden
+      item.product_ishidden = $('[name="product_ishidden_' + i + '"]').val();
+      item.product_ishidden_visible =
+          $('[name="product_ishidden_visible_' + i + '"]').val();
+
+      // Product store
+      item.product_isindexed = $('[name="product_isindexed_' + i + '"]').val();
+      item.product_isindexed_visible =
+          $('[name="product_isindexed_visible_' + i + '"]').val();
+
+      // Product store
+      item.product_store = $('[name="product_store_' + i + '"]').val();
+      item.product_store_visible =
+          $('[name="product_store_visibile_' + i + '"]').val();
+
+      // Create new item or update existing item.
+      if (!item.id || item.id == '') {
+        duckburg.order.createCatalogItem(item);
+      } else {
+        var searchString = '';
+        for (var prop in item) {
+          duckburg.order.currentItems[item.id].set(prop, item[prop]);
+          if (item[prop] && item[prop] != '') {
+            searchString += item[prop] + ' ';
+          }
+        }
+
+        // Set search string and save.
+        duckburg.order.currentItems[item.id].set(
+            'parse_search_string', searchString);
+        duckburg.order.currentItems[item.id].save();
+      }
 
       // Get size counts and total items.
       var name = 'size_for_item_' + i;
@@ -1443,9 +2056,7 @@ duckburg.order = {
         item.sizes[sizeName] = quantity;
       });
 
-      // Get pricing info and format it properly.
-      var price = $('[name="product_price_' + i + '"]').val();
-      price = price == '' ? 0 : price;
+      // Continue calculating total cost.
       var totalCost = price * item.total_items;
       costArray = String(totalCost).split('.');
       var dollars = costArray[0];
@@ -1454,11 +2065,12 @@ duckburg.order = {
       totalCost = dollars + '.' + cents;
 
       // Set the total price in the ui and on the object.
-      item.totalCost = totalCost;
-      $('[name="item_total_price_input_' + i + '"]').val('$' + item.totalCost);
-    }
+      item.total_cost = totalCost;
+      $('[name="item_total_price_input_' + i + '"]').val('$' + item.total_cost);
 
-    items.push(item);
+      // Push the item into the list of items.
+      items.push(item);
+    }
 
     if (duckburg.order.currentOrder) {
       items = JSON.stringify(items);
@@ -1467,6 +2079,22 @@ duckburg.order = {
     }
    },
 
+  /**
+   * Update the details of all open designs.
+   * @function when collecting all order details, this function looks for any
+   *           designs that are part of the order, and saves them in Parse.
+   * @param id String id of the design
+   * @param list String list of image urls
+   * @param name String name of item (design gets same name)
+   *
+   */
+   updateAndSaveDesignDetails: function(id, list, name) {
+     if (duckburg.order.currentDesigns[id]) {
+       duckburg.order.currentDesigns[id].set('design_images_list', list);
+       duckburg.order.currentDesigns[id].set('design_name', name);
+       duckburg.order.currentDesigns[id].save();
+     }
+   },
 
   /**
    * Set a loading message

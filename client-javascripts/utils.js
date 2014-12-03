@@ -679,7 +679,6 @@ duckburg.utils = {
             .click(function(e) {
               duckburg.utils.launchRelatedItemSelector(e, pKey, relType, param);
             })
-
          );
 
         // Hidden input for parse ID.
@@ -699,6 +698,17 @@ duckburg.utils = {
             .attr('class', fieldDetails.input_size)
             .attr('placeholder', fieldDetails.placeholder));
       }
+    },
+
+    /**
+     * @function remove the related item selector.
+     *
+     */
+    removeRelatedItemPopup: function() {
+
+      // Remove the related item popup.
+      $('.inputPopupSelector').remove();
+      $('.offClicker').hide();
     },
 
     /**
@@ -886,13 +896,38 @@ duckburg.utils = {
       // Get name of element, it containts original type and primary key.
       var name = el.className;
 
-      // Place these values into the field.
-      var idField = name.split('***')[1];
-      var keyField = name.split('***')[0];
+      // Product within order clicked.  Assign this product type to the order.
+      if (duckburg.order.lastClickedProduct) {
 
-      // Place the values inside the form.
-      $('#' + idField).val(id);
-      $('#' + keyField).val(key);
+        // Get name, which will be product_type_visible_(some #).  Place the
+        // readable product name in the that field.
+        var name = duckburg.order.lastClickedProduct;
+        $('[name="' + name + '"]').each(function() {
+          this.value = key;
+        });
+
+        // Now store the actual product id in a hidden field, whose name will
+        // be product_type_(some #).
+        name = name.replace('visible_', '');
+        $('[name="' + name + '"]').each(function() {
+          this.value = id;
+        });
+
+        // Clear the variable for the last clicked product.
+        duckburg.order.lastClickedProduct = false;
+
+        // Collect the design details.
+        duckburg.order.collectDesignDetails();
+      } else {
+
+        // Place these values into the field.
+        var idField = name.split('***')[1];
+        var keyField = name.split('***')[0];
+
+        // Place the values inside the form.
+        $('#' + idField).val(id);
+        $('#' + keyField).val(key);
+      }
 
       // Remove the related item popup.
       $('.inputPopupSelector').remove();
