@@ -255,7 +255,100 @@ duckburg.requests = {
       // Return, but with nothing.
       successCb(false);
     }
-  }
+  },
 
+  /**
+   * Add an entry to the order log.
+   * @function adds a log entry showing that the order has been updated.
+   * @param orderId String parse id of order.
+   * @param orderJson String json string of order details.
+   * @param username String name of user who was active in the session
+   *
+   */
+   addOrderLogEntry: function(orderId, orderJson, username) {
+
+     // Instantiate order log.
+     var DbObject = Parse.Object.extend('dbOrderLog');
+     newItem = new DbObject();
+
+     // Store order id, json and current user.
+     newItem.set('order_id', orderId);
+     newItem.set('order_json', orderJson);
+     newItem.set('user', username);
+
+     // Save the dang thing.
+     newItem.save(null, {
+       success: function(result) {
+         // logged order.
+       },
+
+       error: function(result, error) {
+         var msg = 'error logging order changes: ' + error.message;
+         duckburg.utils.errorMessage(msg);
+       }
+     });
+   },
+
+   /**
+    * Make a payment on an order
+    * @function Logs an payment.
+    * @param orderId String id of order
+    * @param amount Float amount to pay.
+    * @param method String payment method
+    * @param successCb Object function for success.
+    *
+    */
+    orderPayment: function(orderId, amount, method, successCb) {
+      // Instantiate order log.
+      var DbObject = Parse.Object.extend('dbOrderPayment');
+      newItem = new DbObject();
+
+      // Store order id, json and current user.
+      newItem.set('order_id', orderId);
+      newItem.set('amount', amount);
+      newItem.set('method', method);
+
+      // Save the dang thing.
+      newItem.save(null, {
+        success: function(result) {
+          var msg = 'Payment of $' + amount + ' logged.';
+          duckburg.utils.successMessage(msg);
+          successCb();
+        },
+        error: function(result, error) {
+          var errMsg = 'Error logging payment: ' + error.message;
+          duckburg.utils.errorMessage(errMsg);
+        }
+      });
+    },
+
+    /**
+     * Get order payments.
+     * @function get all payments for an order.
+     * @param orderId String Parse id for order.
+     * @param successCb Object function for success
+     *
+     */
+    getOrderPayments: function(orderId, successCb) {
+
+      // Build a query from the object type.
+      var DbObject = Parse.Object.extend('dbOrderPayment');
+      var query = new Parse.Query(DbObject);
+      query.matches('order_id', orderId);
+
+      // Always sort newest first.
+      query.descending("updatedAt");
+
+      // Perform the queries and continue with the help of the callback functions.
+      query.find({
+        success: function(results) {
+          successCb(results);
+        },
+        error: function(result, error) {
+          var errorMsg = 'Error gettting objects: ' + error.message;
+          duckburg.utils.errorMessage(errorMsg);
+        }
+      });
+    }
 
 };

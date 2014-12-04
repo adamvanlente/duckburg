@@ -733,6 +733,11 @@ duckburg.utils = {
         .click(function() {
           $('.inputPopupSelector').remove();
           $('.offClicker').hide();
+
+          // Clear the variable for the last clicked product.
+          duckburg.order.lastClickedProduct = false;
+          duckburg.order.lastClickedCategory = false;
+          duckburg.order.lastClickedStore = false;
         });
 
       // Get location of mouse click.
@@ -897,11 +902,20 @@ duckburg.utils = {
       var name = el.className;
 
       // Product within order clicked.  Assign this product type to the order.
-      if (duckburg.order.lastClickedProduct) {
+      if (duckburg.order.lastClickedProduct || duckburg.order.lastClickedStore ||
+          duckburg.order.lastClickedCategory) {
 
         // Get name, which will be product_type_visible_(some #).  Place the
         // readable product name in the that field.
-        var name = duckburg.order.lastClickedProduct;
+        var name;
+        if (duckburg.order.lastClickedProduct) {
+          name = duckburg.order.lastClickedProduct;
+        } else if (duckburg.order.lastClickedStore) {
+          name = duckburg.order.lastClickedStore;
+        } else if (duckburg.order.lastClickedCategory) {
+          name = duckburg.order.lastClickedCategory;
+        }
+
         $('[name="' + name + '"]').each(function() {
           this.value = key;
         });
@@ -915,6 +929,8 @@ duckburg.utils = {
 
         // Clear the variable for the last clicked product.
         duckburg.order.lastClickedProduct = false;
+        duckburg.order.lastClickedCategory = false;
+        duckburg.order.lastClickedStore = false;
 
         // Collect the design details.
         duckburg.order.collectDesignDetails();
@@ -972,5 +988,232 @@ duckburg.utils = {
        // Send the object, type and callback to another function.
        duckburg.requests.createNewObject(type, itemObj, cbFunc);
      }
-   }
+   },
+
+   /**
+    * Launch a payment module.
+    * @function launches payment module that allows users to log payments.
+    * @param order String OR Object.  Can either be order id or order object.
+    *
+    */
+    paymentModule: function(order) {
+
+      // Hide a popup if it exists.
+      duckburg.utils.hidePopup();
+
+      if (typeof order == 'string') {
+
+        // Order Id has been supplied.  Load the actual order.
+        duckburg.requests.findById(order, 'dbOrder', function(orderItem) {
+          duckburg.utils.paymentModule(orderItem);
+        });
+
+      } else {
+
+        // Reveal the popup div.
+        duckburg.utils.showPopup();
+
+        var summary = JSON.parse(order.attributes.order_summary);
+        var balance = summary.balance;
+        duckburg.utils.balanceForPaymentModule = balance;
+
+        $('#popupContent')
+          .attr('class', 'paymentModule')
+
+          // Append a header.
+          .append($('<h2>')
+            .html('Order No.' + order.attributes.readable_id))
+
+          .append($('<h3>')
+            .html('balance: $' + balance))
+
+          // Suggested amount buttons.
+          .append($('<label>')
+            .html('100%')
+            .attr('class', 'payButton')
+            .click(function() {
+              var bal = duckburg.utils.balanceForPaymentModule;
+              $('#payment_module_amount').val(bal);
+            }))
+
+          .append($('<label>')
+            .html('75%')
+            .attr('class', 'payButton')
+            .click(function() {
+              var bal = duckburg.utils.balanceForPaymentModule;
+              var amt = (bal * 0.75).toFixed(2);
+              $('#payment_module_amount').val(amt);
+            }))
+
+          .append($('<label>')
+            .html('50%')
+            .attr('class', 'payButton')
+            .click(function() {
+              var bal = duckburg.utils.balanceForPaymentModule;
+              var amt = (bal * 0.5).toFixed(2);
+              $('#payment_module_amount').val(amt);
+            }))
+
+          .append($('<label>')
+            .html('25%')
+            .attr('class', 'payButton')
+            .click(function() {
+              var bal = duckburg.utils.balanceForPaymentModule;
+              var amt = (bal * 0.25).toFixed(2);
+              $('#payment_module_amount').val(amt);
+            }))
+
+          // Payment inout and label.
+          .append($('<div>')
+            .attr('class', 'paymentAmountAndLabel')
+            .append($('<label>')
+              .html('make payment'))
+            .append($('<input>')
+              .attr('type', 'text')
+              .attr('id', 'payment_module_amount')
+              .attr('placeholder', '$0.00')))
+
+          .append($('<label>')
+            .attr('class', 'payMethodLabel')
+            .html('pay with method:'))
+
+          // Append labels for each allowed method
+          .append($('<label>')
+            .attr('class', 'payMethodCash')
+            .html('<i class="fa fa-money"></i> cash')
+            .click(function() {
+              var amt = $('#payment_module_amount').val();
+              duckburg.utils.createOrderPayment(amt, order.id, 'cash');
+            }))
+
+          .append($('<label>')
+            .attr('class', 'payMethodCard')
+            .html('<i class="fa fa-credit-card"></i> card')
+            .click(function() {
+              var amt = $('#payment_module_amount').val();
+              duckburg.utils.createOrderPayment(amt, order.id, 'card');
+            }))
+
+          .append($('<label>')
+            .attr('class', 'payMethodCheck')
+            .html('<i class="fa fa-check-circle"></i> check')
+            .click(function() {
+              var amt = $('#payment_module_amount').val();
+              duckburg.utils.createOrderPayment(amt, order.id, 'check');
+            }))
+
+          .append($('<label>')
+            .attr('class', 'payMethodCheck')
+            .html('refund')
+            .click(function() {
+              var amt = $('#payment_module_amount').val();
+              duckburg.utils.createOrderPayment(amt, order.id, 'refund');
+            }))
+
+          // Cancel button.
+          .append($('<label>')
+            .html('cancel')
+            .attr('class', 'cancelPaymentButton')
+            .click(function() {
+              duckburg.utils.hidePopup();
+            }))
+
+          // Payment history
+          .append($('<div>')
+            .attr('class', 'paymentModuleHistory'));
+
+         // Set the order payment history.
+         duckburg.utils.showPaymentHistory(order.id);
+      }
+    },
+
+    showPaymentHistory: function(id) {
+
+      // Clear order history div.
+      $('.paymentModuleHistory').html('');
+
+      // Set the list of the order payments.
+      duckburg.requests.getOrderPayments(id, function(results) {
+        for (var i = 0; i < results.length; i++) {
+          var result = results[i].attributes;
+          var amount = parseFloat(result.amount).toFixed(2);
+          var date = String(results[i].createdAt).split('GMT')[0];
+
+          $('.paymentModuleHistory')
+            .append($('<span>')
+              .append($('<label>')
+                .attr('class', 'amtLabel')
+                .html('$' + amount))
+              .append($('<label>')
+                .attr('class', 'methodLabel')
+                .html(result.method))
+              .append($('<label>')
+                .attr('class', 'deleteButton')
+                .attr('id', results[i].id)
+                .html('delete')
+                .click(function(e) {
+                  var id = e.currentTarget.id;
+                  duckburg.utils.deletePayment(id)
+                }))
+              .append($('<em>')
+                .html(date))
+            );
+        }
+      });
+    },
+
+    /**
+     * Make an order payment.
+     * @function make the request to create a payment entry
+     * @param amount Float amount for payment
+     * @param orderId String parse order id
+     * @param method String method payment
+     *
+     */
+    createOrderPayment: function(amount, orderId, method) {
+      if (amount && amount != '') {
+        duckburg.requests.orderPayment(orderId, amount, method, function() {
+
+          // Hide the popup.
+          duckburg.utils.hidePopup();
+
+          // If this is the order page, update the order total.
+          if (window.location.pathname.search('/order') != -1) {
+            duckburg.order.getAllPayments();
+          }
+        });
+      } else {
+        var msg = 'You must enter an amount';
+        duckburg.utils.errorMessage(msg);
+      }
+    },
+
+    /**
+     * Delete an order payment.
+     * @function deletes a payment for an order.
+     * @param paymentId String parse id for the payment.
+     *
+     */
+    deletePayment: function(id) {
+
+      duckburg.requests.findById(id, 'dbOrderPayment', function(result) {
+        result.destroy({
+          success: function(deletedObj) {
+
+            // Hide the popup.
+            duckburg.utils.hidePopup();
+
+            // If this is the order page, update the order total.
+            if (window.location.pathname.search('/order') != -1) {
+              duckburg.order.getAllPayments();
+            }
+          },
+          error: function(myObject, error) {
+            // The delete failed.
+            var msg = 'failed to remove payment';
+            duckburg.utils.errorMessage(msg);
+          }
+        });
+      });
+    }
 };

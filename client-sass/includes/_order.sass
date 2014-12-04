@@ -362,11 +362,12 @@
                     color: white
                   input
                     @extend .basic-button
-                    font-size: 13px
+                    @extend .light-font
+                    font-size: 11px
                     padding: 4px
                     color: #333
                     background: rgba(255, 255, 255, 0.72)
-                    width: 100px
+                    width: 115px
                     margin-right: 12px
 
             &.designFormSizeHolder
@@ -861,3 +862,65 @@
             width: 100px
             background-repeat: none
             border: 2px solid rgb(208, 205, 205)
+
+.orderSummary
+  @extend .light-font
+  display: block
+  position: fixed
+  right: 12px
+  bottom: 0px
+  background: #f1f1f1
+  border-top: 3px solid rgb(221, 216, 216)
+
+  h2
+    padding: 2px 8px
+    font-size: 11px
+    color: #817b7b
+    display: block
+    margin: 0 auto
+    text-align: center
+
+  label
+    &.toggleTaxLabel
+      font-size: 11px
+      display: inline-block
+      margin-left: 30px
+      margin-right: 4px
+
+    &.amtLabel,
+    &.descLabel
+      font-size: 11px
+      margin-left: 12px
+      width: 60px
+      display: inline-block
+      text-align: center
+
+    &.paymentsButton
+      @extend .basic-button
+      @extend .light-font
+      background: $minty-green
+      display: block
+      text-align: center
+      font-size: 11px
+      color: white
+      padding: 4px
+      &:hover
+        background: #333
+        color: $minty-green
+
+
+  div
+    color: #777
+    &.orderPaymentsDiv
+      display: block
+    &.orderSubtotalDiv
+      display: block
+    &.orderTotalDiv
+      display: block
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08)
+      padding-bottom: 4px
+    &.orderTaxDiv
+      display: block
+    &.orderBalanceDiv
+      display: block
+      padding-bottom: 4px
