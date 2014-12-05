@@ -1,8 +1,7 @@
 .orderListHeader
   display: block
-  margin-top: 75px
+  margin-top: 50px
   padding: 8px
-  border-bottom: 2px solid #F1F1F1
 
 .orderList
   display: block
@@ -13,6 +12,17 @@
     @extend .traditional-width
     margin: 0 auto
     display: block
+
+    &.loadingOrderMessage
+      @extend .light-font
+      display: block
+      font-size: 12px
+      color: #777
+      padding: 8px
+      margin: 16px auto
+      border: 1px solid
+      border-radius: 1px
+      text-align: center
 
 .orderListNoOrdersFoundSpan
   @extend .light-font
@@ -25,95 +35,227 @@
 .orderHolderDiv
   @extend .light-font
   font-size: 13px
-  color: #333
-  margin-bottom: 12px
-
-.orderBottomInnerSpan
-  display: block
-  text-align: right
-
-  label
-    display: inline-block
-    text-align: right
-
-    &.bottomSpanInnerLabel
-      display: inline-block
-      width: 300px
-
-    &.goToOrderButton
-      @extend .light-font
-      @extend .basic-button
-      font-size: 18px
-      padding: 2px 24px 4px 24px
-      color: white
-      background: #5EBFC7
-      &:hover
-        background: #333
-        color: #5EBFC7
-
-    &.totalItemsLabel,
-    &.totalDesignsLabel
-      font-size: 12px
-      width: 150px
-      color: white
-      padding-bottom: 4px
-      text-align: center
-
-.orderTopInnerSpan
-  padding: 8px
-  background: rgb(239, 239, 239)
-  border: 1px solid #DCDCDC
+  color: #333333
+  margin: 12px auto 18px auto
+  padding: 8px 8px 2px 8px
+  width: 700px
   border-radius: 1px
+  box-shadow: 0 1px 1px rgba(0,0,0,0.15)
 
-  a
-    &.orderListOrderNameLabel
-      @extend .standard-font
-      @extend .basic-button
-      display: inline-block
-      font-size: 14px
-      text-transform: uppercase
+  &.odd
+    background: rgba(241, 241, 241, 0.48)
+  &.even
+    background: #EDEDED
+
+  span
+    &.orderTopSpan
+      display: block
       text-align: center
-      width: 250px
-      color: #333
-      text-decoration: none
-      &:hover
-        opacity: 0.7
+      width: 100%
 
-  label
-    @extend .light-font
-    display: inline-block
+      a
+        &.orderNameLabel
+          @extend .basic-button
+          font-size: 16px
+          text-transform: uppercase
+          width: 300px
+          display: inline-block
+          text-align: center
+          background: none
+          margin-left: 8px
+          padding: 4px
+          text-decoration: none
+          color: #747779
+          &:hover
+            background:  #333
+            color: #F1F1F1
+      label
+        &.totalPiecesLabel
+          font-size: 11px
+          color: #A99191
+          display: inline-block
+          width: 150px
 
-    &.readableIdLabel
-      font-size: 11px
-      background: #CBCBCB
-      padding: 2px 6px
-      color: rgba(255, 255, 255, 0.5)
+        &.orderNumberLabel
+          font-size: 11px
+          background: #E4E0E0
+          color: rgba(255, 255, 255, 0.73)
+          padding: 2px
+          width: 42px
+          display: inline-block
+          text-align: center
+          border-radius: 1px
+        &.orderStatusLabel
+          @extend .basic-button
+          font-size: 11px
+          padding: 4px
+          width: 80px
+          display: inline-block
+          text-align: center
+          color: white
+          margin-left: 12px
+
+      input
+        &.dueDateInput
+          @extend .light-font
+          @extend .basic-button
+          font-size: 12px
+          background: none
+          margin-left: 8px
+          color: #333
+          width: 75px
+          text-align: center
+
+    &.orderBottomSpan
+      display: block
+      padding: 2px
+      background: rgba(0, 0, 0, 0.05)
+      width: 99%
+      margin: 12px auto
+      text-align: center
       border-radius: 1px
 
-    &.orderListCustomerName,
-    &.orderListCustomerPhone
-      width: 175px
-      text-align: center
-    &.orderStatusLabel
-      font-size: 12px
-      padding: 1px 2px 3px 2px
-      width: 90px
-      color: rgba(255, 255, 255, 0.72)
-      text-align: center
-      border-radius: 1px
+      label
+        @extend .light-font
+
+        &.updatedAtLabel
+          font-size: 9px
+          display: inline-block
+          width: 200px
+          text-align: center
+          color: #CBC5C5
+
+        &.orderPaymentButton
+          @extend .basic-button
+          display: inline-block
+          cursor: pointer
+          background: #66c08d
+          padding: 1px 8px 2px 9px
+          border-radius: 2px
+          margin: 2px
+          color: white
+          font-size: 11px
+          &.disabled
+            opacity: 0.2
+            pointer-events: none
+          &:hover
+            background: #333
+            color: $minty-green
+
+        &.orderBalanceLabel,
+        &.orderTotalLabel
+          display: inline-block
+          font-size: 11px
+          width: 100px
+          text-align: center
+          color: #78A98C
+        &.custNameLabel
+          font-size: 11px
+          display: inline-block
+          margin: 0 8px
+          width: 100px
+          text-align: center
+
+          em
+            font-size: 11px
+            font-style: normal
+            color: #B8AFAF
+
+        &.custPhoneLabel
+          font-size: 11px
+          display: inline-block
+          margin: 0 8px
+          width: 100px
+          text-align: center
+
+          em
+            font-size: 11px
+            font-style: normal
+            color: #B8AFAF
+
+
+.orderListFilters
+  @extend .light-font
+  display: block
+  position: fixed
+  left: 0
+  background: rgb(240, 240, 240)
+  top: 100px
+  border-top: 5px solid rgb(234, 228, 228)
 
   input
-    @extend .light-font
-    @extend .basic-button
-    display: inline-block
-    &.dueDateInput
-      margin-left: 8px
+    &.filterByName
+      @extend .light-font
+      @extend .basic-button
       font-size: 12px
-      width: 80px
-      text-align: center
+      width: 141px
       background: none
-      border: none
-      color: #474646
-      &:hover
-        background: $minty-green
-        color: white
+      text-align: center
+      margin: 4px auto
+      display: block
+      padding: 3px
+      border-bottom: 1px solid rgba(0, 0, 0, 0.35)
+
+  h1
+    font-size: 11px
+    padding: 2px 8px
+    margin: 0 auto
+    text-align: center
+    color: rgba(186, 180, 180, 0.44)
+    display: block
+    width: 150px
+
+  span
+    &.statusFilterHolder
+      font-size: 13px
+      display: block
+      padding: 4px
+
+    label
+      &.filterHeader
+        font-size: 11px
+        display: block
+        padding: 4px 10px
+
+    span
+      &.statusFilterList
+        font-size: 13px
+
+        label
+          font-size: 11px
+          display: block
+          margin: 2px 14px
+
+          span
+            font-size: 11px
+            display: inline-block
+            width: 75px
+            color: gray
+
+          em
+            font-size: 11px
+            display: inline-block
+            width: 46px
+            color: rgb(213, 207, 207)
+            text-align: center
+            font-style: normal
+            &:hover
+              color: #333
+              cursor: pointer
+
+.orderListStatusSelector
+  display: block
+  width: 88px
+  height: 10px
+
+  label
+    @extend .light-font
+    font-size: 11px
+    text-align: center
+    display: block
+    padding: 4px
+    cursor: pointer
+    color: white
+    +trans($easybreezy)
+    &:hover
+      color: #333

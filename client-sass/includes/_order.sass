@@ -414,9 +414,13 @@
                   text-align: center
                   &.sizeInput
                     background: rgba(213, 202, 83, 0.54)
+                    vertical-align: top
+                    height: 13px
                   &.addSizeInput
                     background: #B5DAC5
                     padding: 8px
+                    vertical-align: top
+                    height: 13px
 
                 label
                   font-size: 11px
@@ -871,6 +875,13 @@
   bottom: 0px
   background: #f1f1f1
   border-top: 3px solid rgb(221, 216, 216)
+  cursor: pointer
+  +trans($easybreezy)
+
+  &.visible
+    bottom: 0px
+  &.hidden
+    bottom: -175px
 
   h2
     padding: 2px 8px
@@ -924,3 +935,34 @@
     &.orderBalanceDiv
       display: block
       padding-bottom: 4px
+
+
+.orderStatus
+  +trans($easyslider)
+  @extend .light-font
+  display: block
+  position: fixed
+  padding: 2px
+  top: 40px
+  z-index: 100
+  width: 80px
+  text-align: center
+  font-size: 11px
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+
+  &.visible
+    right: 12px
+  &.hidden
+    right: -500px
+  &.saving
+    background: rgb(234, 234, 234)
+    color: #333
+    border-bottom: 3px solid #DCDCDC
+  &.saved
+    background: #80D0A3
+    color: white
+    border-bottom: 3px solid #37A064
+  &.error
+    background: #e77575
+    color: white
+    border-bottom: 3px solid #B52727

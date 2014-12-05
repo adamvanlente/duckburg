@@ -101,8 +101,10 @@ duckburg.order = {
     var o = duckburg.order.currentOrder.attributes;
 
     // Fill print date and due date.
-    $('#due_date').val(o.due_date);
-    $('#print_date').val(o.print_date);
+    var due_date = duckburg.utils.formatDate(o.due_date);
+    $('#due_date').val(due_date);
+    var print_date = duckburg.utils.formatDate(o.print_date);
+    $('#print_date').val(print_date);
 
     // Fill in the order name.
     $('#order_name').val(o.order_name);
@@ -232,9 +234,7 @@ duckburg.order = {
     }
 
     // Now, collect the design info once more.
-    setTimeout(function() {
-      duckburg.order.collectDesignDetails();
-    }, 1000);
+    duckburg.order.collectDesignDetails();
   },
 
   /**
@@ -295,7 +295,8 @@ duckburg.order = {
       tax_amount: taxAmt,
       final_total: finalTotal,
       payments: payments,
-      balance: balance
+      balance: balance,
+      total_pieces: totalPieces
     };
 
     // Save these summary details to the order object.
@@ -311,7 +312,15 @@ duckburg.order = {
 
       // Heading for order summary.
       .append($('<h2>')
-        .html('order summary'))
+        .html('order summary')
+        .click(function() {
+          var className = $('.orderSummary').attr('class');
+          if (className == 'orderSummary visible') {
+            $('.orderSummary').attr('class', 'orderSummary hidden');
+          } else {
+            $('.orderSummary').attr('class', 'orderSummary visible');
+          }
+        }))
 
       // Tax toggle.
       .append($('<label>')
@@ -497,7 +506,7 @@ duckburg.order = {
     );
 
     // Add highsmith calendars to due date and print date.
-    duckburg.utils.addHighsmithCalendars(['due_date', 'print_date']);
+    duckburg.utils.addHighsmithCalendars(['due_date', 'print_date'], true);
   },
 
   /**
@@ -512,6 +521,9 @@ duckburg.order = {
    */
   updateDueDate: function() {
 
+    // Update order status nub.
+    duckburg.order.orderSavingStatus('saving');
+
     // If the click has closed the calendar, remove listener.
     if (!$('#highsmithCal').length) {
 
@@ -519,11 +531,11 @@ duckburg.order = {
       if (duckburg.order.currentOrder) {
 
         // Get due date.
-        var dueDate = $('#due_date').val();
+        var dueDate = new Date($('#due_date').val());
 
         // Update and save.
         duckburg.order.currentOrder.set('due_date', dueDate);
-        duckburg.order.currentOrder.save();
+        duckburg.order.saveOrderAndUpdateStatus();
       }
 
       // Remove the listener that kicked off this function.
@@ -534,6 +546,9 @@ duckburg.order = {
   /** Identical to updateDueDate method, but used for print date. **/
   updatePrintDate: function() {
 
+    // Update order saving nub.
+    duckburg.order.orderSavingStatus('saving');
+
     // If the calendar is still visible, then don't do anything.
     if (!$('#highsmithCal').length) {
 
@@ -541,11 +556,11 @@ duckburg.order = {
       if (duckburg.order.currentOrder) {
 
         // Get due date.
-        var printDate = $('#print_date').val();
+        var printDate = new Date($('#print_date').val());
 
         // Update and save.
         duckburg.order.currentOrder.set('print_date', printDate);
-        duckburg.order.currentOrder.save();
+        duckburg.order.saveOrderAndUpdateStatus();
       }
 
       // Remove the listener that kicked off this function.
@@ -592,13 +607,19 @@ duckburg.order = {
     *
     */
     updateOrderStatus: function(status, bgColor) {
+
+      // Update the order saving nub.
+      duckburg.order.orderSavingStatus('saving');
+
+      // Update the order status in the ui.
       $('#order_status')
         .html(status)
         .css({'background': bgColor});
 
+      // Update the status in the database.
       if (duckburg.order.currentOrder) {
         duckburg.order.currentOrder.set('order_status', status);
-        duckburg.order.currentOrder.save();
+        duckburg.order.saveOrderAndUpdateStatus();
       }
     },
 
@@ -1122,6 +1143,13 @@ duckburg.order = {
    */
    updateObjectParameter: function(event, type) {
 
+     if (duckburg.order.updateObjectParamTimer) {
+       window.clearInterval(duckburg.order.updateObjectParamTimer);
+     }
+
+     // Update the order saving nub.
+     duckburg.order.orderSavingStatus('saving');
+
      // Get the element containing the information.
      var element = event.currentTarget;
 
@@ -1146,10 +1174,14 @@ duckburg.order = {
          // Update this param.
          var orderName = $('#order_name').val();
          var orderNumber = $('#readable_id').html();
-         var searchString = orderName + orderNumber;
+         var searchString = (orderName + orderNumber).toLowerCase();
          duckburg.order.currentOrder.set(param, newVal);
          duckburg.order.currentOrder.set('parse_search_string', searchString);
-         duckburg.order.currentOrder.save();
+
+         // Kick off the save function
+         duckburg.order.updateObjectParamTimer = setTimeout(function() {
+           duckburg.order.saveOrderAndUpdateStatus();
+         }, duckburg.utils.orderSaveInterval);
        }
 
      // Update a customer item.
@@ -1159,7 +1191,7 @@ duckburg.order = {
        var a = customer.attributes;
        var searchString = a.first_name + a.last_name + a.email_address +
           a.phone_number;
-       customer.set('parse_search_string', searchString);
+       customer.set('parse_search_string', searchString.toLowerCase());
        customer.save();
      }
    },
@@ -1192,8 +1224,8 @@ duckburg.order = {
     var orderName = $('#order_name').val();
 
     // Dates.
-    var dueDate = $('#due_date').val();
-    var printDate = $('#print_date').val();
+    var dueDate = $('#due_date').val() || new Date();
+    var printDate = $('#print_date').val() || new Date();
 
     // Be sure there isn't another order with this id.
     duckburg.requests.fetchOrderById(orderNumber, function(result) {
@@ -1528,6 +1560,9 @@ duckburg.order = {
             // Using the input, upload the file that's been selected.
             var file = event.currentTarget;
 
+            // Update order status nub.
+            duckburg.order.orderSavingStatus('saving');
+
             duckburg.requests.saveFileFromInput(file, function(result, input) {
 
               // Mimic a parse design object.
@@ -1797,7 +1832,7 @@ duckburg.order = {
     // Set a timer and then update the image list, id, etc.
     setTimeout(function() {
       duckburg.order.collectDesignDetails();
-    }, 1000)
+    }, 1000);
   },
 
   /**
@@ -2304,58 +2339,68 @@ duckburg.order = {
    */
    collectOrderInformation: function() {
 
-     // Create an order if there isn't one
-     if (!duckburg.order.currentOrder) {
-       duckburg.order.createOrder();
-     } else {
-
-       // Build the current customer object.
-       var customers = [];
-       for (var customer in duckburg.order.currentCustomers) {
-
-         if (customer != 'length') {
-           var custObject = {};
-           custObject.id = customer;
-           custObject.isShip = false;
-           custObject.isBill = false;
-
-           // Set the first one as the 'primary customer'.
-           if (customers.length == 0) {
-             var cust = duckburg.order.currentCustomers[customer];
-             var a = cust.attributes;
-             var name = a.first_name + ' ' + a.last_name;
-             duckburg.order.currentOrder.set('cust_name', name);
-             duckburg.order.currentOrder.set('cust_phone', a.phone_number);
-             duckburg.order.currentOrder.set('cust_email', a.email_address);
-           }
-
-           customers.push(custObject);
-         }
-       }
-
-       // If there are no customers currently, make sure the quick customer
-       // parameters are cleared out.
-       if (customers.length == 0) {
-         duckburg.order.currentOrder.set('cust_name', '');
-         duckburg.order.currentOrder.set('cust_phone', '');
-         duckburg.order.currentOrder.set('cust_email', '');
-       }
-
-
-       $('.isShippingCustomer').each(function(item) {
-         customers[item].isShip = this.checked;
-       });
-
-       $('.isBillingCustomer').each(function(item) {
-         customers[item].isBill = this.checked;
-       });
-
-       // Stringify the customer info and save the item.
-       duckburg.order.currentOrder.set('customers', JSON.stringify(customers));
-       duckburg.order.currentOrder.save();
-
-
+     // Clear the timer for collecting info.
+     if (duckburg.order.collectOrderInfoTimer) {
+       window.clearInterval(duckburg.order.collectOrderInfoTimer);
      }
+
+     // Update order status div.
+     duckburg.order.orderSavingStatus('saving');
+
+     // After a short wait, collect order information
+     duckburg.order.collectOrderInfoTimer = setTimeout(function() {
+
+        //  Create an order if there isn't one
+        if (!duckburg.order.currentOrder) {
+          duckburg.order.createOrder();
+        } else {
+
+          // Build the current customer object.
+          var customers = [];
+          for (var customer in duckburg.order.currentCustomers) {
+
+            if (customer != 'length') {
+              var custObject = {};
+              custObject.id = customer;
+              custObject.isShip = false;
+              custObject.isBill = false;
+
+              // Set the first one as the 'primary customer'.
+              if (customers.length == 0) {
+                var cust = duckburg.order.currentCustomers[customer];
+                var a = cust.attributes;
+                var name = a.first_name + ' ' + a.last_name;
+                duckburg.order.currentOrder.set('cust_name', name);
+                duckburg.order.currentOrder.set('cust_phone', a.phone_number);
+                duckburg.order.currentOrder.set('cust_email', a.email_address);
+              }
+
+              customers.push(custObject);
+            }
+          }
+
+          // If there are no customers currently, make sure the quick customer
+          // parameters are cleared out.
+          if (customers.length == 0) {
+            duckburg.order.currentOrder.set('cust_name', '');
+            duckburg.order.currentOrder.set('cust_phone', '');
+            duckburg.order.currentOrder.set('cust_email', '');
+          }
+
+
+          $('.isShippingCustomer').each(function(item) {
+            customers[item].isShip = this.checked;
+          });
+
+          $('.isBillingCustomer').each(function(item) {
+            customers[item].isBill = this.checked;
+          });
+
+          // Stringify the customer info and save the item.
+          duckburg.order.currentOrder.set('customers', JSON.stringify(customers));
+          duckburg.order.saveOrderAndUpdateStatus();
+        }
+     }, duckburg.utils.orderSaveInterval);
    },
 
    /**
@@ -2366,157 +2411,177 @@ duckburg.order = {
     */
    collectDesignDetails: function() {
 
-    // Reset the counter ids on all designs, in case one has been removed and
-    // the indexes are off.
-    duckburg.order.resetDesignCounters();
+    // Kill the timer if it exists.
+    if (duckburg.order.collectDesignDetailsTimer) {
+      window.clearInterval(duckburg.order.collectDesignDetailsTimer);
+    }
 
-    // Get number of designs.
-    var numDesigns = $('.designFormWithinOrder').length;
+    // Update order status div.
+    duckburg.order.orderSavingStatus('saving');
 
-    // Holder for the designs.
-    var items = [];
+    // After a short wait, collect design details.
+    duckburg.order.collectDesignDetailsTimer = setTimeout(function() {
 
-    // Totals for order summary.
-    var itemCount = 0;
-    var totalPieces = 0;
-    var orderTotal = 0;
+      // Reset the counter ids on all designs, in case one has been removed and
+      // the indexes are off.
+      duckburg.order.resetDesignCounters();
 
-    // For each item that exists, look for the design details.
-    for (var i = 0; i < numDesigns; i++) {
+      // Get number of designs.
+      var numDesigns = $('.designFormWithinOrder').length;
 
-      // Start a fresh item and incremment item count.
-      var item = {};
-      itemCount++;
+      // Holder for the designs.
+      var items = [];
 
-      // Store the index within this loop.
-      item.indexInLoop = i;
+      // Totals for order summary.
+      var itemCount = 0;
+      var totalPieces = 0;
+      var orderTotal = 0;
 
-      // Get the item id, if it exists.
-      $('.designFormWithinOrder').each(function() {
-        if (this.id == i) {
-          item.id = $(this).attr('name');
-        }
-      });
+      // For each item that exists, look for the design details.
+      for (var i = 0; i < numDesigns; i++) {
 
-      // Remember the design id.
-      item.design_id = $('#imagesWithinImageHolder_' + i).attr('name');
+        // Start a fresh item and incremment item count.
+        var item = {};
+        itemCount++;
 
-      // Remember the list of images.
-      item.design_images_list = $('#design_images_list_' + i).val();
+        // Store the index within this loop.
+        item.indexInLoop = i;
 
-      // Get the item's name.
-      item.item_name = $('[name="item_name_' + i + '"]').val();
-
-      // Update the current design details after grabbing them.
-      duckburg.order.updateAndSaveDesignDetails(
-        item.design_id, item.design_images_list, item.item_name);
-
-      // Get the product type and id.
-      item.product_type_visible =
-          $('[name="product_type_visible_' + i + '"]').val();
-      item.product_type = $('[name="product_type_' + i + '"]').val();
-
-      // Get pricing info and format it properly.
-      var price = $('[name="product_price_' + i + '"]').val();
-      price = price == '' ? '0' : price;
-      item.product_price = price;
-
-      // Get the social and sale prices.
-      item.product_saleprice = $('[name="product_saleprice_' + i + '"]').val();
-      item.product_socialprice =
-          $('[name="product_socialprice_' + i + '"]').val();
-
-      // Notes
-      item.product_description = $('[name="design_notes_' + i + '"]').val();
-
-      // Product color
-      item.product_colors = $('[name="product_color_' + i + '"]').val();
-
-      // Product category
-      item.product_category = $('[name="product_category_' + i + '"]').val();
-      item.product_category_visible =
-          $('[name="product_category_visible_' + i + '"]').val();
-
-      // Product store
-      item.product_store = $('[name="product_store_' + i + '"]').val();
-      item.product_store_visible =
-          $('[name="product_store_visible_' + i + '"]').val();
-
-      // Product is hidden
-      var isHidden = $('[name="product_ishidden_' + i + '"]').val();
-      item.product_ishidden = isHidden == '' || !isHidden ? 'yes' : isHidden;
-
-      // Product is indexed
-      var isIndexed = $('[name="product_isindexed_' + i + '"]').val();
-      item.product_isindexed = isIndexed == '' || !isIndexed ? 'no' : isIndexed;
-
-      // Create new item or update existing item.
-      if (!item.id || item.id == '') {
-        duckburg.order.createCatalogItem(item);
-      } else {
-        if (duckburg.order.currentItems[item.id]) {
-
-          // Add each property to the item.
-          for (var prop in item) {
-            duckburg.order.currentItems[item.id].set(prop, item[prop]);
+        // Get the item id, if it exists.
+        $('.designFormWithinOrder').each(function() {
+          if (this.id == i) {
+            item.id = $(this).attr('name');
           }
+        });
 
-          // Set search string and save.
-          duckburg.order.currentItems[item.id].set(
-              'parse_search_string', item.item_name);
-          duckburg.order.currentItems[item.id].save();
+        // Remember the design id.
+        item.design_id = $('#imagesWithinImageHolder_' + i).attr('name');
+
+        // Remember the list of images.
+        item.design_images_list = $('#design_images_list_' + i).val();
+
+        // Get the item's name.
+        item.item_name = $('[name="item_name_' + i + '"]').val();
+
+        // Update the current design details after grabbing them.
+        duckburg.order.updateAndSaveDesignDetails(
+          item.design_id, item.design_images_list, item.item_name);
+
+        // Get the product type and id.
+        item.product_type_visible =
+            $('[name="product_type_visible_' + i + '"]').val();
+        item.product_type = $('[name="product_type_' + i + '"]').val();
+
+        // Get pricing info and format it properly.
+        var price = $('[name="product_price_' + i + '"]').val();
+        price = price == '' ? '0' : price;
+        item.product_price = price;
+
+        // Get the social and sale prices.
+        item.product_saleprice = $('[name="product_saleprice_' + i + '"]').val();
+        item.product_socialprice =
+            $('[name="product_socialprice_' + i + '"]').val();
+
+        // Notes
+        item.product_description = $('[name="design_notes_' + i + '"]').val();
+
+        // Product color
+        item.product_colors = $('[name="product_color_' + i + '"]').val();
+
+        // Product category
+        item.product_category = $('[name="product_category_' + i + '"]').val();
+        item.product_category_visible =
+            $('[name="product_category_visible_' + i + '"]').val();
+
+        // Product store
+        item.product_store = $('[name="product_store_' + i + '"]').val();
+        item.product_store_visible =
+            $('[name="product_store_visible_' + i + '"]').val();
+
+        // Product is hidden
+        var isHidden = $('[name="product_ishidden_' + i + '"]').val();
+        item.product_ishidden = isHidden == '' || !isHidden ? 'yes' : isHidden;
+
+        // Product is indexed
+        var isIndexed = $('[name="product_isindexed_' + i + '"]').val();
+        item.product_isindexed = isIndexed == '' || !isIndexed ? 'no' : isIndexed;
+
+        // Create new item or update existing item.
+        if (!item.id || item.id == '') {
+          duckburg.order.createCatalogItem(item);
+        } else {
+          if (duckburg.order.currentItems[item.id]) {
+
+            // Add each property to the item.
+            for (var prop in item) {
+              duckburg.order.currentItems[item.id].set(prop, item[prop]);
+            }
+
+            // Set search string and save.
+            duckburg.order.currentItems[item.id].set(
+                'parse_search_string', item.item_name);
+            duckburg.order.currentItems[item.id].save();
+          }
         }
+
+        // Get size counts and total items.
+        var name = 'size_for_item_' + i;
+        item.sizes = {};
+        item.total_items = 0
+        $('[name="' + name + '"]').each(function() {
+          var sizeName = this.id;
+          var quantity = this.value == '' ? 0 : this.value;
+          item.total_items += parseInt(quantity);
+          totalPieces += parseInt(quantity);
+          item.sizes[sizeName] = quantity;
+        });
+
+        // Continue calculating total cost.
+        var totalCost = price * item.total_items;
+        costArray = String(totalCost).split('.');
+        var dollars = costArray[0];
+        var cents = costArray[1] ? costArray[1].substr(0, 2) : '00';
+        cents = cents.length == 1 ? cents + '0' : cents;
+        totalCost = dollars + '.' + cents;
+
+        // Set the total price in the ui and on the object.
+        item.total_cost = totalCost;
+        orderTotal = (parseFloat(orderTotal) + parseFloat(totalCost)).toFixed(2);
+        $('[name="item_total_price_input_' + i + '"]').val('$' + item.total_cost);
+
+        // Push the item into the list of items.
+        items.push(item);
       }
 
-      // Get size counts and total items.
-      var name = 'size_for_item_' + i;
-      item.sizes = {};
-      item.total_items = 0
-      $('[name="' + name + '"]').each(function() {
-        var sizeName = this.id;
-        var quantity = this.value == '' ? 0 : this.value;
-        item.total_items += parseInt(quantity);
-        totalPieces += parseInt(quantity);
-        item.sizes[sizeName] = quantity;
-      });
+      // Set the items on the order.
+      if (duckburg.order.currentOrder) {
+        items = JSON.stringify(items);
+        duckburg.order.currentOrder.set('items', items);
+        duckburg.order.currentOrder.save().then(function(response) {
+          duckburg.order.orderSavingStatus('saved');
+        },
 
-      // Continue calculating total cost.
-      var totalCost = price * item.total_items;
-      costArray = String(totalCost).split('.');
-      var dollars = costArray[0];
-      var cents = costArray[1] ? costArray[1].substr(0, 2) : '00';
-      cents = cents.length == 1 ? cents + '0' : cents;
-      totalCost = dollars + '.' + cents;
+        function(error) {
+          var msg = 'Error saving order: ' + error.message;
+          duckburg.order.orderSavingStatus('error');
+        });
+      }
 
-      // Set the total price in the ui and on the object.
-      item.total_cost = totalCost;
-      orderTotal = (parseFloat(orderTotal) + parseFloat(totalCost)).toFixed(2);
-      $('[name="item_total_price_input_' + i + '"]').val('$' + item.total_cost);
+      if (!duckburg.order.totalPayments && duckburg.order.currentOrder) {
+        duckburg.order.getAllPayments();
+      }
 
-      // Push the item into the list of items.
-      items.push(item);
-    }
+      // Update the order summary.
+      duckburg.order.populateSummarySection(itemCount, totalPieces, orderTotal);
 
-    // Set the items on the order.
-    if (duckburg.order.currentOrder) {
-      items = JSON.stringify(items);
-      duckburg.order.currentOrder.set('items', items);
-      duckburg.order.currentOrder.save();
-    }
+      // Store this current order in the order log.
+      var o = duckburg.order.currentOrder;
+      var id = o.id;
+      var orderJson = JSON.stringify(o.attributes);
+      var user = duckburg.curUser.attributes.username;
+      duckburg.requests.addOrderLogEntry(id, orderJson, user);
 
-    if (!duckburg.order.totalPayments && duckburg.order.currentOrder) {
-      duckburg.order.getAllPayments();
-    }
-
-    // Update the order summary.
-    duckburg.order.populateSummarySection(itemCount, totalPieces, orderTotal);
-
-    // Store this current order in the order log.
-    var o = duckburg.order.currentOrder;
-    var id = o.id;
-    var orderJson = JSON.stringify(o.attributes);
-    var user = duckburg.curUser.attributes.username;
-    duckburg.requests.addOrderLogEntry(id, orderJson, user);
+    }, duckburg.utils.orderSaveInterval);
    },
 
    /**
@@ -2556,7 +2621,8 @@ duckburg.order = {
      if (duckburg.order.currentDesigns[id]) {
        duckburg.order.currentDesigns[id].set('design_images_list', list);
        duckburg.order.currentDesigns[id].set('design_name', name);
-       duckburg.order.currentDesigns[id].set('parse_search_string', name);
+       duckburg.order.currentDesigns[id].set(
+          'parse_search_string', name.toLowerCase());
        duckburg.order.currentDesigns[id].save();
      }
    },
@@ -2587,5 +2653,40 @@ duckburg.order = {
       .append($('<div>')
         .html('error loading order No.' + orderId)
         .attr('class', 'orderFormLoadingOrderErrorNote'));
-  }
+  },
+
+  /**
+   * Update the order status
+   * @function update the order status nub as the order is updated.
+   * @param status The current status to set the nub to.
+   *
+   */
+   orderSavingStatus: function(status) {
+     if (status == 'saving') {
+       $('.orderStatus')
+         .attr('class', 'orderStatus visible saving')
+         .html('<i class="fa fa-spin fa-circle-o-notch"></i> saving order');
+     } else if (status == 'saved') {
+       $('.orderStatus')
+         .attr('class', 'orderStatus visible saved')
+         .html('<i class="fa fa-floppy-o"></i> order saved');
+     } else if (status == 'error') {
+       $('.orderStatus')
+         .attr('class', 'orderStatus visible error')
+         .html('<i class="fa fa-exclamation-circle"></i> issue saving');
+     }
+   },
+
+   saveOrderAndUpdateStatus: function() {
+
+     // Save the order with parse and handle success/error.
+     duckburg.order.currentOrder.save().then(function(response) {
+       duckburg.order.orderSavingStatus('saved');
+     },
+
+     function(error) {
+       var msg = 'Error saving order: ' + error.message;
+       duckburg.order.orderSavingStatus('error');
+     });
+   }
 };

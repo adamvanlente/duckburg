@@ -1,13 +1,18 @@
 // Global duckburg namespace.
 var duckburg = duckburg || {};
 
-
 /**
  * Order list view
  * @module the order list is the main view in duckburg.
  *
  */
 duckburg.orderList = {
+
+  /** Set some globals for holding current sort state. **/
+  curSortStatuses: false,
+  curSortParam: false,
+  curSortDirection: false,
+  curSortFilters: false,
 
   /**
    * Load the view
@@ -19,10 +24,34 @@ duckburg.orderList = {
    */
   load: function(statuses, sortParam, sortDirection, filters) {
 
+    // Set some globals before they are assigned defaults.
+    duckburg.orderList.curSortStatuses = statuses;
+    duckburg.orderList.curSortParam = sortParam;
+    duckburg.orderList.curSortDirection = sortDirection;
+    duckburg.orderList.curSortFilters = filters;
+
     // Set the variables if they haven't been passed.
     statuses = statuses || duckburg.utils.defaultSortStatuses;
     sortParam = sortParam || duckburg.utils.defaultSortParam;
     sortDirection = sortDirection || duckburg.utils.defaultSortDirection;
+
+    // Loading message for orders.
+    $('.orderList')
+      .html('')
+      .append($('<span>')
+        .attr('class', 'loadingOrderMessage')
+        .html('loading orders'))
+
+    // Uncheck all status filter boxes.
+    $('.statusFilterCheckbox').each(function() {
+      this.checked = false;
+    });
+
+    // Check the selected statuses;
+    for (var i = 0; i < statuses.length; i++) {
+      var status = statuses[i];
+      $('#status_filter_' + status).prop('checked', true);
+    }
 
     // Fetch the orders.
     duckburg.requests.findOrders(statuses, sortParam, sortDirection, filters,
@@ -39,6 +68,9 @@ duckburg.orderList = {
    *
    */
   renderOrderList: function(orders) {
+
+    // Object containing all viewing orders.
+    duckburg.orderList.viewingOrders = {};
 
     // Clear the order list.
     $('.orderList').html('');
@@ -60,172 +92,482 @@ duckburg.orderList = {
       // Capture order.
       var order = orders[i];
 
+      // Add the order to the global object.
+      duckburg.orderList.viewingOrders[order.id] = order;
+
       // Capture id so that calendar can be assigned.
       ids.push('cal_' + orders[i].id);
 
       // Render order to list.
-      duckburg.orderList.renderSingleOrderToList(order);
+      duckburg.orderList.renderSingleOrderToList(order, i);
     }
 
     // Attach highsmith calendars to all the due date inputs.
-    duckburg.utils.addHighsmithCalendars(ids);
+    duckburg.utils.addHighsmithCalendars(ids, false);
   },
 
   /**
    * Render an order item into the list of orders.
    * @function creates an item within the list of orders.
    * @param order Object the order object, originating from Parse.
+   * @param index Int index within list so we can tell if it is even/odd
    *
    */
-  renderSingleOrderToList: function(order) {
+  renderSingleOrderToList: function(order, index) {
 
-    // Define the parent
-    var parent = $('.orderList');
+    // Easy order detail alias.
+    var o = order.attributes;
 
-    // Create a holder span for the order details
-    var holderDiv = $('<div>')
-      .attr('class', 'orderHolderDiv');
+    // Get holder class.
+    var orderHolderClass = index % 2 == 0 ?
+        'orderHolderDiv even' : 'orderHolderDiv odd';
 
-    // Create a top span for the order
-    var topSpan = $('<span>')
-      .attr('class', 'orderTopInnerSpan');
+    // Order summary details.
+    var summary = o.order_summary || '{}';
+    summary = JSON.parse(summary);
 
-    // Create a bottom span for the order
-    var bottomSpan = $('<span>')
-      .attr('class', 'orderBottomInnerSpan');
+    var piecesLabel = summary.total_pieces == 1 ? 'item' : 'items';
+    var pieces = summary.total_pieces || 0;
+    var piecesDesc = pieces + ' ' + piecesLabel;
 
-    // Populate the top order span with details about the order
-    duckburg.orderList.populateTopOrderSpan(order, topSpan);
+    // Cost details
+    var total = summary.final_total || '0.00';
+    var balance = summary.balance || '0.00';
+    var payButtonClass = total == '0.00' ?
+        'orderPaymentButton disabled' : 'orderPaymentButton';
 
-    // Populate the bottom order span with some actions, etc.
-    duckburg.orderList.populateBottomOrderSpan(order, bottomSpan);
+    // Order status details.
+    var bgColor = duckburg.utils.orderStatusMap[o.order_status];
 
-    // Append the spans to the holder div.
-    holderDiv
-      .append(topSpan)
-      .append(bottomSpan)
+    // Link to order
+    var orderLink = duckburg.baseUrl + '/order/' + o.readable_id;
 
-    // Append the div containing order details to the list.
-    parent
-      .append(holderDiv);
+    // Format due date.
+    var due_date = duckburg.utils.formatDate(o.due_date);
 
+    // Get customer details.
+    var custName = o.cust_name == '' ? '<em>no customer</em>' : o.cust_name;
+    var custPhone = o.cust_phone == '' ? '<em>no phone</em>' : o.cust_phone;
+
+    // Get updated time.
+    var updated = 'updated: ' + String(order.updatedAt).split('GMT')[0];
+
+    // Append order details
+    $('.orderList')
+
+      // Append main holder div.
+      .append($('<div>')
+        .attr('class', orderHolderClass)
+
+        // Append top span.
+        .append($('<span>')
+          .attr('class', 'orderTopSpan')
+
+          // Order number
+          .append($('<label>')
+            .attr('class', 'orderNumberLabel')
+            .html(o.readable_id))
+
+          // Order date
+          .append($('<input>')
+            .attr('type', 'text')
+            .attr('id', 'cal_' + order.id)
+            .attr('name', order.id)
+            .attr('class', 'dueDateInput')
+            .val(due_date)
+            .click(function(e) {
+              var orderId = $(e.currentTarget).attr('name');
+              var order = duckburg.orderList.viewingOrders[orderId]
+              duckburg.orderList.updateOrderDateForOrder = order;
+
+              // After a breif wait, set a function to update the due date
+              // after any document click.
+              setTimeout(function() {
+                $(document).bind('click', duckburg.orderList.updateDueDate);
+              }, 200);
+
+            }))
+
+          // Order name
+          .append($('<a>')
+            .attr('class', 'orderNameLabel')
+            .attr('href', orderLink)
+            .attr('id', o.readable_id)
+            .html(o.order_name))
+
+          // Total pieces
+          .append($('<label>')
+            .attr('class', 'totalPiecesLabel')
+            .html(piecesDesc))
+
+          // Order status
+          .append($('<label>')
+            .attr('class', 'orderStatusLabel')
+            .attr('id', 'order_status_' + order.id)
+            .attr('name', order.id)
+            .css({'background': bgColor})
+            .html(o.order_status)
+            .click(function(e) {
+              duckburg.orderList.launchStatusUpdater(e);
+            }))
+        )
+
+        // Append bottom span.
+        .append($('<span>')
+          .attr('class', 'orderBottomSpan')
+
+          // Customer details.
+          .append($('<label>')
+            .attr('class', 'custNameLabel')
+            .html(custName))
+          .append($('<label>')
+            .attr('class', 'custPhoneLabel')
+            .html(custPhone))
+
+          // Payment details.
+          .append($('<label>')
+            .attr('class', 'orderTotalLabel')
+            .html('total: $' + total))
+          .append($('<label>')
+            .attr('class', 'orderBalanceLabel')
+            .html('balance: $' + balance))
+          .append($('<label>')
+            .attr('class', payButtonClass)
+            .attr('id', order.id)
+            .html('<i class="fa fa-money"></i>')
+            .click(function(e) {
+              var id = e.currentTarget.id;
+              var order = duckburg.orderList.viewingOrders[id];
+              duckburg.utils.paymentModule(order);
+            }))
+          .append($('<label>')
+            .attr('class', 'updatedAtLabel')
+            .html(updated))
+        )
+    );
   },
 
   /**
-   * Populate an order span
-   * @function given an order object and an empty span, fill it with details
-   *           about the order, such as order number, due date, name, etc.
-   * @param order Object order object from Parse
-   * @param span Object dom element to append to.
+   * Allow for the updating of a status of an order.
+   * @function launches a dropdown to the let the user select order status.
+   * @param e Object click event from current status div.
    *
    */
-  populateTopOrderSpan: function(order, span) {
+  launchStatusUpdater: function(e) {
 
-    // Easy to access alias for attributes.
-    var o = order.attributes;
+    // Remove any other selectors/dropdowns.
+    $('.orderListStatusSelector').each(function() {
+      $(this).remove();
+    });
 
-    // Readable ID label
-    span
-      .append($('<label>')
-        .html(o.readable_id)
-        .attr('class', 'readableIdLabel'));
+    // Get order id.
+    var orderId = $(e.currentTarget).attr('name');
 
-    // Due date input.
-    span
-      .append($('<input>')
-        .attr('type', 'text')
-        .attr('id', 'cal_' + order.id)
-        .html('placeholder', 'due date')
-        .attr('class', 'dueDateInput')
-        .val(o.due_date));
+    // Set a listener for an offclick event.
+    setTimeout(function() {
+      $(document).bind('click', duckburg.orderList.removeStatusUpdater);
+    }, 200);
 
-    // Order name input
-    span
-      .append($('<a>')
-        .html(o.order_name)
-        .attr('href', duckburg.utils.orderPage + o.readable_id)
-        .attr('class', 'orderListOrderNameLabel'));
+    // Get location of mouse click.
+    var pos = $(e.currentTarget).position();
+    var x = (pos.left + 12) + 'px';
+    var y = (pos.top + 24) + 'px';
 
-    // Customer name label
-    span
-      .append($('<label>')
-        .html(o.cust_name)
-        .attr('class', 'orderListCustomerName'));
+    // Set CSS styles for div.
+    var css = {
+      'position': 'absolute',
+      'left': x,
+      'top': y
+    };
 
-    // Customer phone label
-    span
-      .append($('<label>')
-        .html(o.phone_number)
-        .attr('class', 'orderListCustomerPhone'));
+    // Create, style and append the div.
+    var div = $('<div>')
+      .css(css)
+      .attr('class', 'orderListStatusSelector');
+    $(document.body).append(div);
 
-    // Order status label
-    var bgColor = 'rgba(0,0,0,0.1)';
-    if (duckburg.utils.orderStatusMap[o.order_status]) {
-      bgColor = duckburg.utils.orderStatusMap[o.order_status];
+    // Add a label for each available order status.
+    for (var status in duckburg.utils.orderStatusMap) {
+
+      // Order status details.
+      var bgColor = duckburg.utils.orderStatusMap[status];
+
+      $('.orderListStatusSelector')
+        .append($('<label>')
+          .html(status)
+          .attr('id', orderId)
+          .css({'background': bgColor})
+
+          .click(function(e) {
+            // Get order id and new status.
+            var id = e.currentTarget.id;
+            var status = e.currentTarget.innerHTML;
+            duckburg.orderList.setNewOrderStatus(id, status);
+          }));
+    }
+  },
+
+  /**
+   * Set a new order status for an order.
+   * @function updates the status of an order in the ui and database.
+   * @param id String parse id of order to update.
+   * @param status String new status of order
+   *
+   */
+  setNewOrderStatus: function(id, status) {
+    // Order status details.
+    var bgColor = duckburg.utils.orderStatusMap[status];
+
+    // Update order status in the div.
+    $('#order_status_' + id)
+      .html(status)
+      .css({'background': bgColor});
+
+    // Remove any other selectors
+    $('.orderListStatusSelector').each(function() {
+      $(this).remove();
+    });
+
+    // Get the order in question and update its status in the database.
+    duckburg.orderList.viewingOrders[id].set('order_status', status);
+    duckburg.orderList.viewingOrders[id].save()
+      .then(function(response) {
+        var msg = 'Order status updated';
+        duckburg.utils.successMessage(msg);
+      },
+
+      function(error) {
+        var msg = 'Error saving order: ' + error.message;
+        duckburg.order.orderSavingStatus('error');
+      });
+  },
+
+  /**
+   * Helps remove the status updater div.
+   * @function when status updater dropdown is showing, this listener function
+   *           waits for an offclick and removes the order status dropdown.
+   *
+   */
+  removeStatusUpdater: function() {
+
+    // Remove any other selectors
+    $('.orderListStatusSelector').each(function() {
+      $(this).remove();
+    });
+
+    // Remove the listener.
+    $(document).unbind('click', duckburg.orderList.removeStatusUpdater);
+  },
+
+  /**
+   * Update a due date for an order.
+   * @function updates the due date on a given order.
+   *
+   */
+  updateDueDate: function() {
+
+    // If calendar is still visible, do nothing.  User is clicking through
+    // months, years, etc.
+    if ($('.highsmithCal').length > 0) {
+      return false;
     }
 
-    span
-      .append($('<label>')
-        .html(o.order_status)
-        .attr('class', 'orderStatusLabel')
-        .css({'background': bgColor}));
-  },
+    // If an order has been held in memory;
+    if (duckburg.orderList.updateOrderDateForOrder) {
 
-  /**
-   * Populate an order span
-   * @function given an order object and an empty span, fill it with actions
-   *           such as viewing issues with order, viewing the order, etc
-   * @param order Object order object from Parse
-   * @param span Object dom element to append to.
-   *
-   */
-  populateBottomOrderSpan: function(order, span) {
+      // Get the order id, new date, and update it.
+      var id = duckburg.orderList.updateOrderDateForOrder.id;
+      var prevDate = duckburg.utils.formatDate(
+        duckburg.orderList.updateOrderDateForOrder.attributes.due_date);
+      var date = $('#cal_' + id).val();
 
-    // Easy to access alias for attributes.
-    var o = order.attributes;
+      // If date has actually been changed, update it in the db.
+      if (date != prevDate) {
+        date = new Date(date);
+        duckburg.orderList.updateOrderDateForOrder.set('due_date', date);
+        duckburg.orderList.updateOrderDateForOrder.save()
+          .then(function(response) {
+            var msg = 'Due date updated';
+            duckburg.utils.successMessage(msg);
 
-    // Calculate total designs and items.
-    var items = o.items ? JSON.parse(o.items) : [];
-    var totalItems = 0;
-    var totalDesigns = items.length;
+            // Load the list again.
+            duckburg.orderList.loadWithGlobals();
+          },
 
-    var innerLabel = $('<label>')
-      .attr('class', 'bottomSpanInnerLabel');
-
-    // Add up the total items.
-    for (var i = 0; i < items.length; i++) {
-      var designItems = items[i];
-      if (designItems.sizes) {
-        var sizes = JSON.parse(designItems.sizes);
-        for (var size in sizes) {
-          totalItems += parseInt(sizes[size]);
-        }
+          function(error) {
+            var msg = 'Error saving order: ' + error.message;
+            duckburg.order.orderSavingStatus('error');
+          });
       }
     }
 
-    // Total designs label.
-    var totalDesignsLabel = totalDesigns == 1 ? ' design' : ' designs';
-    innerLabel
-      .append($('<label>')
-        .html(totalDesigns + totalDesignsLabel)
-        .attr('class', 'totalDesignsLabel'));
+    // Clear the memory and the listener.
+    duckburg.orderList.updateOrderDateForOrder = false;
+    $(document).unbind('click', duckburg.orderList.updateDueDate);
+  },
 
-    // // Total items label.
-    // var totalItemsLabel = totalItems == 1 ? ' item' : ' items';
-    // innerLabel
-    //   .append($('<label>')
-    //     .html(totalItems + totalItemsLabel)
-    //     .attr('class', 'totalItemsLabel'));
+  /**
+   * Load the list with any memorized globals.
+   * @function loads the list of orders with any memorized parameters.
+   *
+   */
+  loadWithGlobals: function() {
 
+    // Get sort info from memory and load orders.
+    var sortParam = duckburg.orderList.curSortParam;
+    var sortDir = duckburg.orderList.curSortDirection;
+    var filter = duckburg.orderList.curSortFilters;
+    var statuses = duckburg.orderList.curSortStatuses;
+    duckburg.orderList.load(statuses, sortParam, sortDir, filter);
+  },
 
-    var bgColor = 'rgba(0,0,0,0.1)';
-    if (duckburg.utils.orderStatusMap[o.order_status]) {
-      bgColor = duckburg.utils.orderStatusMap[o.order_status];
-    }
-    bgColor = bgColor.replace('1.0', '0.5');
-    innerLabel
-      .css({'background': bgColor});
+  /**
+   * Update the total and balance on an order.
+   * @function when a payment is made within the order list, the balance
+   *           remains the same.  This function does the calculations, updates
+   *           the order and reloads the current list of orders.
+   * @param orderId String parse id for the order
+   * @param amount Float amount of payment (can be negative)
+   *
+   */
+  updateOrderTotals: function(orderId, amount) {
 
-    span.append(innerLabel);
-  }
+    // Get the order and its summary object.
+    var order = duckburg.orderList.viewingOrders[orderId];
+    var summary = JSON.parse(order.attributes.order_summary);
+
+    // Calculate the new balance.  Can be negative if a payment is being
+    // reversed.
+    summary.balance =
+        (parseFloat(summary.balance) - parseFloat(amount)).toFixed(2);
+
+    // String the order summary and save it to the object.
+    summary = JSON.stringify(summary);
+    duckburg.orderList.viewingOrders[orderId].set('order_summary', summary);
+    duckburg.orderList.viewingOrders[orderId].save()
+      .then(function(response) {
+
+        // Load the list again.
+        duckburg.orderList.loadWithGlobals();
+      },
+
+      function(error) {
+        var msg = 'Error loggin payment: ' + error.message;
+        duckburg.order.orderSavingStatus('error');
+      });
+  },
+
+  /**
+   * Create the filter elements
+   * @function creates all the elements that allow for filtering.
+   *
+   */
+   createFilterElements: function() {
+
+     // Clear the filter holder.
+     $('.orderListFilters')
+       .html('')
+
+       // Header
+       .append($('<h1>')
+         .html('filter orders'))
+
+       // Search bar
+       .append($('<input>')
+         .attr('class', 'filterByName')
+         .attr('placeholder', 'order search')
+         .attr('id', 'order_filter_search')
+         .keyup(function(e) {
+           duckburg.orderList.filterOrdersBySearch(e);
+         }))
+
+       // Status filters
+       .append($('<span>')
+         .attr('class', 'statusFilterHolder')
+
+         .append($('<label>')
+           .attr('class', 'filterHeader')
+           .html('filter by status'))
+         .append($('<span>')
+           .attr('class', 'statusFilterList'))
+       );
+
+       // Fill the status list with all order statuses.
+       for (var status in duckburg.utils.orderStatusMap) {
+          $('.statusFilterList')
+            .append($('<label>')
+              .append($('<span>')
+                .html(status))
+              .append($('<input>')
+                .attr('type', 'checkbox')
+                .attr('class', 'statusFilterCheckbox')
+                .attr('id', 'status_filter_' + status)
+                .attr('name', status)
+                .click(function() {
+
+                  // Supress the event if it was fired by clicking on a
+                  // label that sorts 'only' by one status.
+                  if (duckburg.orderList.filteringOnOnly) {
+                    duckburg.orderList.filteringOnOnly = false;
+                    return false;
+                  }
+
+                  // Update status filters.
+                  var statuses = [];
+                  $('.statusFilterCheckbox').each(function() {
+                    if (this.checked) {
+                      statuses.push($(this).attr('name'));
+                    }
+                  });
+
+                  // Get sort info from memory and load orders.
+                  var sortParam = duckburg.orderList.curSortParam;
+                  var sortDir = duckburg.orderList.curSortDirection;
+                  var filter = duckburg.orderList.curSortFilters;
+                  duckburg.orderList.load(statuses, sortParam, sortDir, filter);
+                }))
+              .append($('<em>')
+                .attr('id', status)
+                .html('only')
+                .click(function(e) {
+
+                  // Note that we're filtering by only one status.
+                  duckburg.orderList.filteringOnOnly = true;
+
+                  var status = e.currentTarget.id;
+
+                  // Get/set sort globals.
+                  var sortParam = duckburg.orderList.curSortParam;
+                  var sortDir = duckburg.orderList.curSortDirection;
+                  var filter = duckburg.orderList.curSortFilters;
+                  duckburg.orderList.load([status], sortParam, sortDir, filter);
+                }))
+            );
+       }
+
+   },
+
+   /**
+    * Filter the list of orders from a search.
+    * @function allows users to change visible orders with a search.
+    * @param even Object keyup event of search input
+    *
+    */
+   filterOrdersBySearch: function(event) {
+
+     // Clear search timer if present.
+     if (duckburg.orderList.filterSearchTimer) {
+       window.clearInterval(duckburg.orderList.filterSearchTimer);
+     }
+
+     duckburg.orderList.filterSearchTimer = setTimeout(function() {
+       var term = event.currentTarget.value.toLowerCase();
+
+       var statuses = duckburg.orderList.curSortStatuses;
+       var sortParam = duckburg.orderList.curSortParam;
+       var sortDir = duckburg.orderList.curSortDirection;
+
+       duckburg.orderList.load(statuses, sortParam, sortDir, term);
+     }, 350);
+   }
 };

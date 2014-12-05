@@ -295,10 +295,12 @@ duckburg.requests = {
     * @param orderId String id of order
     * @param amount Float amount to pay.
     * @param method String payment method
+    * @param user String username of active user
     * @param successCb Object function for success.
     *
     */
-    orderPayment: function(orderId, amount, method, successCb) {
+    orderPayment: function(orderId, amount, method, user, successCb) {
+
       // Instantiate order log.
       var DbObject = Parse.Object.extend('dbOrderPayment');
       newItem = new DbObject();
@@ -307,6 +309,7 @@ duckburg.requests = {
       newItem.set('order_id', orderId);
       newItem.set('amount', amount);
       newItem.set('method', method);
+      newItem.set('user', user);
 
       // Save the dang thing.
       newItem.save(null, {

@@ -18,8 +18,11 @@ duckburg.utils = {
   loginPage: duckburg.baseUrl + '/login',
   orderPage: duckburg.baseUrl + '/order/',
 
+  /** Interval to wait while attempting to save an order. **/
+  orderSaveInterval: 1000,
+
   /** Globals for sorting orders **/
-  defaultSortStatuses: ['quote', 'open', 'approved', 'ordered'],
+  defaultSortStatuses: ['open', 'approved', 'ordered'],
   defaultSortParam: 'due_date',
   defaultSortDirection: 'asc',
 
@@ -153,6 +156,7 @@ duckburg.utils = {
     if (route == '/') {
 
       // Main route, order list.
+      duckburg.orderList.createFilterElements();
       duckburg.orderList.load();
 
     } else if (route == '/users') {
@@ -363,7 +367,7 @@ duckburg.utils = {
     * @param idList Array of element ids.
     *
     */
-   addHighsmithCalendars: function(idList) {
+   addHighsmithCalendars: function(idList, killButton) {
 
      // Config for calendars.
      var calConfig = {
@@ -374,7 +378,7 @@ duckburg.utils = {
        },
 
        // Allow user to kill the calendar.
-       killButton: true,
+       killButton: killButton,
 
        // If a date is in the input, open the calendar to that month.
        customDate: true
@@ -383,7 +387,9 @@ duckburg.utils = {
      // Iterate over the ids and assign a calendar to each.
      for (var i = 0; i < idList.length; i++) {
        var elementId = idList[i];
-       var cal = new Highsmith(elementId, calConfig);
+       if (document.getElementById(elementId)) {
+         var cal = new Highsmith(elementId, calConfig);
+       }
      }
    },
 
@@ -511,7 +517,7 @@ duckburg.utils = {
 
         // Create Highsmith calendars for all fields.
         if (fieldDetails.input == 'date') {
-           duckburg.utils.addHighsmithCalendars([param]);
+           duckburg.utils.addHighsmithCalendars([param], true);
         }
       }
     },
@@ -1127,6 +1133,13 @@ duckburg.utils = {
       }
     },
 
+    /**
+     * Show the payment history of an order.
+     * @function this function is only called when the payment module is open,
+     *           and fills it in with the payment history for an order.
+     * @param id String Parse id for an order; the history of which we want.
+     *
+     */
     showPaymentHistory: function(id) {
 
       // Clear order history div.
@@ -1138,6 +1151,7 @@ duckburg.utils = {
           var result = results[i].attributes;
           var amount = parseFloat(result.amount).toFixed(2);
           var date = String(results[i].createdAt).split('GMT')[0];
+          date += ' - ' + result.user;
 
           $('.paymentModuleHistory')
             .append($('<span>')
@@ -1171,17 +1185,24 @@ duckburg.utils = {
      *
      */
     createOrderPayment: function(amount, orderId, method) {
+
+      // Get current user.
+      var user = duckburg.curUser.attributes.username;
+
       if (amount && amount != '') {
-        duckburg.requests.orderPayment(orderId, amount, method, function() {
+        duckburg.requests.orderPayment(orderId, amount, method, user,
+          function() {
 
-          // Hide the popup.
-          duckburg.utils.hidePopup();
+            // Hide the popup.
+            duckburg.utils.hidePopup();
 
-          // If this is the order page, update the order total.
-          if (window.location.pathname.search('/order') != -1) {
-            duckburg.order.getAllPayments();
-          }
-        });
+            // If this is the order page, update the order total.
+            if (window.location.pathname.search('/order') != -1) {
+              duckburg.order.getAllPayments();
+            } else {
+              duckburg.orderList.updateOrderTotals(orderId, amount);
+            }
+         });
       } else {
         var msg = 'You must enter an amount';
         duckburg.utils.errorMessage(msg);
@@ -1206,6 +1227,11 @@ duckburg.utils = {
             // If this is the order page, update the order total.
             if (window.location.pathname.search('/order') != -1) {
               duckburg.order.getAllPayments();
+            } else {
+              var id = deletedObj.attributes.order_id;
+              var deletedAmount = deletedObj.attributes.amount;
+              var amount = (0 - parseFloat(deletedAmount)).toFixed(2);
+              duckburg.orderList.updateOrderTotals(id, amount);
             }
           },
           error: function(myObject, error) {
@@ -1215,5 +1241,21 @@ duckburg.utils = {
           }
         });
       });
+    },
+
+    /**
+     * Format a date string.
+     * @function takes a javascript Date string and formats it for an input.
+     * @param date String javascript date string eg Tue Dec 2 2014 GMT...
+     *
+     */
+    formatDate: function(date) {
+      var newDate = new Date(date);
+      var month = '0' + String(newDate.getMonth() + 1);
+      month = month.slice(month.length - 2, month.length);
+      var day = '0' + String(newDate.getDate());
+      day = day.slice(day.length - 2, day.length);
+      var year = String(newDate.getFullYear());
+      return month + '/' + day + '/' + year;
     }
 };
