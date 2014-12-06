@@ -413,6 +413,16 @@ duckburg.order = {
           if (duckburg.order.currentOrder) {
             duckburg.utils.paymentModule(duckburg.order.currentOrder);
           }
+        }))
+
+      .append($('<label>')
+        .html('invoice')
+        .attr('class', 'invoiceButton')
+        .click(function() {
+          if (duckburg.order.currentOrder) {
+            var orderId = duckburg.order.currentOrder.attributes.readable_id;
+            window.open('/invoice/' + orderId, '_blank');
+          }
         }));
   },
 
@@ -1758,6 +1768,9 @@ duckburg.order = {
 
     for (var i = imgArray.length - 1; i >= 0; i--) {
       var img = imgArray[i];
+      if (img.search('http://') == -1) {
+        img = '/jobimages/' + img;
+      }
 
       // If img is not in the array already.
       if (existingImgArray.indexOf(img) == -1) {

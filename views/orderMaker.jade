@@ -1,0 +1,15 @@
+doctype html
+html(lang='en')
+  head
+    title
+      | duckburg
+    link(rel='stylesheet', href='/css/style.css')
+
+    body
+
+    include components/header
+
+    include components/scripts
+                      
+    script(type="text/javascript").
+      duckburg.orderMaker.load();

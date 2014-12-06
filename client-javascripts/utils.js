@@ -138,6 +138,11 @@ duckburg.utils = {
    */
   currentView: function(role) {
 
+    // Add a mastersearch listener.
+    $('.masterSearch').keyup(function(e) {
+      duckburg.masterSearch.search(e);
+    });
+
     // Get the current pathname/route.
     var route = window.location.pathname;
 
@@ -158,6 +163,12 @@ duckburg.utils = {
       // Main route, order list.
       duckburg.orderList.createFilterElements();
       duckburg.orderList.load();
+
+    } else if (route == '/printing') {
+
+      // Main route, order list.
+      duckburg.orderList.createFilterElements();
+      duckburg.orderList.load(['printing']);
 
     } else if (route == '/users') {
 
@@ -640,6 +651,11 @@ duckburg.utils = {
           $('.imgViewer').hide();
         })
 
+      // Correc the image path for old rd images.
+      if (img.search('http://') == -1 && img.search('jobimages') == -1) {
+        img = '/jobimages/' + img;
+      }
+
       // Reveal the img viewer.
       $('.imgViewer')
         .show()
@@ -1026,6 +1042,10 @@ duckburg.utils = {
         $('#popupContent')
           .attr('class', 'paymentModule')
 
+          // Order anme
+          .append($('<h1>')
+            .html(order.attributes.order_name))
+
           // Append a header.
           .append($('<h2>')
             .html('Order No.' + order.attributes.readable_id))
@@ -1251,6 +1271,12 @@ duckburg.utils = {
      */
     formatDate: function(date) {
       var newDate = new Date(date);
+
+      // Return blank string for invalid dates.
+      if (typeof date == 'undefined') {
+        return ''
+      }
+
       var month = '0' + String(newDate.getMonth() + 1);
       month = month.slice(month.length - 2, month.length);
       var day = '0' + String(newDate.getDate());
@@ -1259,3 +1285,10 @@ duckburg.utils = {
       return month + '/' + day + '/' + year;
     }
 };
+
+// Key listener for a shortcut to home.
+$('body').keypress(function(e) {
+  if (e.ctrlKey && e.charCode == 8) {
+    window.location.href = '/';
+  }
+});

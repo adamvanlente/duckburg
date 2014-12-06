@@ -10,7 +10,6 @@
 
   span
     @extend .traditional-width
-    margin: 0 auto
     display: block
 
     &.loadingOrderMessage
@@ -24,13 +23,14 @@
       border-radius: 1px
       text-align: center
 
-.orderListNoOrdersFoundSpan
-  @extend .light-font
-  font-size: 13px
-  text-align: center
-  border: 1px solid
-  padding: 12px
-  color: rgb(218, 99, 99)
+    &.orderListNoOrdersFoundSpan
+      @extend .light-font
+      font-size: 13px
+      text-align: center
+      border: 1px solid
+      padding: 12px
+      margin: 16px auto
+      color: rgb(218, 99, 99)
 
 .orderHolderDiv
   @extend .light-font
@@ -70,11 +70,31 @@
             background:  #333
             color: #F1F1F1
       label
+        &.imgIconLabel
+          @extend .light-font
+          display: inline-block
+          font-size: 11px
+          width: 76px
+          color: #d8cccc
+          white-space: nowrap
+          overflow: scroll
+          vertical-align: middle
+          i
+            display: inline-block
+            font-size: 12px
+            margin: 2px
+            color: rgb(168, 177, 207)
+            cursor: pointer
+            +trans($easybreezy)
+            &:hover
+              color: #333
+
+
         &.totalPiecesLabel
           font-size: 11px
           color: #A99191
           display: inline-block
-          width: 150px
+          width: 75px
 
         &.orderNumberLabel
           font-size: 11px
@@ -118,10 +138,25 @@
       label
         @extend .light-font
 
+        &.invoiceIconLabel
+          @extend .basic-button
+          display: inline-block
+          cursor: pointer
+          padding: 1px 8px 2px 9px
+          border-radius: 2px
+          margin: 2px
+          background: rgb(130, 153, 200)
+          color: white
+          font-size: 11px
+          &:hover
+            background: #333
+            color: rgb(130, 153, 200)
+
+
         &.updatedAtLabel
           font-size: 9px
           display: inline-block
-          width: 200px
+          width: 180px
           text-align: center
           color: #CBC5C5
 
@@ -153,7 +188,7 @@
           font-size: 11px
           display: inline-block
           margin: 0 8px
-          width: 100px
+          width: 112px
           text-align: center
 
           em

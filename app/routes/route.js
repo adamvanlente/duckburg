@@ -21,6 +21,24 @@ module.exports = function(app) {
 
 	//***********************
 	//***********************
+	//**** INVOICE **********
+	//***********************
+	//***********************
+	app.get('/invoice/:orderId', function(req, res) {
+		res.render('invoice.jade');
+	});
+
+	//***********************
+	//***********************
+	//**** PRINTING *********
+	//***********************
+	//***********************
+	app.get('/printing', function(req, res) {
+		res.render('orderList.jade');
+	});
+
+	//***********************
+	//***********************
 	//**** USERS PAGE *******
 	//***********************
 	//***********************
@@ -80,6 +98,15 @@ module.exports = function(app) {
 	//***********************
 	app.get('/login', function(req, res) {
 			res.render('login.jade');
+	});
+
+	//***********************
+	//***********************
+	//**** ORDER MAKER ******
+	//***********************
+	//***********************
+	app.get('/make', function(req, res) {
+		res.render('orderMaker.jade');
 	});
 
 

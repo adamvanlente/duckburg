@@ -152,6 +152,10 @@ duckburg.orderList = {
     // Get updated time.
     var updated = 'updated: ' + String(order.updatedAt).split('GMT')[0];
 
+    var imgLabel = $('<label>')
+      .attr('class', 'imgIconLabel');
+
+
     // Append order details
     $('.orderList')
 
@@ -200,6 +204,9 @@ duckburg.orderList = {
             .attr('class', 'totalPiecesLabel')
             .html(piecesDesc))
 
+          // Images
+          .append(imgLabel)
+
           // Order status
           .append($('<label>')
             .attr('class', 'orderStatusLabel')
@@ -240,11 +247,70 @@ duckburg.orderList = {
               var order = duckburg.orderList.viewingOrders[id];
               duckburg.utils.paymentModule(order);
             }))
+           .append($('<label>')
+            .attr('class', 'invoiceIconLabel')
+            .attr('id', order.id)
+            .html('<i class="fa fa-file-text"></i>')
+            .click(function(e) {
+              var id = e.currentTarget.id;
+              var order = duckburg.orderList.viewingOrders[id];
+              var orderId = order.attributes.readable_id;
+              window.open('/invoice/' + orderId, '_blank');
+            }))
           .append($('<label>')
             .attr('class', 'updatedAtLabel')
             .html(updated))
         )
     );
+
+    // Set image icons for each order.
+    duckburg.orderList.appendImageIconsToOrderItem(imgLabel, o);
+  },
+
+  /**
+   * Set image icons for each order
+   * @function in the order list, show an icon for each of an order's items.
+   * @param imgLabel Object dom element to append icons to.
+   * @param o Object order attributes object.
+   */
+  appendImageIconsToOrderItem: function(imgLabel, o) {
+
+    // Get the list of images for the job and display icons for each.
+    var items = o.items || '{}';
+    items = JSON.parse(items);
+
+    // Keep track of image count
+    var imgCount = 0;
+
+    // Iterate over all items and grab the imags.
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      var imgs = item.design_images_list.split(',');
+      for (var j = 0; j < imgs.length; j++) {
+        var img = String(imgs[j]);
+        if (img != '') {
+
+          // Keep track of images.
+          imgCount++;
+
+          imgLabel
+            .append($('<i>')
+              .attr('id', img)
+              .attr('class', 'fa fa-picture-o')
+              .click(function(e) {
+
+                // Show the image to the user on click.
+                var img = e.currentTarget.id;
+                duckburg.utils.revealImageViewerWithImage(img);
+              }));
+        }
+      }
+    }
+
+    // If there are no images, display a message.
+    if (imgCount == 0) {
+      imgLabel.html('no images');
+    }
   },
 
   /**
@@ -332,8 +398,7 @@ duckburg.orderList = {
     duckburg.orderList.viewingOrders[id].set('order_status', status);
     duckburg.orderList.viewingOrders[id].save()
       .then(function(response) {
-        var msg = 'Order status updated';
-        duckburg.utils.successMessage(msg);
+        // do nothing
       },
 
       function(error) {
@@ -487,7 +552,21 @@ duckburg.orderList = {
 
          .append($('<label>')
            .attr('class', 'filterHeader')
-           .html('filter by status'))
+           .html('filter by status')
+           .click(function() {
+
+             var statuses = [];
+             for (var status in duckburg.utils.orderStatusMap) {
+               statuses.push(status);
+             }
+
+             // Get/set sort globals.
+             var sortParam = duckburg.orderList.curSortParam;
+             var sortDir = duckburg.orderList.curSortDirection;
+             var filter = duckburg.orderList.curSortFilters;
+             duckburg.orderList.load(statuses, sortParam, sortDir, filter);
+
+           }))
          .append($('<span>')
            .attr('class', 'statusFilterList'))
        );

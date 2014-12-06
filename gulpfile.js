@@ -22,11 +22,18 @@ gulp.task('script-minify', function() {
         .pipe(gulp.dest('public/js/'))
 });
 
-gulp.task('sassify', function() {
+gulp.task('sass-style', function() {
     gulp.src('client-sass/style.sass')
         .pipe(plumber())
         .pipe(sass())
         .pipe(gulp.dest('public/css/'));
+});
+
+gulp.task('sass-invoice', function() {
+  gulp.src('client-sass/invoice.sass')
+  .pipe(plumber())
+  .pipe(sass())
+  .pipe(gulp.dest('public/css/'));
 });
 
 gulp.task('watch', function() {
@@ -34,8 +41,9 @@ gulp.task('watch', function() {
   gulp.watch('client-javascripts/views/*', ['script-concat', 'script-minify']);
   gulp.watch('client-javascripts/forms/*', ['script-concat', 'script-minify']);
   gulp.watch('client-javascripts/requests/*', ['script-concat', 'script-minify']);
-  gulp.watch('client-sass/*', ['sassify']);
-  gulp.watch('client-sass/includes/*', ['sassify']);
+  gulp.watch('client-sass/style.sass', ['sass-style']);
+  gulp.watch('client-sass/includes/*', ['sass-style']);
+  gulp.watch('client-sass/invoice.sass', ['sass-invoice']);
 });
 
-gulp.task('default', ['script-concat', 'script-minify', 'sassify', 'watch']);
+gulp.task('default', ['script-concat', 'script-minify', 'sass-style', 'sass-invoice', 'watch']);

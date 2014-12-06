@@ -1,0 +1,210 @@
+@import ./includes/globals
+
+@import ./includes/fonts
+
+.invoice
+  @extend .traditional-width
+  display: block
+  margin: 12px auto
+
+  h1
+    @extend .serif-font
+    display: block
+    margin: 0
+    text-align: center
+    padding: 4px
+    color: rgb(221, 221, 221)
+    font-size: 30px
+  h2
+    @extend .light-font
+    display: block
+    font-size: 32px
+    text-align: center
+    padding: 4px
+    margin: 0
+    color: #333
+  h3
+    @extend .serif-font
+    display: block
+    font-size: 13px
+    text-align: center
+    padding: 4px
+    margin: 0
+    color: rgba(51, 51, 51, 0.71)
+
+  div
+    @extend .light-font
+
+    &.summaryDiv
+      display: block
+      padding: 4px
+      border: 1px dashed rgb(187, 181, 181)
+      background: rgba(241, 241, 241, 0.34)
+      width: 96%
+      margin: 12px auto
+      +break-for(ipad)
+        font-size: 11px
+        width: 91%
+      +break-for(iphone)
+        width: 85%
+        display: block
+        margin: 12px
+
+      div
+        &.paidNote
+          display: block
+          margin: 2px
+          padding: 8px
+          text-align: center
+          background: #333
+          color: white
+
+      span
+        display: block
+        &.totalSpan
+          label,
+          em
+            padding-bottom: 8px
+            border-bottom: 2px solid
+        &.balanceSpan
+          font-weight: bold
+
+        label,
+        em
+          display: inline-block
+          font-size: 13px
+          padding: 4px
+
+        label
+          width: 135px
+
+        em
+          font-style: normal
+          font-weight: bold
+          width: 80px
+
+
+    &.itemListHolder
+      display: block
+      span
+        &.noItemsMessage
+          font-size: 12px
+          color: #333
+          border: 1px solid
+          padding: 8px
+          text-align: center
+          display: block
+
+        &.itemSpan
+          display: block
+          padding: 4px
+          border: 1px dashed rgb(187, 181, 181)
+          background: rgba(241, 241, 241, 0.34)
+          width: 96%
+          margin: 12px auto
+          +break-for(ipad)
+            font-size: 11px
+            width: 91%
+          +break-for(iphone)
+            width: 85%
+            display: block
+            margin: 12px
+
+          span
+            display: block
+            &.sizeSpan
+              display: block
+
+              label
+                display: inline-block
+                margin: 8px
+
+                span
+                  display: inline-block
+                  padding: 4px
+                  background: #525050
+                  color: white
+                  border: 1px solid
+                  border-top-left-radius: 4px
+                  border-bottom-left-radius: 4px
+                  width: 44px
+                  text-align: center
+                  font-size: 12px
+                em
+                  display: inline-block
+                  font-size: 12px
+                  font-style: normal
+                  text-align: center
+                  width: 42px
+                  color: #525050
+                  border: 1px solid
+                  margin-left: -2px
+                  padding: 3px
+                  border-bottom-right-radius: 4px
+                  border-top-right-radius: 4px
+
+          label
+
+            &.designNameLabel
+              display: block
+              padding: 4px 0px
+              border-bottom: 1px solid
+              margin: 4px
+              color: rgba(51, 51, 51, 0.81)
+
+            &.designStyleInfoLabel,
+            &.designPriceLabel
+              display: block
+              padding: 4px 8px
+              color: #7F7979
+              font-size: 13px
+
+    &.invoiceCustomerHolder
+      display: block
+      text-align: center
+      white-space: nowrap
+    &.shippingCustomer,
+    &.billingCustomer
+      display: inline-block
+      width: 44%
+      background: #F1F1F1
+      font-size: 13px
+      padding: 12px
+      text-align: left
+      margin: 12px
+      min-height: 50px
+      vertical-align: top
+      border: 1px dashed rgb(187, 181, 181)
+      +break-for(ipad)
+        font-size: 11px
+        width: 40%
+
+      +break-for(iphone)
+        width: 80%
+        display: block
+        margin: 12px
+
+      h1
+        @extend .serif-font
+        font-size: 13px
+        color: rgba(51, 51, 51, 0.27)
+        margin: 6px 0
+        padding: 0
+        text-align: left
+        text-transform: uppercase
+
+      label
+        display: block
+
+        i
+          color: #DCDCDC
+          display: inline-block
+          margin-left: 8px
+
+  span
+    &.errorLoadingInvoice
+      @extend .light-font
+      display: block
+      font-size: 13px
+      padding: 8px
+      text-align: center

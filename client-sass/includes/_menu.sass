@@ -4,8 +4,10 @@
   left: 0
   right: 0
   top: 30px
-  background: $light-gray
-  z-index: 10
+  background: rgba(247, 246, 246, 1)
+  z-index: 11
+  border-bottom: 1px solid $minty-green
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1)
 
   +break-for(iphone)
     top: 40px
@@ -22,6 +24,18 @@
       left: 0
 
   a
+    &.menuNewOrderButton
+      color: white
+      background: $minty-green
+      font-size: 12px
+      width: 26px
+      text-align: center
+      border-radius: 0px
+
+      &:hover
+        background: #333
+        color: $minty-green
+
     @extend .basic-button
     @extend .light-font
     display: inline-block
@@ -30,8 +44,7 @@
     text-decoration: none
     color: #333
     &:hover
-      color: white
-      background: $minty-green
+      background: #F1F1F1
 
     +break-for(iphone)
       font-size: 16px
