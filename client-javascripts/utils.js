@@ -164,6 +164,11 @@ duckburg.utils = {
       duckburg.orderList.createFilterElements();
       duckburg.orderList.load();
 
+    } else if (route == '/dos') {
+
+      // Load the daily order sheet.
+      duckburg.dos.load();
+
     } else if (route == '/printing') {
 
       // Main route, order list.

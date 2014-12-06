@@ -109,6 +109,15 @@ module.exports = function(app) {
 		res.render('orderMaker.jade');
 	});
 
+	//***********************
+	//***********************
+	//**** ORDER MAKER ******
+	//***********************
+	//***********************
+	app.get('/dos', function(req, res) {
+		res.render('dailyOrderSheet.jade');
+	});
+
 
 	//***********************
 	//***********************

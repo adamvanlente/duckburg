@@ -1185,7 +1185,7 @@ duckburg.order = {
          var orderName = $('#order_name').val();
          var orderNumber = $('#readable_id').html();
          var searchString = (orderName + orderNumber).toLowerCase();
-         duckburg.order.currentOrder.set(param, newVal);
+         duckburg.order.currentOrder.set(param, newVal);       
          duckburg.order.currentOrder.set('parse_search_string', searchString);
 
          // Kick off the save function
@@ -1202,7 +1202,15 @@ duckburg.order = {
        var searchString = a.first_name + a.last_name + a.email_address +
           a.phone_number;
        customer.set('parse_search_string', searchString.toLowerCase());
-       customer.save();
+       customer.save().then(function(response) {
+           duckburg.order.orderSavingStatus('saved');
+         },
+
+         function(error) {
+           var msg = 'Error updating customer: ' + error.message;
+           duckburg.order.orderSavingStatus('error');
+           duckburg.utils.errorMessage(msg);
+         });
      }
    },
 
@@ -1765,16 +1773,21 @@ duckburg.order = {
     // Place the images in the div.
     var imgArray = design.attributes.design_images_list.split(',');
 
-
     for (var i = imgArray.length - 1; i >= 0; i--) {
       var img = imgArray[i];
-      if (img.search('http://') == -1) {
+      if (img.search('http://') == -1 && img.search('jobimages') == -1) {
         img = '/jobimages/' + img;
       }
 
+      // Other format img url may be in.
+      var oldImg = img.replace('/jobimages/', '');
+
       // If img is not in the array already.
-      if (existingImgArray.indexOf(img) == -1) {
+      if (existingImgArray.indexOf(img) == -1 &&
+        existingImgArray.indexOf(oldImg) == -1 ) {
+
         existingImgArray.push(img);
+
       }
 
       // Append the image to the list of images.

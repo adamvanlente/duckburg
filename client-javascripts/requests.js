@@ -141,7 +141,7 @@ duckburg.requests = {
   fetchOrderById: function(orderId, successCb) {
 
     // Instantiate an order.
-    var Order = Parse.Object.extend("dbOrder");
+    var Order = Parse.Object.extend('dbOrder');
     var query = new Parse.Query(Order);
 
     // Refine based on order id.
@@ -347,7 +347,7 @@ duckburg.requests = {
         success: function(results) {
           successCb(results);
         },
-        error: function(result, error) {
+        error: function(error) {
           var errorMsg = 'Error gettting objects: ' + error.message;
           duckburg.utils.errorMessage(errorMsg);
         }
