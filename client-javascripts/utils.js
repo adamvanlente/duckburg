@@ -18,6 +18,9 @@ duckburg.utils = {
   loginPage: duckburg.baseUrl + '/login',
   orderPage: duckburg.baseUrl + '/order/',
 
+  /** Number of days to automatically set print date ahead of due date **/
+  setPrintDateBackAutomatically: -2,
+
   /** Interval to wait while attempting to save an order. **/
   orderSaveInterval: 1000,
 
@@ -171,9 +174,7 @@ duckburg.utils = {
 
     } else if (route == '/printing') {
 
-      // Main route, order list.
-      duckburg.orderList.createFilterElements();
-      duckburg.orderList.load(['printing']);
+      duckburg.printing.load();
 
     } else if (route == '/users') {
 
@@ -1269,6 +1270,16 @@ duckburg.utils = {
     },
 
     /**
+     * Calculate how long it will take to print an order.
+     * @function get print time for an order.
+     * @param items Int number of items in an order.
+     *
+     */
+    calculateOrderTime: function(items) {
+      return (parseInt(items) / 60).toFixed(2);
+    },
+
+    /**
      * Format a date string.
      * @function takes a javascript Date string and formats it for an input.
      * @param date String javascript date string eg Tue Dec 2 2014 GMT...
@@ -1288,6 +1299,12 @@ duckburg.utils = {
       day = day.slice(day.length - 2, day.length);
       var year = String(newDate.getFullYear());
       return month + '/' + day + '/' + year;
+    },
+
+    /** Return a given date with days added to it **/
+    addDaysToDate: function(date, days) {
+      date = date || new Date();
+      return new Date(date.getTime() + days*24*60*60*1000);
     }
 };
 

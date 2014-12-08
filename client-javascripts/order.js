@@ -542,6 +542,28 @@ duckburg.order = {
 
         // Get due date.
         var dueDate = new Date($('#due_date').val());
+        var printDate = $('#print_date').val();
+
+        // Force a print date of one is not set.
+        if (printDate == '' && !printDate) {
+
+          // Initially set it a fixed number of days ahead.
+          printDate = duckburg.utils.addDaysToDate(dueDate,
+              duckburg.utils.setPrintDateBackAutomatically)
+
+          // If the new print_date is on a Sunday or Monday, force it to be
+          // on the Friday (do not set print dates on the weekend).
+          var day = printDate.getDay();
+          if (day == 0) {
+            printDate = duckburg.utils.addDaysToDate(printDate, -2)
+          }
+          if (day == 6) {
+            printDate = duckburg.utils.addDaysToDate(printDate, -1)
+          }
+
+          //Set the print date.
+          duckburg.order.currentOrder.set('print_date', printDate);
+        }
 
         // Update and save.
         duckburg.order.currentOrder.set('due_date', dueDate);
@@ -566,7 +588,9 @@ duckburg.order = {
       if (duckburg.order.currentOrder) {
 
         // Get due date.
-        var printDate = new Date($('#print_date').val());
+        var printDate = $('#print_date').val();
+        printDate = printDate == '' ?
+            new Date($('#due_date').val()) : new Date($('#print_date').val());
 
         // Update and save.
         duckburg.order.currentOrder.set('print_date', printDate);
@@ -1185,7 +1209,7 @@ duckburg.order = {
          var orderName = $('#order_name').val();
          var orderNumber = $('#readable_id').html();
          var searchString = (orderName + orderNumber).toLowerCase();
-         duckburg.order.currentOrder.set(param, newVal);       
+         duckburg.order.currentOrder.set(param, newVal);
          duckburg.order.currentOrder.set('parse_search_string', searchString);
 
          // Kick off the save function

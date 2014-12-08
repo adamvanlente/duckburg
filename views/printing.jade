@@ -1,0 +1,22 @@
+extends components/base
+
+block append content
+  
+  include components/menu
+  
+  div.printCalHeader
+    
+  div.printCalToggle
+    label
+      i.fa.fa-arrow-circle-o-left(onclick="duckburg.printing.toggleDateDown()")
+    label.currentViewingDate
+    label
+      i.fa.fa-arrow-circle-o-right(onclick="duckburg.printing.toggleDateUp()")
+    
+  div.printCal
+    
+  div.imgViewer
+
+          
+          
+          

@@ -34,7 +34,7 @@ module.exports = function(app) {
 	//***********************
 	//***********************
 	app.get('/printing', function(req, res) {
-		res.render('orderList.jade');
+		res.render('printing.jade');
 	});
 
 	//***********************

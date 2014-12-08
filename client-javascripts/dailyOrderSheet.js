@@ -7,6 +7,9 @@ var duckburg = duckburg || {};
  */
 duckburg.dos = {
 
+  /** List of orders with issues **/
+  ordersWithIssues: {},
+
   /**
    * Load the daily order sheet.
    * @function loads the daily order sheet
@@ -69,6 +72,7 @@ duckburg.dos = {
       var order = duckburg.dos.orders[i];
       var items = order.attributes.items || '{}';
       items = JSON.parse(items);
+
       duckburg.dos.handleItems(order, items);
 
       // After a brief pause, run again.
@@ -94,9 +98,8 @@ duckburg.dos = {
    handleItems: function(order, items) {
 
      for (var i = 0; i < items.length; i++) {
-
        // Get item and product id.
-       var item = items[0];
+       var item = items[i];
        var product_type_id = item.product_type;
 
        // If it has a product id, we can get the supplier.  If we can't, report
@@ -132,7 +135,6 @@ duckburg.dos = {
 
            // Add supplier and sizes to order.
            duckburg.dos.addItemsToObject(order, item, product, supplier);
-
          });
        } else {
 
@@ -141,7 +143,7 @@ duckburg.dos = {
              ' suppliers: <a href="' + '/order/' +
              order.attributes.readable_id + '">' +
              order.attributes.order_name + '</a>';
-         duckburg.dos.insertErrorMessageWithText(msg);
+         duckburg.dos.insertErrorMessageWithText(msg, order.id);
        }
      });
    },
@@ -162,6 +164,14 @@ duckburg.dos = {
       var itemId = (product.attributes.supplier_item_id + ' - ' +
           product.attributes.product_name).toLowerCase();
       var color = item.product_colors.toLowerCase();
+
+      if (!color || color == '') {
+        var msg = 'Item(s) on this order have no color information: <a href="' +
+          '/order/' + order.attributes.readable_id + '">' +
+          order.attributes.order_name + '</a>';
+        duckburg.dos.insertErrorMessageWithText(msg, order.id);
+        return;
+      }
 
       // Add supplier if needed.
       if (!duckburg.dos.orderObject[supplierName]) {
@@ -274,7 +284,7 @@ duckburg.dos = {
      var msg = 'Item(s) on this order have no product defined: <a href="' +
         '/order/' + order.attributes.readable_id + '">' +
         order.attributes.order_name + '</a>';
-     duckburg.dos.insertErrorMessageWithText(msg);
+     duckburg.dos.insertErrorMessageWithText(msg, order.id);
 
    },
 
@@ -282,9 +292,15 @@ duckburg.dos = {
     * Helper function that inserts an error message.
     * @function add a span with error message to the main error div.
     * @param msg String message describing error.
+    * @param orderId String order id.
     *
     */
-   insertErrorMessageWithText: function(msg) {
+   insertErrorMessageWithText: function(msg, orderId) {
+
+      // If there are already warnings abou this order, abort.
+      if (duckburg.dos.ordersWithIssues[orderId]) {
+        return;
+      }
 
       // Append an error span to the list of issues.
       $('.orderIssues')
@@ -293,5 +309,8 @@ duckburg.dos = {
             .attr('class', 'fa fa-exclamation-triangle'))
           .append($('<label>')
             .html(msg)));
+
+      // Note that this order has issues.
+      duckburg.dos.ordersWithIssues[orderId] = true;
    }
 };

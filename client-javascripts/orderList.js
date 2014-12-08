@@ -449,11 +449,16 @@ duckburg.orderList = {
       // If date has actually been changed, update it in the db.
       if (date != prevDate) {
         date = new Date(date);
+
+        var printDate =
+          duckburg.orderList.updateOrderDateForOrder.attributes.print_date;
+        if (!printDate || printDate == '') {
+          duckburg.orderList.updateOrderDateForOrder.set('print_date', date);
+        }
+
         duckburg.orderList.updateOrderDateForOrder.set('due_date', date);
         duckburg.orderList.updateOrderDateForOrder.save()
           .then(function(response) {
-            var msg = 'Due date updated';
-            duckburg.utils.successMessage(msg);
 
             // Load the list again.
             duckburg.orderList.loadWithGlobals();
