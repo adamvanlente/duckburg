@@ -313,7 +313,7 @@ duckburg.invoice = {
             .append($('<label>')
               .html('Tax collected'))
             .append($('<em>')
-              .html('$' + s.order_total))
+              .html('$' + s.tax_amount))
           )
 
           .append($('<span>')
