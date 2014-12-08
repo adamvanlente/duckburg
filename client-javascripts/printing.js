@@ -9,7 +9,7 @@ var duckburg = duckburg || {};
 duckburg.printing = {
 
   /** Default view **/
-  defaultView: 'day', // will be week, month or day
+  defaultView: 'month', // will be week, month or day
 
   /** Month dictionary **/
   monthDict: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
@@ -159,7 +159,7 @@ duckburg.printing = {
     if (mode == 'week') {
       duckburg.printing.toggleByDays = 7;
     } else if (mode == 'month') {
-      duckburg.printing.toggleByDays = 30;
+      duckburg.printing.toggleByDays = 31;
     }
 
     if (mode == 'day') {
@@ -223,6 +223,7 @@ duckburg.printing = {
 
     }
 
+    var dayJobCount = 0;
     // Do work with the orders.
     for (var i = 0; i < orders.length; i++) {
       var order = orders[i];
@@ -231,6 +232,7 @@ duckburg.printing = {
       if (d.order_status == 'completed') {
         continue;
       }
+      dayJobCount++;
 
       duckburg.printing.currentlyOpenOrders[order.id] = order;
 
@@ -386,13 +388,21 @@ duckburg.printing = {
         ));
     }
 
-    // Insert total print time.
-    var totalHours = duckburg.printing.printTimeObject[id].toFixed(2);
-    $('.totalPrintHours').html(totalHours + ' total hours today')
+    if (dayJobCount == 0) {
+      $('.printCal')
+        .html('')
+        .append($('<div>')
+          .attr('class', 'noOrders')
+          .html('no projects today'));
+    } else {
 
-    // Add highsmith listeners.
-    duckburg.utils.addHighsmithCalendars(highsmiths);
+      // Insert total print time.
+      var totalHours = duckburg.printing.printTimeObject[id].toFixed(2);
+      $('.totalPrintHours').html(totalHours + ' total hours today')
 
+      // Add highsmith listeners.
+      duckburg.utils.addHighsmithCalendars(highsmiths);
+    }
   },
 
   /**
@@ -546,6 +556,175 @@ duckburg.printing = {
   },
 
   /**
+   * Set the screen for the Month view.
+   *
+   */
+  setMonthMode: function() {
+
+    var date = new Date(duckburg.printing.currentDate);
+    var index = 0;
+
+    // Set target date to first day of the month.
+    var nextMonth = date.getMonth() + 1;
+    var lastDay = new Date(date.getFullYear(), nextMonth, 0);
+    var numberOfDaysInMonth = lastDay.getDate();
+
+    var daysToStagger = date.getDay();
+    console.log(date.getDay(), date);
+    for (var i = 0; i < daysToStagger; i++) {
+      $('.printCal')
+        .append($('<div>')
+          .attr('class', 'dayMonthSpacer'))
+
+    }
+
+    $('.printCal')
+      .css({'text-align' : 'left',
+            'width': '900px',
+            'margin': '0 auto'});
+
+    while (index < numberOfDaysInMonth) {
+
+      var day = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var id = String(day) + String(month) + String(year);
+      var stringDate = String(date).split(year)[0];
+
+      $('.printCal')
+        .append($('<div>')
+          .attr('id', id)
+          .attr('class', 'dayMonthDiv')
+          .append($('<h1>')
+            .html(stringDate))
+          .append($('<span>')
+            .attr('class', 'dayMonthHours')
+            .attr('id', 'dayWeekHours' + id)
+            .html('0.00 hrs'))
+          .append($('<span>')
+            .attr('class', 'dayMonthHolder')
+            .attr('id', 'dayMonthHolder_' + id)
+            .append($('<label>')
+              .html('No jobs today')
+              .attr('id', 'noJobs' + id)
+              .attr('class', 'noJobsToday'))));
+
+      // Incremement the date.
+      date.setDate(date.getDate() + 1);
+      index++;
+    }
+
+    // Render the orders for week view.
+    duckburg.printing.setMonthOrders();
+  },
+
+  /**
+   * Place orders into the week view.
+   * @function week view is rendered, now we can place orders in the view.
+   *
+   */
+  setMonthOrders: function() {
+
+    // Grab orders.
+    var orders = duckburg.printing.currentResults;
+
+    // Prepare a holder for highsmiths.
+    var highsmiths = [];
+
+    // Do work with the orders.
+    for (var i = 0; i < orders.length; i++) {
+      var order = orders[i];
+      var d = order.attributes;
+
+      duckburg.printing.currentlyOpenOrders[order.id] = order;
+
+      date = new Date(d.print_date);
+      var day = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var id = String(day) + String(month) + String(year);
+
+      // Remove any no jobs notes.
+      $('#noJobs' + id).remove();
+
+      // Highsmith listeners.
+      highsmiths.push('dwPrintDate' + order.id);
+
+      // Get background color.
+      var bgColor = duckburg.utils.orderStatusMap[d.order_status];
+
+      // Summary
+      var summary = JSON.parse(d.order_summary);
+
+      // Order time.
+      var printTime = duckburg.utils.calculateOrderTime(summary.total_pieces);
+      if (duckburg.printing.printTimeObject[id]) {
+        duckburg.printing.printTimeObject[id] += parseFloat(printTime);
+      } else {
+        duckburg.printing.printTimeObject[id] = parseFloat(printTime);
+      }
+
+      // Designs
+      var items = d.items || '{}';
+      items = JSON.parse(items);
+      var designString = '';
+      for (var item in items) {
+        var design = items[item];
+        if (design.design_images_list) {
+          var img = design.design_images_list;
+          designString += '<label onclick="duckburg.utils' +
+              '.revealImageViewerWithImage(\'' + img + '\')">' +
+              '<i class="fa fa-picture-o"></i></label>';
+        }
+      }
+
+      // Fill the day with an order.
+      $('#dayMonthHolder_' + id)
+        .append($('<span>')
+          .css({'background': bgColor})
+          .attr('class', 'dayWeekOrderItem')
+          .append($('<a>')
+            .attr('href', '/order/' + d.readable_id)
+            .html(d.order_name))
+          .append($('<input>')
+            .attr('type', 'text')
+            .attr('class', 'dwPrintDate')
+            .attr('id', 'dwPrintDate' + order.id)
+            .attr('name', order.id)
+            .val(duckburg.utils.formatDate(d.print_date))
+            .click(function(e) {
+              var id = $(e.currentTarget).attr('name');
+              duckburg.printing.openPrintDateInput = id;
+              $(document).bind('click', duckburg.printing.updatePrintDate);
+            }))
+          .append($('<span>')
+            .attr('class', 'dwOrderStatus')
+            .html(d.order_status))
+          .append($('<span>')
+            .attr('class', 'dwTotalPieces')
+            .html(summary.total_pieces + ' total items'))
+          .append($('<span>')
+            .attr('class', 'dwPrintTime')
+            .attr('id', 'dwPrintTime' + id)
+            .html(printTime + ' hrs'))
+          .append($('<span>')
+            .attr('class', 'dwImages')
+            .attr('id', 'dwImages' + id)
+            .html(designString))
+         );
+    }
+
+    // Add print time totals.
+    for (var printTimeTotal in duckburg.printing.printTimeObject) {
+      var total = duckburg.printing.printTimeObject[printTimeTotal];
+      $('#dayWeekHours' + printTimeTotal).html(total.toFixed(2) + ' hrs');
+    }
+
+    // Add highsmith listeners.
+    duckburg.utils.addHighsmithCalendars(highsmiths);
+  },
+
+  /**
    * Update the print date of a job.
    */
   updatePrintDate: function() {
@@ -596,8 +775,10 @@ duckburg.printing = {
 
     var mode = duckburg.printing.currentView;
     var date = duckburg.printing.currentDate;
+    console.log(date)
     var newDate = duckburg.utils.addDaysToDate(
         date, duckburg.printing.toggleByDays);
+    console.log(newDate)
     duckburg.printing.loadCalendar(mode, newDate);
   }
 };
