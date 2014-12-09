@@ -45,6 +45,4 @@ duckburg.menu = {
         .html('hide');
     }
   }
-
-
 };

@@ -270,14 +270,15 @@
               padding: 8px
               margin: 16px auto
               margin-right: 24px
-              width: 612px
+              width: 430px
               background: none
               display: inline-block
               color: #333
               text-transform: uppercase
               border-bottom: 1px solid rgba(0, 0, 0, 0.21)
 
-            &.itemTotalPriceInput
+            &.itemTotalPriceInput,
+            &.itemTotalItemsInput
               @extend .light-font
               -webkit-appearance: none
               border: none
@@ -294,6 +295,11 @@
           label
             &.itemTotalPriceLabel
               background: #9c7bc5
+            &.itemTotalItemsLabel
+              background: #7B9BC5
+
+            &.itemTotalItemsLabel,
+            &.itemTotalPriceLabel
               font-size: 11px
               padding: 8px
               color: white
@@ -331,6 +337,80 @@
                   color: #d78a8a
           div
             @extend .light-font
+
+            &.namesAndNumbersHolder
+              padding: 8px
+              margin: 0px auto 12px auto
+              background: #E8E3E3
+              width: 800px
+              display: block
+              color: #333333
+              border-radius: 1px
+
+              h3
+                padding: 0
+                margin: 0
+                margin-bottom: 4px
+
+              label
+                &.addNewNameNumButton
+                  @extend .basic-button
+                  @extend .light-font
+                  display: inline-block
+                  text-align: center
+                  width: 106px
+                  background: rgb(63, 63, 63)
+                  padding: 8px
+                  color: white
+                  margin: 4px
+                  font-size: 11px
+                  &:hover
+                    background: $minty-green
+
+              div
+
+                &.existingNameAndNumberHolder
+                  display: block
+
+                  span
+                    display: block
+
+                    label
+                      display: inline-block
+                      background: rgba(0, 0, 0, 0.13)
+                      width: 139px
+                      padding: 6px
+                      margin: 8px 4px 0px 4px
+                      font-size: 12px
+                      height: 16px
+                      vertical-align: top
+                    em
+                      @extend .basic-button
+                      @extend .light-font
+                      display: inline-block
+                      background: $cancel-red
+                      color: white
+                      padding: 6px
+                      margin: 8px 4px 0px 4px
+                      font-size: 12px
+                      height: 16px
+                      vertical-align: top
+                      width: 14px
+                      text-align: center
+                      &:hover
+                        background: #333
+                        color: $cancel-red
+
+
+                &.nameNumberCreator
+                  display: inline-block
+                  input
+                    @extend .basic-button
+                    @extend .light-font
+                    display: inline-block
+                    margin: 4px
+                    padding: 8px
+                    background: rgba(255, 255, 255, 0.64)
 
             &.advancedSettingsHolder
               display: block
@@ -535,12 +615,10 @@
                 margin-left: 16px
 
               h3
-                padding: 4px
-                margin: 4px
-                display: inline-block
-                text-transform: uppercase
-                font-size: 11px
-                color: #A19C9C
+                padding: 0
+                margin: 0
+                margin-bottom: 4px
+
               input
                 &.designImagesFilePicker::before
                   @extend .basic-button

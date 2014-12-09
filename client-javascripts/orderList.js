@@ -35,6 +35,9 @@ duckburg.orderList = {
     sortParam = sortParam || duckburg.utils.defaultSortParam;
     sortDirection = sortDirection || duckburg.utils.defaultSortDirection;
 
+    // TODO can set a cookie here so that users can edit their own defaults
+    //      need feedback from the crew before I do that.
+
     // Loading message for orders.
     $('.orderList')
       .html('')

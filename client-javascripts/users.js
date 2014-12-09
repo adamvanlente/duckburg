@@ -112,7 +112,13 @@ duckburg.users = {
          .attr('id', 'newUserEmailAddress')
          .attr('placeholder', 'email address'))
 
-       // Append an input where the email address can be entered.
+       // Pay rate for the employee.
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('id', 'newUserPayRate')
+         .attr('placeholder', 'pay rate'))
+
+       // Append an input where the password can be entered.
        .append($('<input>')
          .attr('type', 'password')
          .attr('id', 'newUserPassword')
@@ -146,15 +152,18 @@ duckburg.users = {
     * @param username String desired username
     * @param email String email address
     * @param pass String password
+    * @param role String role of user.
+    * @param payRate the hourly rate for the employee
     *
     */
-   addNewUser: function(username, email, pass, role) {
+   addNewUser: function(username, email, pass, role, payRate) {
 
      // Get params from form if they are not passed as args.
      username = username || $('#newUserUsername').val();
      email = email || $('#newUserEmailAddress').val();
      pass = pass || $('#newUserPassword').val();
      role = role || $('#newUserIsAdmin').prop('checked');
+     payRate = payRate || $('#newUserPayRate').val();
 
      // If role passed is not a string, it is a boolean from a checkbox.  If
      // true, user is an admin.  If not, they are standard user.
@@ -168,6 +177,7 @@ duckburg.users = {
      user.set("password", pass);
      user.set("email", email);
      user.set("role", role);
+     user.set("pay_rate", payRate);
 
      // Make the request to parse.
      user.signUp(null, {

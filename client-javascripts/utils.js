@@ -24,6 +24,9 @@ duckburg.utils = {
   /** Interval to wait while attempting to save an order. **/
   orderSaveInterval: 1000,
 
+  /** Interal for messages dissapearing. **/
+  messageTimeout: 1800,
+
   /** Globals for sorting orders **/
   defaultSortStatuses: ['open', 'approved', 'ordered'],
   defaultSortParam: 'due_date',
@@ -151,7 +154,7 @@ duckburg.utils = {
 
     // Keep unauthorized users out of admin areas.
     var adminOnlyRoutes = [
-      '/users'
+      '/users', '/finances'
     ];
 
     // Send (non admin) user back to the hompage if they're trying to acccess
@@ -171,6 +174,10 @@ duckburg.utils = {
 
       // Load the daily order sheet.
       duckburg.dos.load();
+
+    } else if (route == '/finances') {
+
+      duckburg.finances.load();
 
     } else if (route == '/printing') {
 
@@ -375,7 +382,7 @@ duckburg.utils = {
         className = className.replace('visible', 'invisible');
         $('.messageHolder')
           .attr('class', className);
-      }, 3000);
+      }, duckburg.utils.messageTimeout);
    },
 
    /**
@@ -1305,12 +1312,68 @@ duckburg.utils = {
     addDaysToDate: function(date, days) {
       date = date || new Date();
       return new Date(date.getTime() + days*24*60*60*1000);
+    },
+
+    /** Return array of cookies. **/
+    getCookies: function() {
+      var cookie = String(document.cookie);
+      console.log(cookie);
+      return cookie.split(';');
+    },
+
+    /** Check if cookies have a property. **/
+    cookieHasProp: function(propToMatch) {
+      var cookie = String(document.cookie);
+      var cookies = cookie.split(';');
+      var cookieObj = {};
+      for (var i = 0; i < cookies.length; i++) {
+        var prop = cookies[i].split('=')[0];
+        prop = prop.replace(/ /g, '');
+        if (prop == propToMatch) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    /** Get a cookie's value. **/
+    getOneCookie: function(propToMatch) {
+      var cookie = String(document.cookie);
+      var cookies = cookie.split(';');
+      var cookieObj = {};
+      for (var i = 0; i < cookies.length; i++) {
+        var prop = cookies[i].split('=')[0];
+        prop = prop.replace(/ /g, '');
+        if (prop == propToMatch) {
+          if (cookies[i].split('=')[1]) {
+            var val = cookies[i].split('=')[1];
+            return val;
+          }
+        }
+      }
+      return false;
+    },
+
+    /** Set a cookie value. **/
+    setCookie: function(prop, value) {
+      var newCookie = String(prop) + '=' + String(value);
+      document.cookie = newCookie + ';';
     }
+
+
 };
 
-// Key listener for a shortcut to home.
+// Shortcut key listeners.
 $('body').keypress(function(e) {
+
+  // Shortcut to home page.
   if (e.ctrlKey && e.charCode == 8) {
     window.location.href = '/';
   }
+
+  // Shortcut to printing page.
+  if (e.ctrlKey && e.charCode == 16) {
+    window.location.href = '/printing';
+  }
+
 });

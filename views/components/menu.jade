@@ -7,10 +7,12 @@ div.menu.invisible
     | orders
   a.menuPrintingButton.standardMenuItem(href="/printing")
     | printing
-  a.menuUsersButton.adminOnlyMenuItem(href="/dos")
+  a.menuUsersButton.standardMenuItem(href="/dos")
     | daily order sheet
   a.menuObjectsButton.standardMenuItem(href="/objects")
     | objects
+  a.menuUsersButton.adminOnlyMenuItem(href="/finances")
+    | finances
   a.menuUsersButton.adminOnlyMenuItem(href="/users")
     | users
 

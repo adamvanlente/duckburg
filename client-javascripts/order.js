@@ -233,6 +233,14 @@ duckburg.order = {
       duckburg.order.fetchAndPlaceExistingDesigns(design.design_id, index);
     }
 
+    // Fill in names and numbers.
+    var namesAndNumbers = design.names_and_numbers || '[]';
+    namesAndNumbers = JSON.parse(namesAndNumbers);
+    for (var i = 0; i < namesAndNumbers.length; i++) {
+      var nnObj = namesAndNumbers[i];
+      duckburg.order.addNewNameAndNumber(nnObj, index);
+    }
+
     // Now, collect the design info once more.
     duckburg.order.collectDesignDetails();
   },
@@ -1352,6 +1360,9 @@ duckburg.order = {
     // Add the image fields (design)/
     duckburg.order.addDesignImageHolderToDesignForm(newForm);
 
+    // Add names & numbers area to design form.
+    duckburg.order.addNamesAndNumbersHolderToForm(newForm);
+
     // Add a description area to the form.
     duckburg.order.addDescriptionBlockToDesignForm(newForm);
 
@@ -1416,6 +1427,133 @@ duckburg.order = {
          }));
    },
 
+   /**
+    * Add a holder for adding names and numbers.
+    * @function that creates an area for adding names and numbers to the design.
+    * @param form Object form to add the holder to.
+    *
+    */
+   addNamesAndNumbersHolderToForm: function(form) {
+
+     // Get current number of designs.
+     var numDesigns = $('.designFormWithinOrder').length;
+
+     // Append holder to form.
+     form
+       .append($('<div>')
+         .attr('class', 'namesAndNumbersHolder')
+         .attr('id', 'namesAndNumbersHolder_' + numDesigns)
+
+         // Heading
+         .append($('<h3>')
+           .html('Names and Numbers'))
+
+         // Append a holder to create new names/numbers.
+         .append($('<div>')
+           .attr('class', 'nameNumberCreator')
+           .attr('id', numDesigns)
+
+           // Name
+           .append($('<input>')
+             .attr('id', 'item_custom_name')
+             .attr('placeholder', 'name for item'))
+
+           // Number
+           .append($('<input>')
+             .attr('id', 'item_custom_number')
+             .attr('placeholder', 'number for item'))
+
+           // Size
+           .append($('<input>')
+             .attr('id', 'item_custom_size')
+             .attr('placeholder', 'size of item (eg S, M, etc)'))
+
+           // Note
+           .append($('<input>')
+             .attr('id', 'item_custom_notes')
+             .attr('placeholder', '(optional) note')))
+
+        // Submit new name button
+        .append($('<label>')
+          .attr('class', 'addNewNameNumButton')
+          .attr('id', numDesigns)
+          .html('add name/num')
+          .click(function(e) {
+
+            // Get previous element, which holds all the name/num params.
+            var prev = $(e.currentTarget).prev();
+            var params = prev.children();
+
+            // Get id of design.
+            var id = e.currentTarget.id;
+
+            // Start a new object for the name/num;
+            var customNameAndNumberObj = {};
+
+            // Create an item for each param.
+            for (var i = 0; i < params.length; i++) {
+              var param = params[i];
+              customNameAndNumberObj[param.id] = param.value;
+            }
+
+            // Create the new name/num or give error message.
+            if (customNameAndNumberObj.item_custom_size) {
+
+                for (var i = 0; i < params.length; i++) {
+                  params[i].value = '';
+                }
+
+                duckburg.order.addNewNameAndNumber(customNameAndNumberObj, id);
+                duckburg.order.collectDesignDetails();
+            } else {
+              var msg = 'Size is required.';
+              duckburg.utils.errorMessage(msg);
+            }
+        }))
+
+        // Holder for existing names & numbers
+        .append($('<div>')
+          .attr('class', 'existingNameAndNumberHolder')
+          .attr('id', 'existingNameAndNumberHolder_' + numDesigns)
+        )
+
+      );
+   },
+
+   /**
+    * Add a new name/number to a design.
+    * @function adds a new name/number to a design
+    * @param obj Object item containing name/num info
+    * @param index Int index of design that name/num belongs to.
+    *
+    */
+   addNewNameAndNumber: function(obj, index) {
+
+     // Get Name/Num holder and append new item.
+     $('#existingNameAndNumberHolder_' + index)
+       .append($('<span>')
+         .attr('class', 'nameForDesign_' + index)
+         .append($('<label>')
+           .attr('id', 'item_custom_name')
+           .html(obj.item_custom_name))
+         .append($('<label>')
+           .attr('id', 'item_custom_number')
+           .html(obj.item_custom_number))
+         .append($('<label>')
+           .attr('id', 'item_custom_size')
+           .html(obj.item_custom_size))
+         .append($('<label>')
+           .attr('id', 'item_custom_notes')
+           .html(obj.item_custom_notes))
+         .append($('<em>')
+           .attr('class', 'removeButton')
+           .html('<i class="fa fa-times"></i>')
+           .click(function(e) {
+             $(e.currentTarget).parent().remove();
+             duckburg.order.collectDesignDetails();
+           })));
+   },
+
   /**
    * Add main detail inputs to a design form.
    * @function when creating a new design form, add the inputs for product
@@ -1445,6 +1583,14 @@ duckburg.order = {
         .attr('class', 'itemTotalPriceInput')
         .attr('name', 'item_total_price_input_' + numDesigns)
         .attr('placeholder', '0.00')
+        .attr('readonly', true))
+      .append($('<label>')
+        .attr('class', 'itemTotalItemsLabel')
+        .html('total items'))
+      .append($('<input>')
+        .attr('class', 'itemTotalItemsInput')
+        .attr('name', 'item_total_items_input_' + numDesigns)
+        .attr('placeholder', '0 items')
         .attr('readonly', true));
 
     // Append a product detail holder.
@@ -1588,7 +1734,7 @@ duckburg.order = {
       .append($('<div>')
         .attr('class', 'designImageSelectorDiv')
         .append($('<h3>')
-          .html('images'))
+          .html('Images'))
 
         // Append an image picker.
         .append($('<input>')
@@ -2236,9 +2382,31 @@ duckburg.order = {
        $(this).attr('name', 'item_total_price_input_' + item);
      });
 
+     // Reset the id of the total price input.
+     $('.itemTotalItemsInput').each(function(item) {
+       $(this).attr('name', 'item_total_items_input_' + item);
+     });
+
      // Reset id of the pricing inputs.
      $('.designProductDetailInputs').each(function(item) {
        $(this).attr('id', item);
+     });
+
+     // Reset id of names/number holders.
+     $('.namesAndNumbersHolder').each(function(item) {
+       $(this).attr('id', 'namesAndNumbersHolder_' + item);
+     });
+
+     // Reset the id of the existing names and numbers holder.
+     $('.existingNameAndNumberHolder').each(function(item) {
+       $(this).attr('id', 'existingNameAndNumberHolder_' + item);
+
+       // Reset all the child spans
+       var spans = $(this).children();
+       for (var i = 0; i < spans.length; i++) {
+         var span = spans[i];
+         span.className = 'nameForDesign_' + item;
+       }
      });
 
      // Reset id of image pickers.
@@ -2504,6 +2672,22 @@ duckburg.order = {
           }
         });
 
+        // Get names and numbers
+        var nameNums = [];
+        $('.nameForDesign_' + i).each(function() {
+          var params = $(this).children();
+          var nameNumItem = {};
+          for (var param = 0; param < params.length; param++) {
+            if (params[param].className != 'removeButton') {
+              nameNumItem[params[param].id] = params[param].innerHTML;
+            }
+          }
+          nameNums.push(nameNumItem);
+        });
+
+        // Set the names and numbers.
+        item.names_and_numbers = JSON.stringify(nameNums);
+
         // Remember the design id.
         item.design_id = $('#imagesWithinImageHolder_' + i).attr('name');
 
@@ -2597,7 +2781,12 @@ duckburg.order = {
         // Set the total price in the ui and on the object.
         item.total_cost = totalCost;
         orderTotal = (parseFloat(orderTotal) + parseFloat(totalCost)).toFixed(2);
-        $('[name="item_total_price_input_' + i + '"]').val('$' + item.total_cost);
+        $('[name="item_total_price_input_' + i + '"]')
+            .val('$' + item.total_cost);
+
+        // Set the total items
+        $('[name="item_total_items_input_' + i + '"]')
+            .val(item.total_items + ' items');
 
         // Push the item into the list of items.
         items.push(item);

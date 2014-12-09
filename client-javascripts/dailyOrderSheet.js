@@ -47,6 +47,12 @@ duckburg.dos = {
         // Add two divs to the main holder.
         $('.dailyOrderSheet')
           .append($('<div>')
+            .attr('class', 'addExpenseButton')
+            .html('add expense')
+            .click(function() {
+              duckburg.finances.addDialog('expense');
+            }))
+          .append($('<div>')
             .attr('class', 'orderIssues'))
           .append($('<div>')
             .attr('class', 'orderInfo'));

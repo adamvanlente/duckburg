@@ -7,26 +7,27 @@ Features to document
 - payments
 - invoices
 - mastersearch
-- print calendar
+- print calendar (differences in modes)
 - daily order sheet
 - objects concept / creating & updating objects
+- names/numbers
 
 admin features
 - user management
 
+
 in development features
-- dashboard
-- names/numbers
 - social orders
 - partnership orders
 - customer feedback emails
 - customer feedback forms
 - salespeople dashboard
 - salespeople option on orders
+- submitted orders
 
 in dev admin features
+- dashboard
 - money management
 - tax figures
 - sales reports
-- submitted orders
 - job applications

@@ -1,0 +1,109 @@
+.financeMenu
+  @extend .light-font
+  display: block
+  min-width: 50px
+  margin: 0 auto
+  margin-top: 100px
+  max-width: 117px
+  border: 1px solid
+  color: #333
+  border-radius: 1px
+
+  span
+    @extend .basic-button
+    &.ledgerItem
+      border-radius: 0px
+      font-size: 12px
+      display: inline-block
+      width: 100%
+      text-align: center
+      padding: 4px 0
+    &.active
+      background: #5E5B5B
+      color: white
+    &.inactive
+      background: none
+      color: #333
+
+.finances
+  width: 800px
+  margin: 0 auto
+  margin-top: 24px
+
+  div
+    @extend .light-font
+    &.ledgerMainButtons
+      display: block
+      text-align: right
+      border-bottom: 1px solid #DCDCDC
+      label
+        &.addIncomeButton,
+        &.addExpenseButton,
+        &.addPayrollButton
+          @extend .basic-button
+          display: inline-block
+          margin: 8px
+          font-size: 12px
+          color: white
+          padding: 4px 12px
+          width: 80px
+          text-align: center
+
+        &.addIncomeButton
+          background: $minty-green
+        &.addExpenseButton
+          background: $cancel-red
+        &.addPayrollButton
+          background: rgb(234, 172, 58)
+        &:hover
+          background: #333
+
+    &.ledgerBankBalance
+
+    &.ledgerSummaryArea
+
+
+.financeAddDialog
+  display: block
+  position: fixed
+  top: 100px
+  left: 30%
+  right: 30%
+  padding: 8px
+  background: white
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1)
+  border: 1px solid #BDB8B8
+  text-align: center
+
+  div
+    &.financeForm
+      display: block
+
+      input
+        @extend .basic-button
+        @extend .light-font
+        font-size: 13px
+        display: block
+        padding: 8px
+        background: rgba(0, 0, 0, 0.04)
+        width: 80%
+        margin: 7px auto
+        text-align: left
+
+  label
+    @extend .basic-button
+    @extend .light-font
+    &.financeItemFormSubmit,
+    &.financeItemFormCancel
+      display: inline-block
+      font-size: 12px
+      margin: 8px
+      padding: 6px 12px
+      color: white
+
+    &.financeItemFormSubmit
+      background: $minty-green
+    &.financeItemFormCancel
+      background: $cancel-red
+    &:hover
+      background: #333
