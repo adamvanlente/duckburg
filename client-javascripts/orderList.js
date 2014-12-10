@@ -494,24 +494,24 @@ duckburg.orderList = {
    *
    */
   setNewOrderStatus: function(id, status) {
-    // Order status details.
-    var bgColor = duckburg.utils.orderStatusMap[status];
-
-    // Update order status in the div.
-    $('#order_status_' + id)
-      .html(status)
-      .css({'background': bgColor});
-
-    // Remove any other selectors
-    $('.orderListStatusSelector').each(function() {
-      $(this).remove();
-    });
 
     // Get the order in question and update its status in the database.
     duckburg.orderList.viewingOrders[id].set('order_status', status);
     duckburg.orderList.viewingOrders[id].save()
       .then(function(response) {
-        // do nothing
+
+        // Order status details.
+        var bgColor = duckburg.utils.orderStatusMap[status];
+
+        // Update order status in the div.
+        $('#order_status_' + id)
+        .html(status)
+        .css({'background': bgColor});
+
+        // Remove any other selectors
+        $('.orderListStatusSelector').each(function() {
+          $(this).remove();
+        });
       },
 
       function(error) {

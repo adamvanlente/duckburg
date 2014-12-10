@@ -160,6 +160,8 @@ duckburg.utils = {
     }
     $('#current_user')
       .html('')
+
+      // Label for user's name.
       .append($('<label>')
         .html(userName)
         .attr('id', u.id)
@@ -167,18 +169,22 @@ duckburg.utils = {
           var id = e.currentTarget.id;
           duckburg.utils.showEmployeeHoursWorkedPopup(id);
         }))
-      .append($('<i>')
-        .attr('class', 'fa fa-times-circle')
-        .click(function() {
-          duckburg.utils.logout();
-        }))
+
+      // Button for punching in/out.
       .append($('<button>')
         .html(timeClockContent)
         .attr('class', 'timeClockButton ' + timeClockClass)
         .click(function() {
           duckburg.utils.showTimePuncher();
-        })
-     );
+        }))
+
+      // Logout button.
+      .append($('<em>')
+        .attr('class', 'logoutButton')
+        .html('logout')
+        .click(function() {
+          duckburg.utils.logout();
+        }));
   },
 
   /**
@@ -1338,12 +1344,15 @@ duckburg.utils = {
       // Show the popup.
       duckburg.utils.showPopup();
 
+      // Get order attributes.
       var u = duckburg.curUser.attributes;
 
+      // Initialize a status, button class and content for button.
       var status;
       var buttonClass;
       var buttonContent;
 
+      // Set the above vars depending on whether user is punching in/out.
       if (u.current_timeclock_status && u.current_timeclock_status == 'in') {
         status = 'out';
         buttonClass = 'punchOut';
@@ -1365,16 +1374,20 @@ duckburg.utils = {
           .attr('class', buttonClass)
           .attr('name', status)
           .html('go')
-          .click(function(e) {
 
-              // Create a time punch.
+          // Create a time punch when user clicks button.
+          .click(function(e) {
               duckburg.utils.createTimePunch(status);
           }))
          .append($('<label>')
            .html('cancel')
+
+           // Hide the timeclock
            .click(function() {
              duckburg.utils.hidePopup();
            }));
+
+        // Load the last punch and show the user when they last punched in/out.
         duckburg.utils.showLastPunch(function(results) {
           if (results[0] && results[0].createdAt) {
             var time = results[0].createdAt;
@@ -1389,19 +1402,21 @@ duckburg.utils = {
     /**
      * Create a time punch
      * @function that punches a user in/out.
-     * @status String status to update to (in/out)
+     * @param status String status to update to (in/out)
      *
      */
     createTimePunch: function(status) {
 
+      // Set the Parse user object's status.
       duckburg.curUser.set('current_timeclock_status', status);
       duckburg.curUser.save();
 
-      // Get the required params.
+      // Get name and time (right now).
       var u = duckburg.curUser;
       var name = u.attributes.username;
       var time = new Date();
 
+      // Create an object to send to parse and create a new time punch item.
       var tcObj = {
         status: status,
         name: name,
@@ -1409,21 +1424,36 @@ duckburg.utils = {
         time: time
       };
 
+      // If user is punching in, we simply want to create a new time punch that
+      // lets us know when they punched in.
       if (status == 'in') {
         duckburg.requests.createNewObject('dbTimePunch', tcObj,
             function(result) {
+
+              // Successfully punched in.  Close timeclock and update status.
               duckburg.utils.hidePopup();
               duckburg.utils.setUserAndTimeclockStatus();
             });
       } else {
+
+        // If user is punching out, there is a different flow.  We need to
+        // punch them out, and create a new 'work session'.  This is an piece
+        // of data that represents two corresponding in/out time punches, and
+        // represents a set of minutes/hours worked by someone.  This leverages
+        // timePunch class and allows us to easily calculate payroll, as well
+        // as show the user their hours worked.
         duckburg.utils.showLastPunch(function(results) {
 
+          // If there are results (eg, if there is a previous punch in).  There
+          // should be expect for the first time a user punches in.
           if (results[0] && results[0].createdAt) {
 
+            // Get last punch in and determine how long ago it was in minutes.
             var lastPunch = results[0].createdAt;
             var diff = time - lastPunch;
             var mins = Math.floor(diff / 1000 / 60);
 
+            // Create a work date object to send to parse.
             var workDayObj = {
               employee: name,
               employee_id: u.id,
@@ -1432,11 +1462,17 @@ duckburg.utils = {
               punched_out: time
             };
 
+            // Create the new work session object.
             duckburg.requests.createNewObject('dbWorkSession', workDayObj,
               function(result) {
+
+                // Successfully logged work session.  Close time clock and
+                // update status.
                 duckburg.utils.hidePopup();
                 duckburg.utils.setUserAndTimeclockStatus();
               });
+
+            // Update the user's status in the database to 'punched out'.
             duckburg.requests.createNewObject('dbTimePunch', tcObj,
               function(result) {
                 // Punch out.
@@ -1444,10 +1480,6 @@ duckburg.utils = {
            }
         });
       }
-
-      // Close the popup and refresh the timeclock/name area.
-      duckburg.utils.hidePopup();
-      duckburg.utils.setUserAndTimeclockStatus();
     },
 
     /**

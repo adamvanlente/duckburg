@@ -9,11 +9,13 @@ Features to document
 
 - order list
   - order issues warnings
+  - how 'updatedAt affects order (if you update an order it may shift downward)'
 - creating orders
 - payments
 - invoices
 - mastersearch
 - print calendar (differences in modes)
+  - cookie that sets current mode as default.
 - daily order sheet
 - objects concept / creating & updating objects
 - names/numbers
