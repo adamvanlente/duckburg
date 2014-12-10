@@ -131,6 +131,30 @@ duckburg.requests = {
     });
   },
 
+  findLedgerItems: function(type, successCb) {
+
+    // Build a query from the object type.
+    var DbObject = Parse.Object.extend('dbLedgerItem');
+    var query = new Parse.Query(DbObject);
+
+    // Match type.
+    query.matches('type', type);
+
+    // Always sort newest first.
+    query.descending("createdAt");
+
+    // Perform the queries and continue with the help of the callback functions.
+    query.find({
+      success: function(results) {
+        successCb(results);
+      },
+      error: function(error) {
+        var errorMsg = 'Error gettting ledger items: ' + error.message;
+        duckburg.utils.errorMessage(errorMsg);
+      }
+    });
+  },
+
   /**
    * Fetch an order
    * @function fetches an order using our local, readable id.
@@ -296,23 +320,25 @@ duckburg.requests = {
     * @param amount Float amount to pay.
     * @param method String payment method
     * @param user String username of active user
+    * @param orderName String order name
     * @param successCb Object function for success.
     *
     */
-    orderPayment: function(orderId, amount, method, user, successCb) {
+    orderPayment: function(
+        orderId, amount, method, user, orderName, successCb) {
 
-      // Instantiate order log.
-      var DbObject = Parse.Object.extend('dbOrderPayment');
-      newItem = new DbObject();
+      // Order Payment item
+      var DbPaymentObject = Parse.Object.extend('dbOrderPayment');
+      newPayment = new DbPaymentObject();
 
       // Store order id, json and current user.
-      newItem.set('order_id', orderId);
-      newItem.set('amount', amount);
-      newItem.set('method', method);
-      newItem.set('user', user);
+      newPayment.set('order_id', orderId);
+      newPayment.set('amount', amount);
+      newPayment.set('method', method);
+      newPayment.set('user', user);
 
       // Save the dang thing.
-      newItem.save(null, {
+      newPayment.save(null, {
         success: function(result) {
           var msg = 'Payment of $' + amount + ' logged.';
           duckburg.utils.successMessage(msg);
@@ -321,6 +347,28 @@ duckburg.requests = {
         error: function(result, error) {
           var errMsg = 'Error logging payment: ' + error.message;
           duckburg.utils.errorMessage(errMsg);
+        }
+      });
+
+      // New ledger item.
+      var DbLedgerItem = Parse.Object.extend('dbLedgerItem');
+      newLedger = new DbLedgerItem();
+
+      // Ledger props.
+      var date = new Date();
+      newLedger.set('ledger_item_date', date);
+      newLedger.set('amount', amount);
+      newLedger.set('method', method);
+      newLedger.set('name', orderName);
+      newLedger.set('type', 'income');
+
+      // Save the dang thing.
+      newLedger.save(null, {
+        success: function(result) {
+          // Saved ledger item
+        },
+        error: function(result, error) {
+          // didn't save ledger item.
         }
       });
     },

@@ -46,6 +46,14 @@ duckburg.utils = {
     'archived': 'rgba(0, 0, 0, 0.8)'
   },
 
+  /** Month dictionary **/
+  monthDict: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'],
+
+  /** Day dictionary **/
+  dayDict: ['Sunday', 'Monday', 'Tuesday',
+            'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+
   // Standard order sizes.
   standardOrderSizes: {
     'S': 0,
@@ -113,14 +121,8 @@ duckburg.utils = {
         window.location.href = duckburg.utils.homePage;
       }
 
-      // Set username in the UI.
-      var userName = duckburg.curUser.attributes.username;
-      var userContent = userName + '<i class="fa fa-sign-out"></i>';
-      $('#current_user')
-        .html(userContent)
-        .click(function() {
-          duckburg.utils.logout();
-        });
+      // Set user and timeclock status.
+      duckburg.utils.setUserAndTimeclockStatus();
 
       // Load the menu
       duckburg.menu.load();
@@ -134,6 +136,49 @@ duckburg.utils = {
         duckburg.utils.logout();
       }
     }
+  },
+
+  /**
+   * Set the username and timeclock status.
+   * @function that set the current user name and their timeclock status.
+   *
+   */
+  setUserAndTimeclockStatus: function() {
+    // Set username in the UI.
+    var u = duckburg.curUser;
+    var userName = u.attributes.username;
+    var punchedIn = u.attributes.current_timeclock_status;
+
+    var timeClockContent;
+    var timeClockClass;
+    if (punchedIn == 'in') {
+      timeClockContent = '<i class="fa fa-clock-o"></i>';
+      timeClockClass = 'in';
+    } else {
+      timeClockContent = 'your are not punched in';
+      timeClockClass = 'out'
+    }
+    $('#current_user')
+      .html('')
+      .append($('<label>')
+        .html(userName)
+        .attr('id', u.id)
+        .click(function(e) {
+          var id = e.currentTarget.id;
+          duckburg.utils.showEmployeeHoursWorkedPopup(id);
+        }))
+      .append($('<i>')
+        .attr('class', 'fa fa-times-circle')
+        .click(function() {
+          duckburg.utils.logout();
+        }))
+      .append($('<button>')
+        .html(timeClockContent)
+        .attr('class', 'timeClockButton ' + timeClockClass)
+        .click(function() {
+          duckburg.utils.showTimePuncher();
+        })
+     );
   },
 
   /**
@@ -256,6 +301,13 @@ duckburg.utils = {
    *
    */
   logout: function() {
+
+    if (duckburg.curUser.attributes.current_timeclock_status == 'in') {
+      var msg = 'Please punch out before logging out.';
+      duckburg.utils.errorMessage(msg);
+      return;
+    }
+
     Parse.User.logOut();
     window.location.href = duckburg.utils.loginPage;
   },
@@ -1106,7 +1158,7 @@ duckburg.utils = {
           .append($('<div>')
             .attr('class', 'paymentAmountAndLabel')
             .append($('<label>')
-              .html('make payment'))
+              .html('amount'))
             .append($('<input>')
               .attr('type', 'text')
               .attr('id', 'payment_module_amount')
@@ -1122,7 +1174,7 @@ duckburg.utils = {
             .html('<i class="fa fa-money"></i> cash')
             .click(function() {
               var amt = $('#payment_module_amount').val();
-              duckburg.utils.createOrderPayment(amt, order.id, 'cash');
+              duckburg.utils.createOrderPayment(amt, order, 'cash');
             }))
 
           .append($('<label>')
@@ -1130,7 +1182,7 @@ duckburg.utils = {
             .html('<i class="fa fa-credit-card"></i> card')
             .click(function() {
               var amt = $('#payment_module_amount').val();
-              duckburg.utils.createOrderPayment(amt, order.id, 'card');
+              duckburg.utils.createOrderPayment(amt, order, 'card');
             }))
 
           .append($('<label>')
@@ -1138,7 +1190,7 @@ duckburg.utils = {
             .html('<i class="fa fa-check-circle"></i> check')
             .click(function() {
               var amt = $('#payment_module_amount').val();
-              duckburg.utils.createOrderPayment(amt, order.id, 'check');
+              duckburg.utils.createOrderPayment(amt, order, 'check');
             }))
 
           .append($('<label>')
@@ -1146,7 +1198,7 @@ duckburg.utils = {
             .html('refund')
             .click(function() {
               var amt = $('#payment_module_amount').val();
-              duckburg.utils.createOrderPayment(amt, order.id, 'refund');
+              duckburg.utils.createOrderPayment(amt, order, 'refund');
             }))
 
           // Cancel button.
@@ -1213,17 +1265,17 @@ duckburg.utils = {
      * Make an order payment.
      * @function make the request to create a payment entry
      * @param amount Float amount for payment
-     * @param orderId String parse order id
+     * @param order Object parse order object
      * @param method String method payment
      *
      */
-    createOrderPayment: function(amount, orderId, method) {
+    createOrderPayment: function(amount, order, method) {
 
       // Get current user.
       var user = duckburg.curUser.attributes.username;
-
+      var name = order.attributes.order_name;
       if (amount && amount != '') {
-        duckburg.requests.orderPayment(orderId, amount, method, user,
+        duckburg.requests.orderPayment(order.id, amount, method, user, name,
           function() {
 
             // Hide the popup.
@@ -1233,7 +1285,7 @@ duckburg.utils = {
             if (window.location.pathname.search('/order') != -1) {
               duckburg.order.getAllPayments();
             } else {
-              duckburg.orderList.updateOrderTotals(orderId, amount);
+              duckburg.orderList.updateOrderTotals(order.id, amount);
             }
          });
       } else {
@@ -1277,13 +1329,303 @@ duckburg.utils = {
     },
 
     /**
+     * Launches the time clock puncher.
+     * @function that shows a screen for users to login by.
+     *
+     */
+    showTimePuncher: function() {
+
+      // Show the popup.
+      duckburg.utils.showPopup();
+
+      var u = duckburg.curUser.attributes;
+
+      var status;
+      var buttonClass;
+      var buttonContent;
+
+      if (u.current_timeclock_status && u.current_timeclock_status == 'in') {
+        status = 'out';
+        buttonClass = 'punchOut';
+        buttonContent = 'punch out';
+      } else {
+        status = 'in';
+        buttonClass = 'punchIn';
+        buttonContent = 'punch in';
+      }
+
+      // Set up time puncher.
+      $('#popupContent')
+        .attr('class', 'timeclockPopup')
+        .append($('<h1>')
+          .html(buttonContent))
+        .append($('<em>')
+          .attr('class', 'timeClockLastPunch'))
+        .append($('<button>')
+          .attr('class', buttonClass)
+          .attr('name', status)
+          .html('go')
+          .click(function(e) {
+
+              // Create a time punch.
+              duckburg.utils.createTimePunch(status);
+          }))
+         .append($('<label>')
+           .html('cancel')
+           .click(function() {
+             duckburg.utils.hidePopup();
+           }));
+        duckburg.utils.showLastPunch(function(results) {
+          if (results[0] && results[0].createdAt) {
+            var time = results[0].createdAt;
+            var msg = results[0].attributes.status == 'in' ?
+              'Last punched in ' + String(time).split('GMT')[0] :
+              'Last punched out ' + String(time).split('GMT')[0];
+            $('.timeClockLastPunch').html(msg);
+          }
+        });
+    },
+
+    /**
+     * Create a time punch
+     * @function that punches a user in/out.
+     * @status String status to update to (in/out)
+     *
+     */
+    createTimePunch: function(status) {
+
+      duckburg.curUser.set('current_timeclock_status', status);
+      duckburg.curUser.save();
+
+      // Get the required params.
+      var u = duckburg.curUser;
+      var name = u.attributes.username;
+      var time = new Date();
+
+      var tcObj = {
+        status: status,
+        name: name,
+        user_id: u.id,
+        time: time
+      };
+
+      if (status == 'in') {
+        duckburg.requests.createNewObject('dbTimePunch', tcObj,
+            function(result) {
+              duckburg.utils.hidePopup();
+              duckburg.utils.setUserAndTimeclockStatus();
+            });
+      } else {
+        duckburg.utils.showLastPunch(function(results) {
+
+          if (results[0] && results[0].createdAt) {
+
+            var lastPunch = results[0].createdAt;
+            var diff = time - lastPunch;
+            var mins = Math.floor(diff / 1000 / 60);
+
+            var workDayObj = {
+              employee: name,
+              employee_id: u.id,
+              minutes: mins,
+              punched_in: lastPunch,
+              punched_out: time
+            };
+
+            duckburg.requests.createNewObject('dbWorkSession', workDayObj,
+              function(result) {
+                duckburg.utils.hidePopup();
+                duckburg.utils.setUserAndTimeclockStatus();
+              });
+            duckburg.requests.createNewObject('dbTimePunch', tcObj,
+              function(result) {
+                // Punch out.
+              });
+           }
+        });
+      }
+
+      // Close the popup and refresh the timeclock/name area.
+      duckburg.utils.hidePopup();
+      duckburg.utils.setUserAndTimeclockStatus();
+    },
+
+    /**
+     * Show an employee their hours.
+     * @function that loads a popup and populates it with an employees hours.
+     * @param id String parse id of user.
+     *
+     */
+    showEmployeeHoursWorkedPopup: function(id) {
+
+      // Setup the holder for recent hours worked.
+      duckburg.utils.setupEmployeeHoursPopup();
+
+      // Get the current pay week's dates.
+      var lastSunday = new Date();
+      lastSunday.setDate(lastSunday.getDate() - (lastSunday.getDay() + 7));
+
+      var lastWeeksDates = {};
+      var currentWeeksDates = {};
+      var lastWeeksTotalHours = 0;
+      var currentWeeksTotalHours = 0;
+      for (var i = 0; i < 14; i++) {
+        var date = duckburg.utils.formatDate(lastSunday);
+        if (i < 7) {
+          lastWeeksDates[date] = true;
+        } else {
+          currentWeeksDates[date] = true;
+        }
+        lastSunday.setDate(lastSunday.getDate() + 1);
+      }
+
+      // Get work sessions.
+      var WS = Parse.Object.extend('dbWorkSession');
+      var query = new Parse.Query(WS);
+
+      // Refine based on employee id.
+      query.equalTo('employee_id', id);
+      query.descending("createdAt");
+
+      query.find({
+        success: function(workSessions) {
+
+          // No results message.
+          if (!workSessions || workSessions.length == 0) {
+            $('.loadingMessage').html('no hours found');
+            return;
+          } else {
+            $('.employeeHoursWorkedDetail').html('');
+          }
+
+          // Get all the times the employee has successfully punched in/out.
+          for (var i = 0; i < workSessions.length; i++) {
+            var item = workSessions[i];
+            var att = item.attributes;
+            var hrs = duckburg.utils.minsToPayrollHours(att.minutes);
+
+            // Get in/out timestamps.
+            var punchedOut = item.createdAt;
+            var punchedIn = att.punched_in;
+
+            var formattedPunchedIn = duckburg.utils.formatDate(punchedIn);
+            if (lastWeeksDates[formattedPunchedIn]) {
+              lastWeeksTotalHours += parseFloat(hrs);
+            }
+
+            if (currentWeeksDates[formattedPunchedIn]) {
+              currentWeeksTotalHours += parseFloat(hrs);
+            }
+
+            // Get in/out day strings.
+            var punchedOutDay =
+                String(punchedOut).split(String(punchedOut.getFullYear()))[0] +
+                punchedOut.getFullYear();
+            var punchedInDay =
+                String(punchedIn).split(String(punchedIn.getFullYear()))[0] +
+                punchedIn.getFullYear();
+
+            // Get the readable time for punch in/out.
+            var punchedInTime =
+                duckburg.utils.redableTimeFromTimestamp(punchedIn);
+            var punchedOutTime =
+                duckburg.utils.redableTimeFromTimestamp(punchedOut);
+
+            $('.employeeHoursWorkedDetail')
+              .append($('<span>')
+                .attr('class', 'itemEntry')
+
+                .append($('<label>')
+                  .attr('class', 'piDateLeft')
+                  .html('punched in'))
+                .append($('<label>')
+                  .attr('class', 'piDateRight')
+                  .html(punchedInDay + ' ' + punchedInTime))
+
+                .append($('<label>')
+                  .attr('class', 'poDateLeft')
+                  .html('punched in'))
+                .append($('<label>')
+                  .attr('class', 'poDateRight')
+                  .html(punchedOutDay + ' ' + punchedOutTime))
+
+                .append($('<label>')
+                  .attr('class', 'minsLeft')
+                  .html('minutes'))
+                .append($('<label>')
+                  .attr('class', 'minsRight')
+                  .html(att.minutes))
+
+                .append($('<label>')
+                  .attr('class', 'hrsLeft')
+                  .html('hours'))
+                .append($('<label>')
+                  .attr('class', 'hrsRight')
+                  .html(hrs))
+            );
+          }
+
+          // Append week's totals
+          $('.employeeHoursPayPeriod')
+            .append($('<label>')
+              .html('Last week\'s hours'))
+            .append($('<em>')
+              .html(lastWeeksTotalHours.toFixed(2)))
+            .append($('<label>')
+              .html('Current week\'s hours'))
+            .append($('<em>')
+              .html(currentWeeksTotalHours.toFixed(2)));
+        },
+        error: function(error) {
+          duckburg.utils.errorMessage(error.message);
+        }
+      });
+    },
+
+    // Setup the holder for the employee hours.
+    setupEmployeeHoursPopup: function() {
+
+      // Show the popup.
+      duckburg.utils.showPopup();
+      $('#popupContent')
+        .attr('class', 'employeeHoursWorked')
+          .append($('<em>')
+            .attr('class', 'closeButton')
+            .html('<i class="fa fa-times"></i>')
+            .click(function() {
+              duckburg.utils.hidePopup();
+            }))
+          .append($('<h1>')
+            .html('your hours'))
+          .append($('<div>')
+            .attr('class', 'employeeHoursPayPeriod'))
+          .append($('<div>')
+            .attr('class', 'employeeHoursWorkedDetail')
+            .append($('<span>')
+              .attr('class', 'loadingMessage')
+              .html('loading your hours')));
+    },
+
+    /**
      * Calculate how long it will take to print an order.
      * @function get print time for an order.
      * @param items Int number of items in an order.
+     * TODO make this actually work
      *
      */
     calculateOrderTime: function(items) {
       return (parseInt(items) / 60).toFixed(2);
+    },
+
+    /** Turn a timestamp into a digital time anyone can read **/
+    redableTimeFromTimestamp: function(ts) {
+      var hrs = ts.getHours();
+      var timeSuffix = hrs >= 12 ? 'PM' : 'AM';
+      hrs = hrs > 12 ? hrs - 12 : hrs;
+      var mins = ts.getMinutes();
+      mins = '0' + mins;
+      mins = mins.slice(mins.length - 2)
+      return hrs + ':' + mins + ' ' + timeSuffix;
     },
 
     /**
@@ -1317,7 +1659,6 @@ duckburg.utils = {
     /** Return array of cookies. **/
     getCookies: function() {
       var cookie = String(document.cookie);
-      console.log(cookie);
       return cookie.split(';');
     },
 
@@ -1358,9 +1699,56 @@ duckburg.utils = {
     setCookie: function(prop, value) {
       var newCookie = String(prop) + '=' + String(value);
       document.cookie = newCookie + ';';
+    },
+
+    /** Show previous time clock punch **/
+    showLastPunch: function(successCb) {
+      // Build a query from the object type.
+      var DbObject = Parse.Object.extend('dbTimePunch');
+      var query = new Parse.Query(DbObject);
+
+      // Match type.
+      query.matches('user_id', duckburg.curUser.id);
+
+      // Always sort newest first.
+      query.descending("createdAt");
+      query.limit(1);
+
+      // Perform the queries and continue with the help of the callback functions.
+      query.find({
+        success: function(results) {
+          successCb(results);
+        },
+        error: function(error) {
+          var errorMsg = 'Error getting timepunches: ' + error.message;
+          duckburg.utils.errorMessage(errorMsg);
+        }
+      });
+    },
+
+    /** Convert minutes (ex 90) to payroll hours (ex 1.5) **/
+    minsToPayrollHours: function(hrs) {
+      var totalHours = parseInt(hrs / 60);
+      var mins = hrs % 60;
+      mins = parseFloat(mins) / 60;
+      return (parseFloat(totalHours) + parseFloat(mins)).toFixed(2);
+    },
+
+    /** Sort a dictionary by param **/
+    sortDict: function(array, param) {
+
+      // Sort the array based on a parameter contained within its
+      // items.
+      return array.sort(function(a,b) {
+        if (a[param] < b[param]) {
+          return -1;
+        }
+        if (a[param] > b[param]) {
+          return 1;
+        }
+        return 0;
+      });
     }
-
-
 };
 
 // Shortcut key listeners.

@@ -18,6 +18,24 @@
     margin-left: 4px
     color: #999696
 
+#current_user
+  .timeClockButton
+    @extend .basic-button
+    @extend .light-font
+    display: inline-block
+    margin-left: 12px
+    color: white
+    &.in
+      background: $minty-green
+      font-size: 14px
+      padding: 2px 10px 4px 6px
+      border-radius: 6px
+      margin-top: -10px
+    &.out
+      background: $cancel-red
+    i
+      color: white
+
 .current_user
   @extend .light-font
   color: #333
@@ -26,14 +44,17 @@
   margin: 2px 6px
   font-size: 14px
   color: rgb(133, 133, 207)
-  cursor: pointer
-  width: 150px
+  width: 200px
   text-align: right
   +trans($easybreezy)
-  +break-for(iphone)
-    padding: 4px
-  &:hover
-    opacity: 0.5
+  label
+    &:hover
+      cursor: pointer
+      opacity: 0.7
+  i
+    cursor: pointer
+    &:hover
+      opacity: 0.5
 
 .masterSearch
   @extend .basic-button

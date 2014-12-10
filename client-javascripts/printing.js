@@ -11,10 +11,6 @@ duckburg.printing = {
   /** Default view **/
   defaultView: 'day', // will be week, month or day
 
-  /** Month dictionary **/
-  monthDict: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'],
-
   /**
    * Loads the initial page view.
    * @function loads the initial view for the page.
@@ -955,11 +951,11 @@ duckburg.printing = {
       var prettyDate = String(date).split(String(year))[0];
       $('.currentViewingDate').html(prettyDate + year);
     } else if (mode == 'week') {
-      var month = duckburg.printing.monthDict[date.getMonth()];
+      var month = duckburg.utils.monthDict[date.getMonth()];
       var string = 'Week of ' + month + ' ' + date.getDate();
       $('.currentViewingDate').html(string);
     } else if (mode == 'month') {
-      var month = duckburg.printing.monthDict[date.getMonth()];
+      var month = duckburg.utils.monthDict[date.getMonth()];
       var year = String(date.getFullYear()).slice(2);
       $('.currentViewingDate').html('Month of ' + month + ' \'' + year);
     }

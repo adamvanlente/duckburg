@@ -116,7 +116,7 @@ duckburg.users = {
        .append($('<input>')
          .attr('type', 'text')
          .attr('id', 'newUserPayRate')
-         .attr('placeholder', 'pay rate'))
+         .attr('placeholder', 'pay rate - hours (eg 10.00)'))
 
        // Append an input where the password can be entered.
        .append($('<input>')

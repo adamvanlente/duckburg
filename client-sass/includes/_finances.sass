@@ -1,25 +1,25 @@
 .financeMenu
   @extend .light-font
+  width: 250px
   display: block
-  min-width: 50px
-  margin: 0 auto
-  margin-top: 100px
-  max-width: 117px
+  margin: 90px auto 0 auto
+  text-align: center
   border: 1px solid
-  color: #333
-  border-radius: 1px
+  color: #333333
+  border-radius: 3px
+  white-space: nowrap
+  overflow: hidden
 
   span
     @extend .basic-button
     &.ledgerItem
-      border-radius: 0px
-      font-size: 12px
       display: inline-block
-      width: 100%
-      text-align: center
-      padding: 4px 0
+      width: 34%
+      font-size: 12px
+      padding: 6px 0
+      cursor: pointer
     &.active
-      background: #5E5B5B
+      background: $minty-green
       color: white
     &.inactive
       background: none
@@ -29,9 +29,77 @@
   width: 800px
   margin: 0 auto
   margin-top: 24px
+  +break-for(iphone)
+    width: 300px
+
+  button
+    &.launchPayrollButton
+      @extend .light-font
+      @extend .basic-button
+      display: block
+      background: rgb(232, 175, 69)
+      margin: 12px auto
+      color: white
+      padding: 4px 12px
+      &:hover
+        background: #333
+        color: rgb(232, 175, 69)
 
   div
     @extend .light-font
+
+    &.payrollRecapHolder
+      display: block
+      text-align: center
+
+      div
+        &.payrollRecapColumn
+          display: inline-block
+          margin: 4px
+          width: 600px
+          padding-bottom: 12px
+          margin-bottom: 12px
+          background: #F1F1F1
+        h1
+          display: block
+          font-size: 12px
+          padding: 0
+          margin: 0
+          background: $minty-green
+          color: white
+          text-align: center
+          padding: 4px
+        span
+          &.payrollRecapColumnLegend
+            color: #DCDCDC
+          &.payrollRecapColumnItems
+            color: #333
+
+          &.payrollRecapColumnLegend,
+          &.payrollRecapColumnItems
+            width: 550px
+            margin: 0 auto
+            display: block
+
+            label
+              display: inline-block
+              font-size: 11px
+              text-align: left
+              width: 100px
+              margin: 4px
+              em
+                font-style: normal
+                color: rgb(203, 199, 199)
+            div
+              &.weeksTotal
+                display: block
+                font-size: 11px
+                padding: 4px 8px
+                background: rgba(0, 0, 0, 0.12)
+                margin: 8px
+                text-align: right
+
+
     &.ledgerMainButtons
       display: block
       text-align: right
@@ -48,6 +116,13 @@
           padding: 4px 12px
           width: 80px
           text-align: center
+          +break-for(iphone)
+            width: 66px
+            margin: 2px
+            font-size: 18px
+            height: 55px
+            vertical-align: top
+            margin-bottom: 18px
 
         &.addIncomeButton
           background: $minty-green
@@ -58,15 +133,124 @@
         &:hover
           background: #333
 
-    &.ledgerBankBalance
+    &.ledgerIncome
+      span
+        color: #122F8B
+        font-size: 12px
+    &.ledgerExpenses
+      span
+        color: $cancel-red
+        font-size: 12px
 
-    &.ledgerSummaryArea
+    &.ledgerIncome,
+    &.ledgerExpenses
+      display: inline-block
+      width: 46%
+      vertical-align: top
+      margin: 0 16px
+      h1
+        display: block
+        font-size: 20px
+        color: #C3BDBD
+      div
+        display: block
+        span
+          display: block
+          width: 100%
+          border-bottom: 1px solid gainsboro
+          text-align: right
+          padding: 4px
+          +break-for(iphone)
+            width: 300px
+          label
+            display: inline-block
+            font-size: 9px
+            width: 70px
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+            margin: 2px 6px
+            +break-for(iphone)
+              width: auto
+              font-size: 12px
+          button
+            @extend .light-font
+            @extend .basic-button
+            display: inline-block
+            vertical-align: top
+            background: #e77575
+            color: white
+            text-align: center
+            font-size: 9px
+            &:hover
+              background: #333
+              color: $cancel-red
 
+      em
+        &.loadingMessage
+          color: #333
+        &.noResultsMessage
+          color: #DCDCDC
+
+        &.loadingMessage,
+        &.noResultsMessage
+          display: block
+          font-style: normal
+          width: 95%
+          margin: 0 auto
+          text-align: center
+          padding: 8px
+          font-size: 11px
+          border: 1px solid
+          border-radius: 1px
+
+    &.availableFundsProjections
+      display: block
+
+      span
+        display: block
+        text-align: right
+        font-size: 12px
+        padding: 2px
+        margin: 2px 16px
+        label
+          display: inline-block
+          width: 100px
+          color: #7C7878
+          +break-for(iphone)
+            width: 80px
+
+    &.ledgerBankBalance,
+    &.ledgerSummaryArea,
+    &.ledgerChecksCash
+      display: block
+      text-align: right
+      padding: 8px
+      margin: 4px 0
+      background: #F1F1F1
+      +break-for(iphone)
+        width: 300px
+        margin: 0 auto
+      @extend .light-font
+      label
+        display: inline-block
+        +break-for(iphone)
+          width: 40%
+      input
+        @extend .light-font
+        @extend .basic-button
+        display: inline-block
+        margin: 0 8px
+        font-size: 14px
+        background: none
+        text-align: right
+        +break-for(iphone)
+          width: 40%
 
 .financeAddDialog
   display: block
   position: fixed
-  top: 100px
+  top: 50px
   left: 30%
   right: 30%
   padding: 8px
@@ -74,8 +258,49 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.1)
   border: 1px solid #BDB8B8
   text-align: center
+  max-height: 450px
+  overflow: scroll
+  +break-for(iphone)
+    left: 5%
+    right: 5%
 
   div
+    @extend .light-font
+    &.payrollForm
+      display: block
+
+      span
+        &.payrollFormItem
+          display: block
+          background: #F1F1F1
+          padding: 8px
+          margin: 8px
+          h1
+            display: block
+            text-align: left
+            font-size: 13px
+            text-transform: uppercase
+            width: 80%
+            margin: 0 auto
+          label
+            display: inline-block
+            width: 40%
+            padding: 6px
+            font-size: 10px
+            margin: 2px
+            text-align: right
+            &:hover
+              background: none
+          input
+            @extend .basic-button
+            @extend .light-font
+            display: inline-block
+            width: 40%
+            padding: 6px
+            margin: 2px
+            font-size: 10px
+            text-align: left
+
     &.financeForm
       display: block
 
@@ -107,3 +332,44 @@
       background: $cancel-red
     &:hover
       background: #333
+  button
+    &.submitPayroll
+      background: $minty-green
+    &.cancelPayroll
+      background: $cancel-red
+
+    &.submitPayroll,
+    &.cancelPayroll
+      @extend .basic-button
+      @extend .light-font
+      display: inline-block
+      font-size: 12px
+      margin: 8px
+      padding: 6px 12px
+      color: white
+
+.payrollSubmitLoading
+  @extend .light-font
+  display: none
+  width: 100%
+  padding: 24px
+  position: fixed
+  z-index: 100
+  top: 0
+  left: 0
+  right: 0
+  span
+    color: white
+    display: block
+    padding: 10px
+    background: $minty-green
+    width: 300px
+    margin: 0 auto
+    text-align: center
+    border-radius: 1px
+    box-shadow: 0 1px 10px rgba(0,0,0,0.1)
+    font-size: 18px
+    i
+      display: block
+      padding: 12px
+      font-size: 22px

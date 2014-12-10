@@ -5,11 +5,21 @@ block append content
   include components/menu
   
   div.financeMenu
-    span.ledgerItem(onclick="duckburg.finances.loadLedger()")
+    span.ledgerItem(onclick="duckburg.finances.load('ledger')")
       | ledger
-      
+    span.ledgerItem(onclick="duckburg.finances.load('taxes')")
+      | taxes
+    span.ledgerItem(onclick="duckburg.finances.load('payroll')")
+      | payroll
   
   div.finances
+    
+  div.payrollSubmitLoading
+    span
+      | submitting payroll
+      
+      i.fa.fa-spin.fa-circle-o-notch
+      
 
           
           

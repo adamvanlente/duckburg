@@ -11,9 +11,21 @@ Features to document
 - daily order sheet
 - objects concept / creating & updating objects
 - names/numbers
+- time clock
+- user hours (past timeclock punches)
+- github issues
 
 admin features
 - user management
+- payroll
+- ledger
+  balance
+  available = balance - exp
+  cash & check = aavailable + cash & check
+  projections
+    cards clear in 1 day
+    stripe in 7 days
+    if not cash, check, card or stripe I assume it can be deposited, thus 1 day
 
 
 in development features
@@ -21,13 +33,13 @@ in development features
 - partnership orders
 - customer feedback emails
 - customer feedback forms
+
 - salespeople dashboard
 - salespeople option on orders
 - submitted orders
 
 in dev admin features
 - dashboard
-- money management
-- tax figures
-- sales reports
+- finances
+  - tax figures
 - job applications
