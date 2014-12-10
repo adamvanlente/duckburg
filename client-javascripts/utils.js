@@ -1540,14 +1540,14 @@ duckburg.utils = {
                   .html('punched in'))
                 .append($('<label>')
                   .attr('class', 'piDateRight')
-                  .html(punchedInDay + ' ' + punchedInTime))
+                  .html(punchedInDay + ' @ ' + punchedInTime))
 
                 .append($('<label>')
                   .attr('class', 'poDateLeft')
-                  .html('punched in'))
+                  .html('punched out'))
                 .append($('<label>')
                   .attr('class', 'poDateRight')
-                  .html(punchedOutDay + ' ' + punchedOutTime))
+                  .html(punchedOutDay + ' @ ' + punchedOutTime))
 
                 .append($('<label>')
                   .attr('class', 'minsLeft')

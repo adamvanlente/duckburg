@@ -99,7 +99,8 @@ duckburg.orderList = {
       duckburg.orderList.viewingOrders[order.id] = order;
 
       // Capture id so that calendar can be assigned.
-      ids.push('cal_' + orders[i].id);
+      ids.push('duecal_' + orders[i].id);
+      ids.push('printcal_' + orders[i].id);
 
       // Render order to list.
       duckburg.orderList.renderSingleOrderToList(order, i);
@@ -148,6 +149,9 @@ duckburg.orderList = {
     // Format due date.
     var due_date = duckburg.utils.formatDate(o.due_date);
 
+    // Format print date.
+    var print_date = duckburg.utils.formatDate(o.print_date);
+
     // Get customer details.
     var custName = o.cust_name == '' ? '<em>no customer</em>' : o.cust_name;
     var custPhone = o.cust_phone == '' ? '<em>no phone</em>' : o.cust_phone;
@@ -157,7 +161,6 @@ duckburg.orderList = {
 
     var imgLabel = $('<label>')
       .attr('class', 'imgIconLabel');
-
 
     // Append order details
     $('.orderList')
@@ -175,10 +178,15 @@ duckburg.orderList = {
             .attr('class', 'orderNumberLabel')
             .html(o.readable_id))
 
+          // Due Date label
+          .append($('<label>')
+            .attr('class', 'datePickerLabel')
+            .html('D'))
+
           // Order date
           .append($('<input>')
             .attr('type', 'text')
-            .attr('id', 'cal_' + order.id)
+            .attr('id', 'duecal_' + order.id)
             .attr('name', order.id)
             .attr('class', 'dueDateInput')
             .val(due_date)
@@ -192,8 +200,31 @@ duckburg.orderList = {
               setTimeout(function() {
                 $(document).bind('click', duckburg.orderList.updateDueDate);
               }, 200);
-
             }))
+
+            // Due Date label
+            .append($('<label>')
+              .attr('class', 'datePickerLabel')
+              .html('P'))
+
+            // Print date.
+            .append($('<input>')
+              .attr('type', 'text')
+              .attr('id', 'printcal_' + order.id)
+              .attr('name', order.id)
+              .attr('class', 'printDateInput')
+              .val(print_date)
+              .click(function(e) {
+                var orderId = $(e.currentTarget).attr('name');
+                var order = duckburg.orderList.viewingOrders[orderId]
+                duckburg.orderList.updateOrderDateForOrder = order;
+
+                // After a breif wait, set a function to update the due date
+                // after any document click.
+                setTimeout(function() {
+                  $(document).bind('click', duckburg.orderList.updatePrintDate);
+                }, 200);
+              }))
 
           // Order name
           .append($('<a>')
@@ -201,11 +232,6 @@ duckburg.orderList = {
             .attr('href', orderLink)
             .attr('id', o.readable_id)
             .html(o.order_name))
-
-          // Total pieces
-          .append($('<label>')
-            .attr('class', 'totalPiecesLabel')
-            .html(piecesDesc))
 
           // Images
           .append(imgLabel)
@@ -260,14 +286,98 @@ duckburg.orderList = {
               var orderId = order.attributes.readable_id;
               window.open('/invoice/' + orderId, '_blank');
             }))
+          // .append($('<label>')
+          //   .attr('class', 'updatedAtLabel')
+          //   .html(updated))
           .append($('<label>')
-            .attr('class', 'updatedAtLabel')
-            .html(updated))
+            .attr('class', 'totalPiecesLabel')
+            .html(piecesDesc))
         )
+
+        // Span in which issue messages can be inserted.
+        .append($('<span>')
+          .attr('id', 'orderIssuesSpan_' + order.id)
+          .attr('class', 'orderIssuesSpan'))
     );
 
     // Set image icons for each order.
     duckburg.orderList.appendImageIconsToOrderItem(imgLabel, o);
+
+    // Check the order for potential issues.
+    duckburg.orderList.checkForIssues(order);
+  },
+
+  /**
+   * Checks for issues with an order.
+   * @function that reports issues on an order if any are found.
+   * @param order Object parse object for the order.
+   *
+   */
+  checkForIssues: function(order) {
+    var o = order.attributes;
+
+    // TODO add a check to see if it is shipping, and if the due date is close
+    //      perhaps separate check just to say it is shipping at all.
+
+    // Make sure the print and due dates are compatible.
+    if (o.due_date < o.print_date) {
+      var printDateIssueText = 'This order has a print date after the ' +
+          'scheduled due date';
+      duckburg.orderList.reportIssue(printDateIssueText, order.id, 'high');
+    }
+
+    // See that there are customers associated with the order.
+    var customers = o.customers || '[]';
+    customers = JSON.parse(customers);
+    if (!customers || customers.length == 0) {
+      var noCustomerMessage = 'There is no customer associated with this order';
+      duckburg.orderList.reportIssue(noCustomerMessage, order.id, 'log');
+    }
+
+    // Check that designs have products associated with them.
+    var designs = o.items || '{}';
+    designs = JSON.parse(designs);
+    for (var i = 0; i < designs.length; i++) {
+      var type = designs[i].product_type;
+      if (!type) {
+        var noDesignTypeMsg = 'This order has designs without ' +
+            ' product types assigned.';
+        duckburg.orderList.reportIssue(noDesignTypeMsg, order.id, 'warning');
+        break;
+      }
+    }
+
+  },
+
+  /**
+   * Report an issue that was found on an order.
+   * @function takes a message and shows it as an issue on an order.
+   * @param msg String message about the issue.
+   * @param id String parse id of order.
+   * @param level String level/severity of issue
+   *
+   */
+  reportIssue: function(msg, id, level) {
+
+    // Get the issue span.
+    var targetDiv = $('#orderIssuesSpan_' + id);
+
+    // Define colors for issue levels.
+    var levels = {
+      'high': 'rgb(242, 69, 69)', // red
+      'warning': 'rgb(226, 207, 77)', // gold
+      'log': 'rgb(79, 200, 135)' // green
+    };
+
+    // Get color for level.
+    var bgColor = levels[level];
+
+    // Append the issue warning.
+    targetDiv.append($('<span>')
+      .html('<i class="fa fa-warning"></i>')
+      .css({'background': bgColor})
+      .append($('<label>')
+        .html(msg)));
   },
 
   /**
@@ -447,7 +557,7 @@ duckburg.orderList = {
       var id = duckburg.orderList.updateOrderDateForOrder.id;
       var prevDate = duckburg.utils.formatDate(
         duckburg.orderList.updateOrderDateForOrder.attributes.due_date);
-      var date = $('#cal_' + id).val();
+      var date = $('#duecal_' + id).val();
 
       // If date has actually been changed, update it in the db.
       if (date != prevDate) {
@@ -477,6 +587,52 @@ duckburg.orderList = {
     // Clear the memory and the listener.
     duckburg.orderList.updateOrderDateForOrder = false;
     $(document).unbind('click', duckburg.orderList.updateDueDate);
+  },
+
+  /**
+   * Update a print date for an order.
+   * @function updates the print date on a given order.
+   *
+   */
+  updatePrintDate: function() {
+
+    // If calendar is still visible, do nothing.  User is clicking through
+    // months, years, etc.
+    if ($('.highsmithCal').length > 0) {
+      return false;
+    }
+
+    // If an order has been held in memory;
+    if (duckburg.orderList.updateOrderDateForOrder) {
+
+      // Get the order id, new date, and update it.
+      var id = duckburg.orderList.updateOrderDateForOrder.id;
+      var prevDate = duckburg.utils.formatDate(
+        duckburg.orderList.updateOrderDateForOrder.attributes.print_date);
+      var date = $('#printcal_' + id).val();
+
+      // If date has actually been changed, update it in the db.
+      if (date != prevDate) {
+        date = new Date(date);
+
+        duckburg.orderList.updateOrderDateForOrder.set('print_date', date);
+        duckburg.orderList.updateOrderDateForOrder.save()
+          .then(function(response) {
+
+            // Load the list again.
+            duckburg.orderList.loadWithGlobals();
+          },
+
+          function(error) {
+            var msg = 'Error saving order: ' + error.message;
+            duckburg.order.orderSavingStatus('error');
+          });
+      }
+    }
+
+    // Clear the memory and the listener.
+    duckburg.orderList.updateOrderDateForOrder = false;
+    $(document).unbind('click', duckburg.orderList.updatePrintDate);
   },
 
   /**

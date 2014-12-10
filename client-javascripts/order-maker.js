@@ -1,5 +1,14 @@
 duckburg = duckburg || {};
 
+/**
+ * @TEMP module for transporting old RD orders to new system.
+ *
+ * TODO need to auto-assign shirt types when transferring for real.  Logic shoul
+ *      exist for testing, but it requires having all products in db
+ *
+ * TODO stop dumping in sizes with 0 or null as value.
+ *
+ */
 duckburg.orderMaker = {
 
   index: 0,

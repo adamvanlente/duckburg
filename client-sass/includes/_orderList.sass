@@ -48,6 +48,29 @@
     background: #EDEDED
 
   span
+    &.orderIssuesSpan
+      display: block
+      text-align: center
+      width: 700px
+      margin: 0 auto
+      span
+        display: block
+        width: 99%
+        margin: 0 auto
+        color: white
+        font-size: 10px
+        padding: 4px
+        margin-bottom: 5px
+        i
+          display: inline-block
+          width: 30%
+          text-align: right
+        label
+          display: inline-block
+          width: 65%
+          text-align: left
+          margin-left: 12px
+
     &.orderTopSpan
       display: block
       text-align: center
@@ -58,7 +81,7 @@
           @extend .basic-button
           font-size: 16px
           text-transform: uppercase
-          width: 300px
+          width: 250px
           display: inline-block
           text-align: center
           background: none
@@ -89,6 +112,14 @@
             &:hover
               color: #333
 
+        &.datePickerLabel
+          display: inline-block
+          font-size: 10px
+          padding: 0 4px
+          background: rgba(0, 0, 0, 0.08)
+          color: rgba(0, 0, 0, 0.32)
+          border-radius: 15px
+          margin: 0 2px
 
         &.totalPiecesLabel
           font-size: 11px
@@ -105,6 +136,7 @@
           display: inline-block
           text-align: center
           border-radius: 1px
+          margin-right: 24px
         &.orderStatusLabel
           @extend .basic-button
           font-size: 11px
@@ -116,15 +148,15 @@
           margin-left: 12px
 
       input
-        &.dueDateInput
+        &.dueDateInput,
+        &.printDateInput
           @extend .light-font
           @extend .basic-button
-          font-size: 12px
+          font-size: 10px
           background: none
-          margin-left: 8px
-          color: #333
-          width: 75px
-          text-align: center
+          color: #333333
+          width: 60px
+          text-align: left
 
     &.orderBottomSpan
       display: block
@@ -151,7 +183,12 @@
           &:hover
             background: #333
             color: rgb(130, 153, 200)
-
+        &.totalPiecesLabel
+          font-size: 11px
+          display: inline-block
+          width: 134px
+          text-align: center
+          color: #2F2929
 
         &.updatedAtLabel
           font-size: 9px

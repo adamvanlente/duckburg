@@ -2,7 +2,13 @@
 
 Features to document
 
+- How to report problems.
+
+- signing in
+  difference between signing in and punching in
+
 - order list
+  - order issues warnings
 - creating orders
 - payments
 - invoices
@@ -33,7 +39,9 @@ in development features
 - partnership orders
 - customer feedback emails
 - customer feedback forms
-
+- look at order profit (by order and by list of orders)
+  - requires fixing todo on job time calculation
+- order delivery method (is order shipping)
 - salespeople dashboard
 - salespeople option on orders
 - submitted orders
