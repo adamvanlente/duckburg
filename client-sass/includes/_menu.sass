@@ -39,11 +39,15 @@
 
     @extend .basic-button
     @extend .light-font
-    display: inline-block
     font-size: 12px
     padding: 8px
     text-decoration: none
     color: #333
+
+    &.adminOnlyMenuItem
+      display: none
+    &.standardMenuItem
+      display: inline-block  
     &:hover
       background: #F1F1F1
 

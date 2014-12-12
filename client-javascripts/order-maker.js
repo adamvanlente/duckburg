@@ -6,6 +6,8 @@ duckburg = duckburg || {};
  * TODO need to auto-assign shirt types when transferring for real.  Logic shoul
  *      exist for testing, but it requires having all products in db
  *
+ * TODO carry over color count?
+ *
  * TODO stop dumping in sizes with 0 or null as value.
  *
  */

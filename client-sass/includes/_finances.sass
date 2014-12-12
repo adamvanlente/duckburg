@@ -48,6 +48,51 @@
   div
     @extend .light-font
 
+    &.salesTaxMonth
+      display: block
+      width: 400px
+      margin: 0 auto
+
+      h1
+        display: block
+        font-size: 16px
+        color: #6697BA
+        button
+          @extend .light-font
+          @extend .basic-button
+          display: inline-block
+          margin: 4px
+          vertical-align: middle
+          font-size: 11px
+          background: rgb(207, 216, 64)
+          &:hover
+            background: #333
+            color: white
+
+      span
+        display: block
+        font-size: 12px
+        margin: 4px 12px
+        background: #F1F1F1
+        padding: 4px
+
+        label
+          display: inline-block
+        em
+          display: inline-block
+          width: 80%
+
+    &.loadingTaxesMessage
+      display: block
+      font-size: 12px
+      color: #333
+      margin: 24px auto
+      width: 500px
+      text-align: center
+      border: 1px solid
+      border-radius: 1px
+      padding: 8px
+
     &.payrollRecapHolder
       display: block
       text-align: center
@@ -106,8 +151,7 @@
       border-bottom: 1px solid #DCDCDC
       label
         &.addIncomeButton,
-        &.addExpenseButton,
-        &.addPayrollButton
+        &.addExpenseButton
           @extend .basic-button
           display: inline-block
           margin: 8px
@@ -128,8 +172,6 @@
           background: $minty-green
         &.addExpenseButton
           background: $cancel-red
-        &.addPayrollButton
-          background: rgb(234, 172, 58)
         &:hover
           background: #333
 

@@ -8,7 +8,7 @@ var duckburg = duckburg || {};
 duckburg.finances = {
 
   /** Default finance mode **/
-  defaultView: 'payroll',
+  defaultView: 'ledger', // ledger, taxes or payroll
 
   /** Remember if all ledger items are checked. **/
   ledgerItemsAreLoaded: {},
@@ -27,6 +27,9 @@ duckburg.finances = {
     // Get mode.
     mode = mode || duckburg.finances.defaultView;
 
+    // Set current mode.
+    duckburg.finances.currentMode = mode;
+
     // Set menu.
     duckburg.finances.setMenu(mode);
 
@@ -36,7 +39,7 @@ duckburg.finances = {
     } else if (mode == 'payroll') {
       duckburg.finances.loadPayroll();
     } else if (mode == 'taxes') {
-      // taxes
+      duckburg.finances.loadTaxes();
     }
   },
 
@@ -117,11 +120,8 @@ duckburg.finances = {
           .attr('id', 'checksAndCashInput')
           .attr('placeholder', 'loading...')
           .attr('readonly', true)))
-
-
       .append($('<div>')
         .attr('class', 'availableFundsProjections'))
-
 
       // All expenses
       .append($('<div>')
@@ -170,7 +170,6 @@ duckburg.finances = {
 
     // Load available balance.
     duckburg.finances.ledger.available();
-
   },
 
   /**
@@ -192,27 +191,38 @@ duckburg.finances = {
     $('#popupContent')
       .append($('<div>')
         .attr('class', 'financeForm')
-        .attr('id', type)
+        .attr('id', type));
 
-        // Add form fields.
-        .append($('<input>')
-          .attr('id', 'name')
-          .attr('type', 'text')
-          .attr('placeholder', type + ' name'))
-        .append($('<input>')
-          .attr('id', 'amount')
-          .attr('type', 'text')
-          .attr('placeholder', type + ' amount'))
+
+    $('.financeForm')
+      .append($('<input>')
+        .attr('id', 'name')
+        .attr('type', 'text')
+        .attr('placeholder', type + ' name'));
+
+    $('.financeForm')
+      .append($('<input>')
+        .attr('id', 'amount')
+        .attr('type', 'text')
+        .attr('placeholder', type + ' amount'));
+
+    // Add a method for income.
+    if (type == 'income') {
+      $('.financeForm')
         .append($('<input>')
           .attr('id', 'method')
           .attr('type', 'text')
-          .attr('placeholder', 'method'))
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'ledger_item_date')
-          .val(today)))
+          .attr('placeholder', 'method'));
+    }
+
+    $('.financeForm')
+      .append($('<input>')
+        .attr('type', 'text')
+        .attr('id', 'ledger_item_date')
+        .val(today));
 
       // Append a button for form submission.
+    $('#popupContent')
       .append($('<label>')
         .attr('class', 'financeItemFormSubmit')
         .html('submit')
@@ -246,7 +256,8 @@ duckburg.finances = {
 
     // Set an object for the item.
     var obj = {
-      type: type
+      type: type,
+      visible: true
     }
 
     // Assign the amount, etc.
@@ -274,9 +285,14 @@ duckburg.finances = {
       duckburg.utils.successMessage(msg);
       duckburg.utils.hidePopup();
 
-      // Load expenses.
-      duckburg.finances.ledger.expenses();
-      duckburg.finances.ledger.incoming();
+      if (duckburg.finances.currentMode == 'ledger') {
+
+        // Load expenses.
+        duckburg.finances.ledger.expenses();
+        duckburg.finances.ledger.incoming();
+      } else if (duckburg.finances.currentMode == 'taxes') {
+        duckburg.finances.loadTaxes();
+      }
     });
   },
 
@@ -290,15 +306,33 @@ duckburg.finances = {
     var id = $(event.currentTarget).parent().attr('id');
     duckburg.requests.findById(id, 'dbLedgerItem',
       function(result) {
-        result.destroy();
-        $(event.currentTarget).parent().remove();
-        duckburg.finances.ledger.expenses();
-        duckburg.finances.ledger.incoming();
+        result.set('visible', false);
+        result.save().then(function(response) {
+          $(event.currentTarget).parent().remove();
+          duckburg.finances.ledger.expenses();
+          duckburg.finances.ledger.incoming();
+        },
+
+        function(error) {
+          //
+        });
       }
     );
   },
 
   doPayroll: function() {
+
+    // Check if payroll for this period has already been done, and abort if so.
+    var lastSunday = new Date();
+    lastSunday.setDate(lastSunday.getDate() - (lastSunday.getDay() + 7));
+    lastSunday = String(lastSunday).split(lastSunday.getFullYear())[0] +
+        String(lastSunday.getFullYear());
+
+    if (duckburg.finances.payrollObject[lastSunday]) {
+      var msg = 'You have already done payroll for the current pay period.';
+      duckburg.utils.errorMessage(msg);
+      return;
+    }
 
     // Show the popup.
     duckburg.utils.showPopup();
@@ -377,7 +411,7 @@ duckburg.finances = {
     var lastSunday = new Date();
     lastSunday.setDate(lastSunday.getDate() - (lastSunday.getDay() + 7));
     var endOfWeek = new Date();
-    // endOfWeek.setDate(endOfWeek.getDate() - (endOfWeek.getDay() + 1));
+    endOfWeek.setDate(endOfWeek.getDate() - (endOfWeek.getDay() + 1));
 
     // Build a query from the object type.
     var DbObject = Parse.Object.extend('dbWorkSession');
@@ -462,7 +496,7 @@ duckburg.finances = {
         }
       }
 
-      // Only one error condition: there are hours by no pay rate.
+      // Only one error condition: there are hours but no pay rate.
       if (hours && !payRate) {
         var err = 'Employee ' + name + ' has hours but no pay rate.';
         duckburg.utils.errorMessage(err);
@@ -473,7 +507,6 @@ duckburg.finances = {
         var overtime = 0.00;
 
         if (payRate && hours) {
-
           if (parseFloat(hours) > 40) {
             regularWages = 40 * parseFloat(payRate);
             var ot = (parseFloat(hours) - 40) * 1.5;
@@ -554,7 +587,7 @@ duckburg.finances = {
         // Add income button.
         .append($('<label>')
           .attr('class', 'addIncomeButton')
-          .html('add income')
+          .html('<i class="fa fa-money"></i> add income')
           .click(function() {
             duckburg.finances.addDialog('income');
           }))
@@ -562,18 +595,10 @@ duckburg.finances = {
         // Add income button.
         .append($('<label>')
           .attr('class', 'addExpenseButton')
-          .html('add expense')
+          .html('<i class="fa fa-money"></i> add expense')
           .click(function() {
             duckburg.finances.addDialog('expense');
           }))
-
-        // Add income button.
-        .append($('<label>')
-          .attr('class', 'addPayrollButton')
-          .html('add payroll')
-          .click(function() {
-            duckburg.finances.doPayroll();
-          }));
      },
 
      /** Load the expenses **/
@@ -625,6 +650,11 @@ duckburg.finances = {
 
            for (var i = 0; i < results.length; i++) {
              var result = results[i].attributes;
+
+             // Skip invisible items.
+             if (!result.visible) {
+               continue;
+             }
              var amount = result.amount;
              var name = result.name;
              var date = duckburg.utils.formatDate(result.ledger_item_date);
@@ -677,14 +707,19 @@ duckburg.finances = {
 
          // Update available balance.
          for (var i = 0; i < expenses.length; i++) {
-           var expenseAmt = parseFloat(expenses[i].attributes.amount);
-           available -= expenseAmt;
+           if (expenses[i].attributes.visible) {
+             var expenseAmt = parseFloat(expenses[i].attributes.amount);
+             available -= expenseAmt;
+           }
          }
          $('#availableBalanceDiv').val('$' + available.toFixed(2));
 
          // Update cash & checks.
          for (var i = 0; i < income.length; i++) {
            var incomeItem = income[i].attributes;
+           if (!incomeItem.visible) {
+             continue;
+           }
            if (incomeItem.method == 'cash' || incomeItem.method == 'check') {
              var incomeAmt = parseFloat(incomeItem.amount);
              available += incomeAmt;
@@ -696,6 +731,9 @@ duckburg.finances = {
          var futureAvailability = {};
          for (var i = 0; i < income.length; i++) {
            var incomeItem = income[i].attributes;
+           if (!incomeItem.visible) {
+             continue;
+           }
            if (incomeItem.method != 'cash' && incomeItem.method != 'check') {
 
              // Determine how much income will be available in the coming days.
@@ -809,6 +847,7 @@ duckburg.finances = {
     var stringDate = String(date).split(String(date.getFullYear()))[0] +
         date.getFullYear();
     validWeeks.push(stringDate);
+
     // Create entries for the interesting weeks of payroll.
     for (var i = 0; i < 2; i++) {
       date.setDate(date.getDate() + 7);
@@ -857,7 +896,7 @@ duckburg.finances = {
           duckburg.finances.doPayroll();
         }))
       .append($('<div>')
-        .attr('class', 'payrollRecapHolder'))
+        .attr('class', 'payrollRecapHolder'));
 
     for (var i = 0; i < payrollItems.length; i++) {
       var pi = payrollItems[i].attributes;
@@ -947,6 +986,211 @@ duckburg.finances = {
             .html('Total for period: $' + weeksTotal.toFixed(2)))
       }
     }
+  },
 
+  /**
+   * Load the taxes.
+   * @function that gets sales tax information.
+   *
+   */
+  loadTaxes: function() {
+
+    // Initialize a blank tax payment object.
+    duckburg.finances.existingTaxPayments = {};
+
+    // Look for existing tax payments.
+    var DbObject = Parse.Object.extend('dbLedgerItem');
+    var liQuery = new Parse.Query(DbObject);
+
+    // Match type.
+    liQuery.matches('name', 'taxpayment');
+
+    // Perform the queries and continue with the help of the callback functions.
+    liQuery.find({
+      success: function(results) {
+        for (var i = 0; i < results.length; i++) {
+          var payment = results[i].attributes;
+          var name = payment.name;
+          var amt = payment.amount;
+          if (duckburg.finances.existingTaxPayments[name]) {
+            duckburg.finances.existingTaxPayments[name] += parseFloat(amt);
+          } else {
+            duckburg.finances.existingTaxPayments[name] = parseFloat(amt);
+          }
+        }
+        duckburg.finances.setUpTaxDisplay();
+      },
+      error: function(error) {
+        var errorMsg = 'Error gettting ledger items: ' + error.message;
+        duckburg.utils.errorMessage(errorMsg);
+      }
+    });
+  },
+
+  /**
+   * Set up the tax view display.
+   * @function that sets up tax view and requests database items.
+   *
+   */
+  setUpTaxDisplay: function() {
+    // Set up the div.
+    $('.finances')
+      .html('')
+        .append($('<div>')
+        .html('loading tax information')
+        .attr('class', 'loadingTaxesMessage'));
+
+    duckburg.requests.findOrders(['completed'], 'due_date', 'dsc', false,
+      function(results) {
+
+        if (!results || results.length == 0) {
+          // Set up the div.
+          $('.finances')
+          .html('')
+          .append($('<div>')
+          .html('no orders to load')
+          .attr('class', 'loadingTaxesMessage'));
+
+          return;
+        }
+
+        // Handle results if they exist.
+        duckburg.finances.handleResultsAndCalculateTaxes(results);
+      });
+  },
+
+  /**
+   * Handle results for a tax query.
+   * @function take a list of completed orders and display sales tax info.
+   * @param orders Object list of orders from Parse
+   *
+   */
+  handleResultsAndCalculateTaxes: function(orders) {
+
+    // Set object for the tax results.
+    var taxesObject = {};
+
+    // Go over orders and assemble an object.
+    for (var i = 0; i < orders.length; i++) {
+      var order = orders[i];
+      var o = order.attributes;
+
+      // Get the date.
+      var month = duckburg.utils.monthDict[o.due_date.getMonth()];
+      var year = o.due_date.getFullYear();
+      var dateString = String(month).toLowerCase() + String(year).toLowerCase();
+      var displayString = month + ' ' + year;
+
+      // Check for taxes object.
+      if (!taxesObject[dateString]) {
+
+        // Create the object if it does not exist.
+        taxesObject[dateString] = {
+          taxable_order_totals: 0,
+          taxable_order_payments: 0,
+          tax_for_month: 0,
+          tax_payments_made: 0,
+          balance_due: 0,
+          display_string: displayString
+        };
+      }
+
+      // Get the order summary and perform the math.
+      var summary = o.order_summary || '{}';
+      summary = JSON.parse(summary);
+
+      // Alias for object.
+      var obj = taxesObject[dateString];
+      obj.taxable_order_totals += parseFloat(summary.final_total);
+      obj.taxable_order_payments += parseFloat(summary.payments);
+
+      // Calculate and assign tax.
+      var taxes = parseFloat(obj.taxable_order_payments * 0.06);
+      obj.tax_for_month = taxes;
+      obj.balance_due = taxes;
+    }
+
+    // Render tax information
+    duckburg.finances.renderSalesTaxSummaries(taxesObject);
+  },
+
+  /**
+   * Render the results of the sales tax calculations.
+   * @function using results, render a sales tax page.
+   * @param months Object containing key value pairs with a month as the key
+   *        eg 'december2014' and a value that is also an object, which contains
+   *        the tax summary for the month.
+   *
+   */
+  renderSalesTaxSummaries: function(months) {
+
+    // Clear the div.
+    $('.finances')
+      .html('');
+
+    // Iterate over the info and display it.
+    for (var month in months) {
+
+      var info = months[month];
+
+      if (duckburg.finances.existingTaxPayments[month + 'taxpayment']) {
+        var pymnts =
+            duckburg.finances.existingTaxPayments[month + 'taxpayment'];
+        info.tax_payments_made += parseFloat(pymnts);
+        info.balance_due = info.tax_for_month - info.tax_payments_made;
+      }
+
+      $('.finances')
+        .append($('<div>')
+          .attr('class', 'salesTaxMonth')
+
+          .append($('<h1>')
+            .html(info.display_string)
+            .append($('<button>')
+              .html('make payment')
+              .attr('id', month)
+              .click(function(e) {
+
+                duckburg.finances.addDialog('expense');
+                var id = e.currentTarget.id;
+                $('#name').val(id + 'taxpayment');
+              })))
+
+          .append($('<span>')
+            .append($('<em>')
+              .html('Month\'s completed order totals: '))
+            .append($('<label>')
+              .html('$' + info.taxable_order_totals.toFixed(2)))
+          )
+
+          .append($('<span>')
+            .append($('<em>')
+            .html('Month\'s total revenue on orders: '))
+            .append($('<label>')
+            .html('$' + info.taxable_order_payments.toFixed(2)))
+          )
+
+          .append($('<span>')
+            .append($('<em>')
+            .html('Taxes for month: '))
+            .append($('<label>')
+            .html('$' + info.tax_for_month.toFixed(2)))
+          )
+
+          .append($('<span>')
+            .append($('<em>')
+            .html('Payments made on taxes: '))
+            .append($('<label>')
+            .html('$' + info.tax_payments_made.toFixed(2)))
+          )
+
+          .append($('<span>')
+            .append($('<em>')
+            .html('Balance due: '))
+            .append($('<label>')
+            .html('$' + info.balance_due.toFixed(2)))
+          )
+        );
+    }
   }
 };

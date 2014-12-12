@@ -19,6 +19,17 @@ duckburg.models = {
         dbObject: null,
         required: true
       },
+      'has_partner_customer': {
+        placeholder: 'Customer we\'ve partnered with for item',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: {
+          type: 'dbCustomer',
+          primary_key: 'full_name',
+          additional_mappings: {}
+        }
+      },
       'product_type': {
         placeholder: 'Product design will be applied to',
         input: 'text',
@@ -389,6 +400,24 @@ duckburg.models = {
         placeholder: 'full url, eg http://www.retroduck.com',
         input: 'text',
         input_size: 'half',
+        options: null,
+        dbObject: null,
+        required: true
+      }
+    }
+  },
+
+  /**
+  * DELIVERY METHOD
+  *
+  */
+  dbDeliveryMethod: {
+    display_name: 'Delivery method',
+    values: {
+      'method_name': {
+        placeholder: 'Name of method, eg shipping',
+        input: 'text',
+        input_size: 'full',
         options: null,
         dbObject: null,
         required: true

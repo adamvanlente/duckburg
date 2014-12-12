@@ -47,8 +47,11 @@ duckburg.utils = {
   },
 
   /** Month dictionary **/
-  monthDict: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'],
+  monthDict: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+              'August', 'September', 'October', 'November', 'December'],
+
+  monthAbbrvDict: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+                   'Sep', 'Oct', 'Nov', 'Dec'],
 
   /** Day dictionary **/
   dayDict: ['Sunday', 'Monday', 'Tuesday',
@@ -308,7 +311,8 @@ duckburg.utils = {
    */
   logout: function() {
 
-    if (duckburg.curUser.attributes.current_timeclock_status == 'in') {
+    if (duckburg.curUser &&
+        duckburg.curUser.attributes.current_timeclock_status == 'in') {
       var msg = 'Please punch out before logging out.';
       duckburg.utils.errorMessage(msg);
       return;
@@ -1234,10 +1238,24 @@ duckburg.utils = {
     showPaymentHistory: function(id) {
 
       // Clear order history div.
-      $('.paymentModuleHistory').html('');
+      $('.paymentModuleHistory')
+        .html('')
+        .append($('<span>')
+          .attr('class', 'loadingPaymentHistoryMessage')
+          .html('loading payment history'));
 
       // Set the list of the order payments.
       duckburg.requests.getOrderPayments(id, function(results) {
+
+        if (!results || results.length == 0) {
+          $('.paymentModuleHistory')
+            .html('')
+            .append($('<span>')
+              .attr('class', 'loadingPaymentHistoryMessage')
+              .html('no payments made on this order'));
+          return
+        }
+
         for (var i = 0; i < results.length; i++) {
           var result = results[i].attributes;
           var amount = parseFloat(result.amount).toFixed(2);
@@ -1245,6 +1263,7 @@ duckburg.utils = {
           date += ' - ' + result.user;
 
           $('.paymentModuleHistory')
+            .html('')
             .append($('<span>')
               .append($('<label>')
                 .attr('class', 'amtLabel')
@@ -1642,11 +1661,39 @@ duckburg.utils = {
      * Calculate how long it will take to print an order.
      * @function get print time for an order.
      * @param items Int number of items in an order.
-     * TODO make this actually work
+     * @param totalColors Int total number of colors on the item
+     * @param returnType String format to return in, mins or hrs (default hrs)
      *
      */
-    calculateOrderTime: function(items) {
-      return (parseInt(items) / 60).toFixed(2);
+    calculatePrintTime: function(items, totalColors, returnType) {
+
+      // Make total colors at least 1.  The order list will throw a warning
+      // if it is invalid, but we'll bluff the estimate here if its wrong.
+      if (isNaN(totalColors) || !totalColors || totalColors == 0) {
+        totalColors = 1;
+      }
+
+      // Setup time for every job
+      var setupTime = 30;
+
+      // For every 100 (about) shirts, add an extra 15 mins.
+      var extraTime = parseInt(items / 100);
+      extraTime = extraTime * 15;
+
+      // Get number of minutes to print project.
+      var time = (parseInt(items)/(2/parseInt(totalColors)));
+
+      // Add extra time and setup time to job.
+      time = time + extraTime + setupTime;
+
+      // Return time in minutes if the call specifies.
+      if (returnType == 'mins') {
+        return time;
+      } else {
+
+        // Return hours format by default.
+        return parseFloat(time / 60).toFixed(2);
+      }
     },
 
     /** Turn a timestamp into a digital time anyone can read **/

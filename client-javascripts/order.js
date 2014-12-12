@@ -23,6 +23,9 @@ duckburg.order = {
   // Set is taxed to true.
   isTaxed             : true,
 
+  // Social date inputs.
+  socialHighsmiths: [],
+
   /**
    * Load order view
    * @function loads the initial view for order.  Scans url to see if an order
@@ -86,7 +89,6 @@ duckburg.order = {
       duckburg.order.loadNewOrderValues();
     }
   },
-
 
   /**
    * Fill order with existing order details.
@@ -211,19 +213,36 @@ duckburg.order = {
 
     // Set prices.
     $('[name="product_price_' + index + '"]').val(design.product_price);
-    $('[name="product_saleprice_' + index + '"]').val(design.product_saleprice);
-    $('[name="product_socialprice_' + index + '"]').val(
-        design.product_socialprice);
 
     // Advanced settings.
+    $('[name="delivery_method_' + index + '"]').val(design.delivery_method);
+    $('[name="delivery_method_visible_' + index + '"]').val(
+        design.delivery_method_visible);
+
     $('[name="product_category_' + index + '"]').val(design.product_category);
     $('[name="product_category_visible_' + index + '"]').val(
         design.product_category_visible);
+
     $('[name="product_store_' + index + '"]').val(design.product_store);
     $('[name="product_store_visible_' + index + '"]').val(
         design.product_store_visible);
+
     $('[name="product_ishidden_' + index + '"]').val(design.product_ishidden);
     $('[name="product_isindexed_' + index + '"]').val(design.product_isindexed);
+    $('[name="product_issocial_' + index + '"]').val(design.product_issocial);
+    $('[name="product_socialprice_' + index + '"]')
+        .val(design.product_socialprice);
+
+    var endDate = design.social_end_date;
+    if (endDate && endDate != '') {
+      endDate = duckburg.utils.formatDate(endDate);
+    }
+    $('[name="social_end_date_' + index + '"]').val(endDate);
+
+    $('[name="social_delivery_method_' + index + '"]')
+        .val(design.social_delivery_method);
+    $('[name="social_delivery_method_visible_' + index + '"]')
+        .val(design.social_delivery_method_visible);
 
     // Description/notes.
     $('[name="design_notes_' + index + '"]').val(design.product_description);
@@ -231,6 +250,21 @@ duckburg.order = {
     // Fetch the actual designs and add them to the UI.
     if (design.design_id && design.design_id != '') {
       duckburg.order.fetchAndPlaceExistingDesigns(design.design_id, index);
+    }
+
+    // Set the color counts.
+    var colorCount = design.color_count || {};
+    if (colorCount.front) {
+      $('#dccFront_' + index).val(colorCount.front);
+    }
+    if (colorCount.back) {
+      $('#dccBack_' + index).val(colorCount.back);
+    }
+    if (colorCount.left) {
+      $('#dccLeft_' + index).val(colorCount.left);
+    }
+    if (colorCount.right) {
+      $('#dccRight_' + index).val(colorCount.right);
     }
 
     // Fill in names and numbers.
@@ -266,13 +300,16 @@ duckburg.order = {
    * @param itemCount Int number of items.
    * @param totalPieces Int number of pieces being printed
    * @param orderTotal Float total cost of order.
+   * @param hrs Float number of hrs it will take to print
    *
    */
-  populateSummarySection: function(itemCount, totalPieces, orderTotal) {
+  populateSummarySection: function(itemCount, totalPieces, orderTotal, hrs) {
     itemCount = itemCount || 0;
     totalPieces = totalPieces || 0;
     orderTotal = orderTotal || 0.00;
     orderTotal = orderTotal == 0 ? '0.00' : orderTotal;
+    hrs = hrs || 0;
+    hrs = hrs.toFixed(2);
 
     // Set some labels.
     var itemLabel = itemCount == 1 ? 'design' : 'designs';
@@ -304,7 +341,8 @@ duckburg.order = {
       final_total: finalTotal,
       payments: payments,
       balance: balance,
-      total_pieces: totalPieces
+      total_pieces: totalPieces,
+      total_hours: hrs
     };
 
     // Save these summary details to the order object.
@@ -1228,11 +1266,14 @@ duckburg.order = {
 
      // Update a customer item.
      } else if (type == 'dbCustomer') {
+
        var customer = duckburg.order.currentCustomers[element.title];
        customer.set(param, newVal);
        var a = customer.attributes;
        var searchString = a.first_name + a.last_name + a.email_address +
           a.phone_number;
+       var fullName = a.first_name + ' ' + a.last_name;
+       customer.set('full_name', fullName);
        customer.set('parse_search_string', searchString.toLowerCase());
        customer.save().then(function(response) {
            duckburg.order.orderSavingStatus('saved');
@@ -1356,6 +1397,9 @@ duckburg.order = {
 
     // Append size holder and sizes.
     duckburg.order.addDesignSizeHolderToForm(newForm, sizes);
+
+    // Create holders for color count.
+    duckburg.order.addDesignColorCountToForm(newForm);
 
     // Add the image fields (design)/
     duckburg.order.addDesignImageHolderToDesignForm(newForm);
@@ -1660,34 +1704,6 @@ duckburg.order = {
           .attr('id', 'product_price')
           .attr('name', 'product_price_' + numDesigns)
           .attr('class', 'productPriceInputField')
-          .attr('placeholder', '0.00')
-          .keyup(function() {
-            duckburg.order.collectDesignDetails();
-          }))
-
-        // Product type label and input.
-        .append($('<label>')
-          .html('sale price')
-          .attr('class', 'productSalePriceLabel'))
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'product_saleprice')
-          .attr('name', 'product_saleprice_' + numDesigns)
-          .attr('class', 'productSalePriceInputField')
-          .attr('placeholder', '0.00')
-          .keyup(function() {
-            duckburg.order.collectDesignDetails();
-          }))
-
-        // Product type label and input.
-        .append($('<label>')
-          .html('social price')
-          .attr('class', 'productSocialPriceLabel'))
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'product_socialprice')
-          .attr('name', 'product_socialprice_' + numDesigns)
-          .attr('class', 'productSocialPriceInputField')
           .attr('placeholder', '0.00')
           .keyup(function() {
             duckburg.order.collectDesignDetails();
@@ -2107,6 +2123,55 @@ duckburg.order = {
    },
 
    /**
+    * Add an area where the user can say how many colors are in a design.
+    * @function that creates a div to holder color count info.
+    * @param form Object form to append to
+    *
+    */
+   addDesignColorCountToForm: function(form) {
+
+     // Get number of designs.
+     var numDesigns = $('.designFormWithinOrder').length;
+
+     // Create the holder.
+     var ccHolder = $('<div>')
+       .attr('class', 'designFormDesignColorCountHolder')
+       .append($('<label>')
+         .html('color count'))
+       .append($('<input>')
+         .attr('placeholder', 'F')
+         .attr('class', 'dccFront')
+         .attr('id', 'dccFront_' + numDesigns)
+         .keyup(function() {
+           duckburg.order.collectDesignDetails();
+         }))
+       .append($('<input>')
+         .attr('placeholder', 'B')
+         .attr('class', 'dccBack')
+         .attr('id', 'dccBack_' + numDesigns)
+         .keyup(function() {
+           duckburg.order.collectDesignDetails();
+         }))
+       .append($('<input>')
+         .attr('placeholder', 'L')
+         .attr('class', 'dccLeft')
+         .attr('id', 'dccLeft_' + numDesigns)
+         .keyup(function() {
+           duckburg.order.collectDesignDetails();
+         }))
+       .append($('<input>')
+         .attr('placeholder', 'R')
+         .attr('class', 'dccRight')
+         .attr('id', 'dccRight_' + numDesigns)
+         .keyup(function() {
+           duckburg.order.collectDesignDetails();
+         }));
+
+     // Append the color count holder.
+     form.append(ccHolder);
+   },
+
+   /**
     * Given a target element and list of sizes, create size inputs.
     * @function adds size inputs to a design item.
     * @param parent Object dom element to append size inputs to.
@@ -2277,6 +2342,26 @@ duckburg.order = {
      // Append a product category input.
      settingsDetail
        .append($('<label>')
+         .html('Delivery method'))
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('class', 'deliveryTypeVis')
+         .attr('id', 'delivery_method_visible')
+         .attr('name', 'delivery_method_visible_' + numDesigns)
+         .click(function(e) {
+           duckburg.order.lastClickedCategory = e.currentTarget.name;
+           duckburg.utils.launchRelatedItemSelector(
+             e, 'method_name', 'dbDeliveryMethod', 'method_name');
+           }))
+       .append($('<input>')
+         .attr('type', 'hidden')
+         .attr('class', 'deliveryType')
+         .attr('id', 'delivery_method')
+         .attr('name', 'delivery_method_' + numDesigns));
+
+     // Append a product category input.
+     settingsDetail
+       .append($('<label>')
          .html('Category'))
        .append($('<input>')
          .attr('type', 'text')
@@ -2323,7 +2408,10 @@ duckburg.order = {
           .attr('id', 'product_isindexed')
           .attr('class', 'productIsIndexed')
           .attr('placeholder', 'yes/no (default no)')
-          .attr('name', 'product_isindexed_' + numDesigns));
+          .attr('name', 'product_isindexed_' + numDesigns)
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }));
 
       // Append a product is_indexed input.
       settingsDetail
@@ -2334,7 +2422,103 @@ duckburg.order = {
           .attr('id', 'product_ishidden')
           .attr('class', 'productIsHidden')
           .attr('placeholder', 'yes/no (default yes)')
-          .attr('name', 'product_ishidden_' + numDesigns));
+          .attr('name', 'product_ishidden_' + numDesigns)
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }));
+
+      settingsDetail
+        .append($('<h2>')
+          .html('social settings'));
+
+      // Append a social order input.
+      settingsDetail
+        .append($('<label>')
+          .html('Is Social?'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_issocial')
+          .attr('class', 'productIsSocial')
+          .attr('placeholder', 'yes/no (default no)')
+          .attr('name', 'product_issocial_' + numDesigns)
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }));
+
+      // Append a social order input.
+      settingsDetail
+        .append($('<label>')
+          .html('Social price'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'product_socialprice')
+          .attr('class', 'productSocialPrice')
+          .attr('placeholder', 'Social price, eg 10.00')
+          .attr('name', 'product_socialprice_' + numDesigns)
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }));
+
+      // Append a social order input.
+      settingsDetail
+          .append($('<label>')
+            .html('Social end date'))
+          .append($('<input>')
+            .attr('type', 'text')
+            .attr('id', 'social_end_date_' + numDesigns)
+            .attr('class', 'socialEndDate')
+            .attr('placeholder', 'End date for social order')
+            .attr('name', 'social_end_date_' + numDesigns)
+            .click(function(e) {
+
+              // After a breif wait, set a function to update the due date
+              // after any document click.
+              setTimeout(function() {
+                $(document).bind('click', duckburg.order.updateSocialCal);
+              }, 200);
+            }));
+
+       var socialCalId = 'social_end_date_' + numDesigns;
+       duckburg.order.socialHighsmiths.push(socialCalId);
+
+       // Append a product category input.
+       settingsDetail
+         .append($('<label>')
+           .html('Social deliv. method'))
+         .append($('<input>')
+           .attr('type', 'text')
+           .attr('class', 'socialDeliveryMethodVis')
+           .attr('id', 'social_delivery_method_visible')
+           .attr('name', 'social_delivery_method_visible_' + numDesigns)
+           .click(function(e) {
+             duckburg.order.lastClickedCategory = e.currentTarget.name;
+             duckburg.utils.launchRelatedItemSelector(
+               e, 'method_name', 'dbDeliveryMethod', 'method_name');
+           }))
+         .append($('<input>')
+           .attr('type', 'hidden')
+           .attr('class', 'socialDeliveryMethod')
+           .attr('id', 'social_delivery_method')
+           .attr('name', 'social_delivery_method_' + numDesigns));
+
+        // Add highsmith calendars.
+        setTimeout(function() {
+          duckburg.utils.addHighsmithCalendars(
+              duckburg.order.socialHighsmiths, true);
+        }, 1000)
+   },
+
+   /** Force designs to update if a social end date has been updated **/
+   updateSocialCal: function() {
+
+     if ($('.highsmithCal').length > 0) {
+       console.log('do nothing');
+       return false;
+     }
+
+     console.log('updated and unbound')
+     duckburg.order.collectDesignDetails();
+     $(document).unbind('click', duckburg.order.updateSocialCal);
    },
 
   /**
@@ -2409,6 +2593,17 @@ duckburg.order = {
        }
      });
 
+     // Design color count items.
+     $('.designFormDesignColorCountHolder').each(function(count) {
+       var kids = $(this).children();
+       for (var i = 0; i < kids.length; i++) {
+         var div = kids[i];
+         var className = div.className;
+         var newId = className + '_' + count;
+         div.id = newId;
+       }
+     });
+
      // Reset id of image pickers.
      $('.designImagesFilePicker').each(function(item) {
        $(this).attr('id', item);
@@ -2426,6 +2621,9 @@ duckburg.order = {
      });
 
      // Advanced settings holders.
+     $('.deliveryTypeVis').each(function(item) {
+       $(this).attr('name', 'delivery_method_visible_' + item);
+     });
      $('.productCatVis').each(function(item) {
        $(this).attr('name', 'product_category_visible_' + item);
      });
@@ -2437,6 +2635,21 @@ duckburg.order = {
      });
      $('.productStore').each(function(item) {
        $(this).attr('name', 'product_store_' + item);
+     });
+     $('.productIsSocial').each(function(item) {
+       $(this).attr('name', 'product_issocial_' + item);
+     });
+     $('.productSocialPrice').each(function(item) {
+       $(this).attr('name', 'product_socialprice_' + item);
+     });
+     $('.socialEndDate').each(function(item) {
+       $(this).attr('name', 'social_end_date_' + item);
+     });
+     $('.socialDeliveryMethodVis').each(function(item) {
+       $(this).attr('name', 'social_delivery_method_visible_' + item);
+     });
+     $('.socialDeliveryMethod').each(function(item) {
+       $(this).attr('name', 'social_delivery_method_' + item);
      });
      $('.productIsIndexed').each(function(item) {
        $(this).attr('name', 'product_isindexed_' + item);
@@ -2485,12 +2698,6 @@ duckburg.order = {
          // Update product price, sale price and social price.
          if (child.id == 'product_price') {
            $(child).attr('name', 'product_price_' + itemIndex);
-         }
-         if (child.id == 'product_saleprice') {
-           $(child).attr('name', 'product_saleprice_' + itemIndex);
-         }
-         if (child.id == 'product_socialprice') {
-           $(child).attr('name', 'product_socialprice_' + itemIndex);
          }
        }
      });
@@ -2654,6 +2861,7 @@ duckburg.order = {
       var itemCount = 0;
       var totalPieces = 0;
       var orderTotal = 0;
+      var totalHours = 0;
 
       // For each item that exists, look for the design details.
       for (var i = 0; i < numDesigns; i++) {
@@ -2697,6 +2905,30 @@ duckburg.order = {
         // Get the item's name.
         item.item_name = $('[name="item_name_' + i + '"]').val();
 
+        // Get color counts.
+        item.color_count = {
+          front: $('#dccFront_' + i).val(),
+          back: $('#dccBack_' + i).val(),
+          left: $('#dccLeft_' + i).val(),
+          right: $('#dccRight_' + i).val()
+        };
+
+        // Get total color count.
+        item.total_print_colors = 0;
+        for (var color in item.color_count) {
+
+          // Get number of print colors.  Double cost of sleeve colors.
+          var printCount = item.color_count[color];
+          if (color == 'left' || color == 'right') {
+            printCount = (printCount * 2);
+          }
+
+          // Add valid color counts.
+          if (!isNaN(printCount) && printCount != '') {
+            item.total_print_colors += parseInt(printCount);
+          }
+        }
+
         // Update the current design details after grabbing them.
         duckburg.order.updateAndSaveDesignDetails(
           item.design_id, item.design_images_list, item.item_name);
@@ -2711,16 +2943,15 @@ duckburg.order = {
         price = price == '' ? '0' : price;
         item.product_price = price;
 
-        // Get the social and sale prices.
-        item.product_saleprice = $('[name="product_saleprice_' + i + '"]').val();
-        item.product_socialprice =
-            $('[name="product_socialprice_' + i + '"]').val();
-
         // Notes
         item.product_description = $('[name="design_notes_' + i + '"]').val();
 
         // Product color
         item.product_colors = $('[name="product_color_' + i + '"]').val();
+
+        item.delivery_method = $('[name="delivery_method_' + i + '"]').val();
+        item.delivery_method_visible =
+            $('[name="delivery_method_visible_' + i + '"]').val();
 
         // Product category
         item.product_category = $('[name="product_category_' + i + '"]').val();
@@ -2731,6 +2962,24 @@ duckburg.order = {
         item.product_store = $('[name="product_store_' + i + '"]').val();
         item.product_store_visible =
             $('[name="product_store_visible_' + i + '"]').val();
+
+        // Socail settings.
+        var isSocial = $('[name="product_issocial_' + i + '"]').val();
+        item.product_issocial = isSocial == '' || !isSocial ? 'no' : isSocial;
+
+        item.product_socialprice =
+            $('[name="product_socialprice_' + i + '"]').val();
+
+        item.social_delivery_method =
+            $('[name="social_delivery_method_' + i + '"]').val();
+
+        item.social_delivery_method_visible =
+            $('[name="social_delivery_method_visible_' + i + '"]').val();
+
+        var endDate = $('[name="social_end_date_' + i + '"]').val();
+        if (endDate) {
+          item.social_end_date = new Date(endDate);
+        }
 
         // Product is hidden
         var isHidden = $('[name="product_ishidden_' + i + '"]').val();
@@ -2769,6 +3018,11 @@ duckburg.order = {
           totalPieces += parseInt(quantity);
           item.sizes[sizeName] = quantity;
         });
+
+        // Calculate print time for the order.
+        item.total_print_time = duckburg.utils.calculatePrintTime(
+            item.total_items, item.total_print_colors);
+        totalHours += parseFloat(item.total_print_time);
 
         // Continue calculating total cost.
         var totalCost = price * item.total_items;
@@ -2811,7 +3065,8 @@ duckburg.order = {
       }
 
       // Update the order summary.
-      duckburg.order.populateSummarySection(itemCount, totalPieces, orderTotal);
+      duckburg.order.populateSummarySection(
+          itemCount, totalPieces, orderTotal, totalHours);
 
       // Store this current order in the order log.
       var o = duckburg.order.currentOrder;

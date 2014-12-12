@@ -41,13 +41,29 @@ duckburg.requests = {
     // Set the params of the item.
     for (var param in params) {
       if (param != 'parse_search_string') {
-        newItem.set(param, params[param]);
+
+        // Set value, and remove any $ characters, as there are many currency
+        // fields throughout DuckBurg.
+        var value = params[param];
+        value = value.replace(/\$/g, '');
+
+        // Set the parameter value of the new items.
+        newItem.set(param, value);
 
         // Add to the search string.
-        if (params[param] && params[param] != '') {
-          searchString += params[param] + ' ';
+        if (value && value != '') {
+          searchString += String(value);
         }
       }
+    }
+
+    // Assemble a 'full name' if its a customer.
+    if (objectType == 'dbCustomer') {
+      var firstName = params.first_name || '';
+      var lastName = params.last_name || '';
+      lastName = lastName == '' ? lastName : ' ' + lastName;
+      var fullName = firstName + lastName;
+      newItem.set('full_name', fullName);
     }
 
     // Set search string if it has content.

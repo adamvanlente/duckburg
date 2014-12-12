@@ -21,6 +21,10 @@ duckburg.menu = {
       $('.adminOnlyMenuItem').each(function() {
         $(this).remove();
       });
+    } else {
+      $('.adminOnlyMenuItem').each(function() {
+        $(this).show();
+      });
     }
   },
 

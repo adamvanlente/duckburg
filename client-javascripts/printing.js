@@ -82,6 +82,13 @@ duckburg.printing = {
     // Set up the query params.
     var DbObject = Parse.Object.extend('dbOrder');
     var query = new Parse.Query(DbObject);
+    var allowedStatuses = ['open',
+                           'approved',
+                           'ordered',
+                           'received',
+                           'printing'];
+
+    query.containedIn("order_status", allowedStatuses);
 
     // Capture current mode.
     duckburg.printing.currentView = mode;
@@ -267,7 +274,7 @@ duckburg.printing = {
       var summary = JSON.parse(d.order_summary);
 
       // Calculate each job's print time as well as the day's total print time.
-      var printTime = duckburg.utils.calculateOrderTime(summary.total_pieces);
+      var printTime = summary.total_hours || 0.00;
       if (duckburg.printing.printTimeObject[id]) {
         duckburg.printing.printTimeObject[id] += parseFloat(printTime);
       } else {
@@ -281,6 +288,7 @@ duckburg.printing = {
       var items = d.items || '{}';
       items = JSON.parse(items);
       var designIndex = 0;
+      var deliveryMethodString = '';
 
       // Make a detailed div for each order item.
       for (var item in items) {
@@ -294,6 +302,17 @@ duckburg.printing = {
 
         // Div for names and numbers.
         var nnDiv = $('<label>').attr('class', 'nnHolder');
+
+        if (design.delivery_method_visible == 'shipping') {
+          deliveryMethodString =
+              '<span><i class="fa fa-truck"></i> This item is shipping</span>';
+        }
+
+        if (design.delivery_method_visible == 'delivery') {
+          deliveryMethodString =
+              '<span><i class="fa fa-truck"></i>' +
+              ' This item is being delivered</span>';
+        }
 
         // Get names and numbers.
         if (design.names_and_numbers) {
@@ -370,6 +389,9 @@ duckburg.printing = {
               .attr('class', 'designColor')
               .html(design.product_colors))
             .append($('<label>')
+              .attr('class', 'designDeliveryMethod')
+              .html(deliveryMethodString))
+            .append($('<label>')
               .attr('class', 'designDesc')
               .html('<h1>Notes</h1>' + notes))
             .append(sizeDiv)
@@ -400,7 +422,9 @@ duckburg.printing = {
               .click(function(e) {
                 var id = $(e.currentTarget).attr('name');
                 duckburg.printing.openPrintDateInput = id;
-                $(document).bind('click', duckburg.printing.updatePrintDate);
+                setTimeout(function() {
+                  $(document).bind('click', duckburg.printing.updatePrintDate);
+                }, 200);
               }))
 
             // Order name within header.
@@ -484,7 +508,15 @@ duckburg.printing = {
 
       // Insert total print time.
       var totalHours = duckburg.printing.printTimeObject[id].toFixed(2);
-      $('.totalPrintHours').html(totalHours + ' total hours today')
+      if (totalHours > 8) {
+        $('.totalPrintHours')
+          .html(totalHours + ' total hours today')
+          .css({'background': 'red', 'color': 'white'});
+      } else {
+        $('.totalPrintHours')
+          .html(totalHours + ' total hours today');
+      }
+
 
       // Add highsmith listeners to all the calendars..
       duckburg.utils.addHighsmithCalendars(highsmiths);
@@ -579,7 +611,7 @@ duckburg.printing = {
 
       // Get the amount of time for this print job, and build on an object that
       // will remember how much print time is required for each day.
-      var printTime = duckburg.utils.calculateOrderTime(summary.total_pieces);
+      var printTime = summary.total_hours || 0.00;
       if (duckburg.printing.printTimeObject[id]) {
         duckburg.printing.printTimeObject[id] += parseFloat(printTime);
       } else {
@@ -655,7 +687,15 @@ duckburg.printing = {
     // For each day in the week, display the total number of print hours.
     for (var printTimeTotal in duckburg.printing.printTimeObject) {
       var total = duckburg.printing.printTimeObject[printTimeTotal];
-      $('#dayWeekHours' + printTimeTotal).html(total.toFixed(2) + ' hrs');
+      if (total > 8) {
+        $('#dayWeekHours' + printTimeTotal)
+          .html(total.toFixed(2) + ' hrs')
+          .css({'background': 'red'});
+      } else {
+        $('#dayWeekHours' + printTimeTotal)
+          .html(total.toFixed(2) + ' hrs');
+      }
+
     }
 
     // Add highsmith listeners so print dates can be updated.
@@ -802,7 +842,7 @@ duckburg.printing = {
       var summary = JSON.parse(d.order_summary);
 
       // Get print time for each job as well as each day.
-      var printTime = duckburg.utils.calculateOrderTime(summary.total_pieces);
+      var printTime = summary.total_hours || 0.00;
       if (duckburg.printing.printTimeObject[id]) {
         duckburg.printing.printTimeObject[id] += parseFloat(printTime);
       } else {
@@ -872,7 +912,14 @@ duckburg.printing = {
     // Add print time totals.
     for (var printTimeTotal in duckburg.printing.printTimeObject) {
       var total = duckburg.printing.printTimeObject[printTimeTotal];
-      $('#dayMonthHours' + printTimeTotal).html(total.toFixed(2) + ' hrs');
+      if (total > 8) {
+        $('#dayMonthHours' + printTimeTotal)
+          .html(total.toFixed(2) + ' hrs')
+          .css({'background': 'red'});
+      } else {
+        $('#dayMonthHours' + printTimeTotal)
+          .html(total.toFixed(2) + ' hrs');
+      }
     }
 
     // Add highsmith listeners.
@@ -951,11 +998,11 @@ duckburg.printing = {
       var prettyDate = String(date).split(String(year))[0];
       $('.currentViewingDate').html(prettyDate + year);
     } else if (mode == 'week') {
-      var month = duckburg.utils.monthDict[date.getMonth()];
+      var month = duckburg.utils.monthAbbrvDict[date.getMonth()];
       var string = 'Week of ' + month + ' ' + date.getDate();
       $('.currentViewingDate').html(string);
     } else if (mode == 'month') {
-      var month = duckburg.utils.monthDict[date.getMonth()];
+      var month = duckburg.utils.monthAbbrvDict[date.getMonth()];
       var year = String(date.getFullYear()).slice(2);
       $('.currentViewingDate').html('Month of ' + month + ' \'' + year);
     }

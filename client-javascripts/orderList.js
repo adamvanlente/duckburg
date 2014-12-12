@@ -131,6 +131,8 @@ duckburg.orderList = {
     summary = JSON.parse(summary);
 
     var piecesLabel = summary.total_pieces == 1 ? 'item' : 'items';
+    var hrs = summary.total_hours || 0.00;
+    var hrsLabel = parseFloat(hrs).toFixed(2) + ' hrs';
     var pieces = summary.total_pieces || 0;
     var piecesDesc = pieces + ' ' + piecesLabel;
 
@@ -291,7 +293,7 @@ duckburg.orderList = {
           //   .html(updated))
           .append($('<label>')
             .attr('class', 'totalPiecesLabel')
-            .html(piecesDesc))
+            .html(piecesDesc + '&nbsp;&nbsp;' + hrsLabel))
         )
 
         // Span in which issue messages can be inserted.
@@ -314,10 +316,16 @@ duckburg.orderList = {
    *
    */
   checkForIssues: function(order) {
+
+    // Clear the issue div.
+    $('#orderIssuesSpan_' + order.id).html('');
+
+    // Get order details
     var o = order.attributes;
 
     // TODO add a check to see if it is shipping, and if the due date is close
     //      perhaps separate check just to say it is shipping at all.
+    // + if it only has 'quote size and is not quote status'.
 
     // Make sure the print and due dates are compatible.
     if (o.due_date < o.print_date) {
@@ -336,17 +344,133 @@ duckburg.orderList = {
 
     // Check that designs have products associated with them.
     var designs = o.items || '{}';
+    var hasColors = false;
     designs = JSON.parse(designs);
+
+    // Check for product types.
+    var itemsWithMissingTypes = false;
+
+    // Check for missing color counts.
+    var missingColorCounts = 0;
+
+    // Missing product color.
+    var missingProductColors = 0;
+
+    // Shipping notes.
+    var deliveryCount = 0;
+    var shippingCount = 0;
+
     for (var i = 0; i < designs.length; i++) {
-      var type = designs[i].product_type;
+      var d = designs[i];
+
+      // Set some social messages.
+      if (d.product_issocial == 'yes') {
+
+        // Get end date for the social item and start a string description.
+        var endDate = d.social_end_date;
+        var endDateString = ' with no end date.';
+
+        if (endDate && endDate != '') {
+          var today = new Date();
+          endDate = new Date(endDate)
+          var daysAway = endDate - today;
+          daysAway = parseInt((daysAway / (1000*60*60)) / 24) + 1;
+          if (daysAway == 1) {
+            endDateString = ' with sales ending tomorrow';
+          } else if (daysAway > 1) {
+            endDateString = ' with sales ending in ' + daysAway +
+                ' days (' + duckburg.utils.dayDict[endDate.getDay()] +
+                ' ' + duckburg.utils.formatDate(endDate) + ')';
+          }
+        }
+
+        //
+        var socialMsg = 'This order has a social item' + endDateString;
+        duckburg.orderList.reportIssue(socialMsg, order.id, 'social');
+      }
+
+      var type = d.product_type;
+      if (!d.product_colors || d.product_colors == '') {
+        missingProductColors++;
+      }
       if (!type) {
-        var noDesignTypeMsg = 'This order has designs without ' +
-            ' product types assigned.';
-        duckburg.orderList.reportIssue(noDesignTypeMsg, order.id, 'warning');
-        break;
+        itemsWithMissingTypes++;
+      }
+      if (!d.total_print_colors || d.total_print_colors == 0) {
+        missingColorCounts++;
+      }
+
+      if (d.delivery_method_visible == 'shipping') {
+        shippingCount++;
+      }
+
+      if (d.delivery_method_visible == 'delivery') {
+        deliveryCount++;
+      }
+
+      // Check if an 'ordered' order has sizes.
+      if (o.order_status == 'ordered') {
+        var orderedAndHasSizes = false;
+
+        for (var size in d.sizes) {
+          var quan = d.sizes[size];
+          if (size != 'QUOTE' && !isNaN(quan)) {
+            if (parseInt(quan) > 0) {
+              orderedAndHasSizes = true;
+            }
+          }
+        }
+
+        // Case where an order has been set as 'ordered', but contains no
+        // size information and, thus, cannot be properly ordered.
+        if (!orderedAndHasSizes) {
+          var orderedNoSizeMsg = 'Order is marked as "ordered" and contains' +
+          ' one or more items with no sizing information';
+          duckburg.orderList.reportIssue(orderedNoSizeMsg, order.id, 'high');
+        }
       }
     }
 
+    // Missing design types message.
+    if (itemsWithMissingTypes > 0) {
+      var typeMsgVerb = itemsWithMissingTypes == 1 ? 'design' : 'designs';
+      var noDesignTypeMsg = 'This order has ' + itemsWithMissingTypes +
+        ' ' + typeMsgVerb + ' without product types assigned.';
+      duckburg.orderList.reportIssue(noDesignTypeMsg, order.id, 'warning');
+    }
+
+    // Missing color counts message.
+    if (missingColorCounts > 0) {
+      var countMsgVerb = missingColorCounts == 1 ? 'item' : 'items';
+      var noPrintColorsMsg = 'This order has ' + missingColorCounts +
+        ' ' + countMsgVerb + ' with no print colors defined.';
+      duckburg.orderList.reportIssue(noPrintColorsMsg, order.id, 'warning');
+    }
+
+    // Missing colors for products.
+    if (missingProductColors > 0) {
+      var pcVerb = missingProductColors == 1 ?
+          'item that has' : 'items that have';
+      var noProductColorMsg = 'This order has ' + missingProductColors +
+      ' ' + pcVerb + ' products without colors defined.';
+      duckburg.orderList.reportIssue(noProductColorMsg, order.id, 'high');
+    }
+
+    if (shippingCount > 0) {
+      var shipVerb = shippingCount == 1 ?
+          'item that is' : 'items that are';
+      var shipMsg = 'This order has ' + shippingCount +
+          ' ' + shipVerb + ' being shipped.';
+      duckburg.orderList.reportIssue(shipMsg, order.id, 'deliveryMethod');
+    }
+
+    if (deliveryCount > 0) {
+      var delVerb = deliveryCount == 1 ?
+          'item that is' : 'items that are';
+      var delMsg = 'This order has ' + deliveryCount +
+          ' ' + delVerb + ' being delivered.';
+      duckburg.orderList.reportIssue(delMsg, order.id, 'deliveryMethod');
+    }
   },
 
   /**
@@ -366,15 +490,25 @@ duckburg.orderList = {
     var levels = {
       'high': 'rgb(242, 69, 69)', // red
       'warning': 'rgb(226, 207, 77)', // gold
-      'log': 'rgb(79, 200, 135)' // green
+      'log': 'rgb(79, 200, 135)', // green,
+      'social': 'rgb(79, 200, 135)', // green,
+      'deliveryMethod': '#3A7BF2' // slate
     };
 
     // Get color for level.
     var bgColor = levels[level];
 
+    // Choose an icon for the issue.
+    var icon = '<i class="fa fa-warning"></i>';
+    if (level == 'deliveryMethod') {
+      icon = '<i class="fa fa-truck"></i>';
+    } else if (level == 'social') {
+      icon = '<i class="fa fa-user"></i>';
+    }
+
     // Append the issue warning.
     targetDiv.append($('<span>')
-      .html('<i class="fa fa-warning"></i>')
+      .html(icon)
       .css({'background': bgColor})
       .append($('<label>')
         .html(msg)));
@@ -505,13 +639,17 @@ duckburg.orderList = {
 
         // Update order status in the div.
         $('#order_status_' + id)
-        .html(status)
-        .css({'background': bgColor});
+          .html(status)
+          .css({'background': bgColor});
 
         // Remove any other selectors
         $('.orderListStatusSelector').each(function() {
           $(this).remove();
         });
+
+        // Check for issues with this order.
+        duckburg.orderList.checkForIssues(response);
+
       },
 
       function(error) {
@@ -669,6 +807,8 @@ duckburg.orderList = {
     // reversed.
     summary.balance =
         (parseFloat(summary.balance) - parseFloat(amount)).toFixed(2);
+    summary.payments =
+        (parseFloat(summary.payments) + parseFloat(amount)).toFixed(2);
 
     // String the order summary and save it to the object.
     summary = JSON.stringify(summary);
