@@ -36,6 +36,13 @@ gulp.task('sass-invoice', function() {
   .pipe(gulp.dest('public/css/'));
 });
 
+gulp.task('sass-cpe', function() {
+  gulp.src('client-sass/retailSiteStyles.sass')
+  .pipe(plumber())
+  .pipe(sass())
+  .pipe(gulp.dest('public/css/'));
+});
+
 gulp.task('watch', function() {
   gulp.watch('client-javascripts/*', ['script-concat', 'script-minify']);
   gulp.watch('client-javascripts/views/*', ['script-concat', 'script-minify']);
@@ -44,6 +51,7 @@ gulp.task('watch', function() {
   gulp.watch('client-sass/style.sass', ['sass-style']);
   gulp.watch('client-sass/includes/*', ['sass-style']);
   gulp.watch('client-sass/invoice.sass', ['sass-invoice']);
+  gulp.watch('client-sass/retailSiteStyles.sass', ['sass-cpe']);
 });
 
-gulp.task('default', ['script-concat', 'script-minify', 'sass-style', 'sass-invoice', 'watch']);
+gulp.task('default', ['script-concat', 'script-minify', 'sass-style', 'sass-invoice', 'sass-cpe', 'watch']);

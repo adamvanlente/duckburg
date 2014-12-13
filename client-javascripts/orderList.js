@@ -320,12 +320,11 @@ duckburg.orderList = {
     // Clear the issue div.
     $('#orderIssuesSpan_' + order.id).html('');
 
+    // Today's date.
+    var today = new Date();
+
     // Get order details
     var o = order.attributes;
-
-    // TODO add a check to see if it is shipping, and if the due date is close
-    //      perhaps separate check just to say it is shipping at all.
-    // + if it only has 'quote size and is not quote status'.
 
     // Make sure the print and due dates are compatible.
     if (o.due_date < o.print_date) {
@@ -340,6 +339,13 @@ duckburg.orderList = {
     if (!customers || customers.length == 0) {
       var noCustomerMessage = 'There is no customer associated with this order';
       duckburg.orderList.reportIssue(noCustomerMessage, order.id, 'log');
+    }
+
+    // Log message to see if order was created today.
+    if (String(today).split(today.getFullYear())[0] ==
+        String(order.createdAt).split(order.createdAt.getFullYear())[0]) {
+        var createdTodayMsg = 'This order was created today.';
+        duckburg.orderList.reportIssue(createdTodayMsg, order.id, 'log');
     }
 
     // Check that designs have products associated with them.
@@ -371,7 +377,6 @@ duckburg.orderList = {
         var endDateString = ' with no end date.';
 
         if (endDate && endDate != '') {
-          var today = new Date();
           endDate = new Date(endDate)
           var daysAway = endDate - today;
           daysAway = parseInt((daysAway / (1000*60*60)) / 24) + 1;

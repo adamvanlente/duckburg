@@ -30,6 +30,15 @@ module.exports = function(app) {
 
 	//***********************
 	//***********************
+	//* CUSTOM PAGE SAMPLES *
+	//***********************
+	//***********************
+	app.get('/customPageSamples', function(req, res) {
+		res.render('customPageSamples.jade');
+	});
+
+	//***********************
+	//***********************
 	//**** PRINTING *********
 	//***********************
 	//***********************
@@ -62,6 +71,15 @@ module.exports = function(app) {
 	//***********************
 	app.get('/objects', function(req, res) {
 			res.render('objects.jade');
+	});
+
+	//***********************
+	//***********************
+	//**** ASSETS PAGE ******
+	//***********************
+	//***********************
+	app.get('/assets', function(req, res) {
+		res.render('assets.jade');
 	});
 
 	//***********************
@@ -125,6 +143,15 @@ module.exports = function(app) {
 	//***********************
 	app.get('/dos', function(req, res) {
 		res.render('dailyOrderSheet.jade');
+	});
+
+	//***********************
+	//***********************
+	//**** PAGE MAKER *******
+	//***********************
+	//***********************
+	app.get('/pages', function(req, res) {
+		res.render('pageMaker.jade');
 	});
 
 

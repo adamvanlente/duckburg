@@ -32,6 +32,9 @@ duckburg.utils = {
   defaultSortParam: 'due_date',
   defaultSortDirection: 'asc',
 
+  // Reserved routes.  Strings that cannot be used when creating custom pages.
+  reservedRoutes: ['/products', '/myaccount'],
+
   /** Default order status and order status map. **/
   defaultNewOrderStatus: 'open',
 
@@ -45,6 +48,9 @@ duckburg.utils = {
     'completed': 'rgba(54, 179, 202, 1.0)',
     'archived': 'rgba(0, 0, 0, 0.8)'
   },
+
+  /** Desired dimensions for an image intended for use in a slider. **/
+  desiredSliderImageDimensions: '600 x 300',
 
   /** Month dictionary **/
   monthDict: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -208,7 +214,7 @@ duckburg.utils = {
 
     // Keep unauthorized users out of admin areas.
     var adminOnlyRoutes = [
-      '/users', '/finances'
+      '/users', '/finances', '/pages', '/assets'
     ];
 
     // Send (non admin) user back to the hompage if they're trying to acccess
@@ -225,30 +231,20 @@ duckburg.utils = {
       duckburg.orderList.load();
 
     } else if (route == '/dos') {
-
-      // Load the daily order sheet.
       duckburg.dos.load();
-
+    } else if (route == '/assets') {
+      duckburg.assets.load()
+    } else if (route == '/pages') {
+      duckburg.pageMaker.load();
     } else if (route == '/finances') {
-
       duckburg.finances.load();
-
     } else if (route == '/printing') {
-
       duckburg.printing.load();
-
     } else if (route == '/users') {
-
-      // for Users route, just load user view.
       duckburg.users.loadUserView();
     } else if (route == '/objects') {
-
-      // For objects route, load the basic object view.
       duckburg.objects.loadObjectView();
-
     } else if (route.search('/order') != -1) {
-
-      // Load an order.
       duckburg.order.load();
     } else if (route.search('/makeObject') != -1) {
 
@@ -727,14 +723,18 @@ duckburg.utils = {
         })
 
       // Correc the image path for old rd images.
-      if (img.search('http://') == -1 && img.search('jobimages') == -1) {
-        img = '/jobimages/' + img;
+      if (img.search('http://') == -1) {
+
+        // If it hasn't already been sanitized.
+        if (img.search('jobimages') == -1) {
+          img = '/jobimages/' + img;
+        }
       }
 
       // Reveal the img viewer.
       $('.imgViewer')
         .show()
-        .css({'background': 'url(' + img + ')',
+        .css({'background': 'url(' + img + ') #fff',
           'background-size': '100%'});
     },
 
@@ -1636,6 +1636,9 @@ duckburg.utils = {
     // Setup the holder for the employee hours.
     setupEmployeeHoursPopup: function() {
 
+      // Get employee pay rate
+      var payRate = '$' + duckburg.curUser.attributes.pay_rate  + '/hr';
+
       // Show the popup.
       duckburg.utils.showPopup();
       $('#popupContent')
@@ -1647,7 +1650,9 @@ duckburg.utils = {
               duckburg.utils.hidePopup();
             }))
           .append($('<h1>')
-            .html('your hours'))
+            .html('Past time punches'))
+          .append($('<h2>')
+            .html('your pay rate: ' + payRate))
           .append($('<div>')
             .attr('class', 'employeeHoursPayPeriod'))
           .append($('<div>')
@@ -1842,5 +1847,4 @@ $('body').keypress(function(e) {
   if (e.ctrlKey && e.charCode == 16) {
     window.location.href = '/printing';
   }
-
 });

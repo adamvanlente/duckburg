@@ -1,0 +1,93 @@
+.assetListUploader
+  display: block
+  margin-top: 75px
+  padding: 8px
+  input
+    &.fileName
+      display: block
+    &.fileUploader::before
+      @extend .basic-button
+      @extend .light-font
+      font-size: 12px
+      color: white
+      content: "upload asset"
+      background: rgb(134, 169, 208)
+      padding: 4px 60px
+      vertical-align: top
+      display: inherit
+      position: absolute
+      margin-top: -3px
+      border-radius: 1px
+      height: 16px
+      &:hover
+        opacity: 0.9
+
+.assetListSearch
+  display: block
+
+  input
+    @extend .basic-button
+    @extend .light-font
+    display: block
+    background: rgb(237, 231, 231)
+    padding: 8px
+    margin-left: 8px
+    width: 172px
+    font-size: 11px
+
+.assetList
+  display: block
+  position: fixed
+  top: 95px
+  right: 150px
+  width: 800px
+
+  div
+    @extend .light-font
+    &.resultsDiv
+      display: block
+
+      label
+        display: inline-block
+        width: 150px
+        height: 150px
+        background-repeat: no-repeat
+        border: 6px solid #DCDCDC
+        margin: 8px
+        vertical-align: top
+        background: white
+        +trans($easybreezy)
+        &:hover
+          cursor: pointer
+          opacity: 0.8
+
+      em
+        display: inline-block
+        width: 200px
+        text-align: center
+        margin: 72px 12px
+        font-style: normal
+        color: rgb(125, 125, 186)
+
+      input
+        @extend .basic-button
+        @extend .light-font
+        font-size: 11px
+        background: rgba(128, 128, 128, 0.12)
+        width: 351px
+        padding: 4px
+
+  span
+    &.loadingMessage,
+    &.noResultsMessage
+      @extend .light-font
+      font-size: 12px
+      display: block
+      padding: 8px
+      border: 1px solid
+      border-radius: 1px
+      text-align: center
+    &.loadingMessage
+      color: #333
+    &.noResultsMessage
+      color: $cancel-red

@@ -1,0 +1,316 @@
+$pagemakerBlue: rgb(76, 130, 215)
+.basic-pagemaker-input
+  @extend .light-font
+  -webkit-appearance: none
+  border: none
+  background: rgb(234, 234, 234)
+  font-size: 12px
+
+.pageMakerHeader
+  @extend .light-font
+  display: block
+  position: fixed
+  top: 63px
+  background: $pagemakerBlue
+  border-bottom: 1px solid $pagemakerBlue
+  left: 0
+  right: 0
+  span
+    display: inline-block
+    font-size: 11px
+    color: white
+    padding: 4px 8px
+    margin: 0 8px
+    background: rgba(255, 255, 255, 0.06)
+    -webkit-appearance: none
+    cursor: pointer
+    +trans($easybreezy)
+    &:hover
+      background: #F1F1F1
+      color: #333
+
+.pageMakerMenu
+  @extend .light-font
+  display: block
+  position: fixed
+  top: 120px
+  width: 200px
+  background: #F1F1F1
+
+  a
+    @extend .light-font
+    @extend .basic-button
+    text-decoration: none
+    font-size: 10px
+    text-align: center
+    display: block
+    padding: 2px
+    background: $pagemakerBlue
+    color: white
+    margin: 12px
+
+  h1
+    display: block
+    font-size: 15px
+    color: $pagemakerBlue
+    margin: 4px
+    font-weight: normal
+  h2
+    display: block
+    font-size: 11px
+    padding: 1px 4px
+    font-weight: normal
+    margin: 4px
+    background: rgba(0, 0, 0, 0.06)
+    padding: 2px 4px
+    text-transform: uppercase
+
+    button
+      @extend .basic-button
+      display: inline-block
+      margin-left: 24px
+      color: $minty-green
+      background: none
+      font-size: 12px
+      &:hover
+        color: white
+
+  span
+    display: block
+    margin: 0 4px
+
+    label
+      display: inline-block
+      font-size: 11px
+      padding: 4px
+      width: 80px
+    em
+      @extend .basic-button
+      display: inline-block
+      font-style: normal
+      font-size: 11px
+      margin-left: 5px
+      padding: 2px 8px
+      color: $pagemakerBlue
+      &:hover
+        color: white
+        background: $pagemakerBlue
+
+
+.pageMakerBody
+  @extend .light-font
+  display: block
+  margin-left: 250px
+  margin-top: 120px
+  width: 750px
+
+  select
+    &.pageMakerElementAdderSelectMenu
+      @extend .light-font
+      display: block
+
+  div
+
+    &.customPageEditorElements
+      display: block
+
+      div
+        &.customPageElementsHolder
+          white-space: nowrap
+
+      span
+        &.customPageElementDescHeader
+          display: block
+          background: rgb(73, 68, 68)
+          width: 100%
+          margin: 12px auto 8px auto
+          padding: 4px
+          color: white
+          font-size: 12px
+
+          button
+            @extend .light-font
+            @extend .basic-button
+            display: inline-block
+            color: white
+            background: $cancel-red
+            font-size: 11px
+            padding: 2px 12px
+            margin-left: 24px
+            &:hover
+              background: #333
+          input
+            display: inline-block
+            padding: 2px 8px
+            &.indexInput
+              text-align: center
+              width: 10px
+              margin: 0 8px
+            &.nameInput
+              font-size: 11px
+              margin-left: 24px
+              width: 300px
+          label
+            &.indexLabel
+              font-size: 11px
+              background: rgba(255, 255, 255, 0.33)
+              color: #333
+              padding: 2px 12px
+            &.typeLabel
+              font-size: 11px
+              background: $minty-green
+              padding: 2px 12px
+              margin: 0 24px
+
+
+    &.customFormElements
+      span
+        display: block
+        padding-bottom: 8px
+
+        em
+          &.editEm
+            display: inline-block
+          &.deleteEm
+            display: inline-block
+            color: $cancel-red
+
+  h1
+    &.pageMakerEditorHeading
+      display: block
+      font-size: 16px
+      color: gray
+
+  input
+    @extend .basic-pagemaker-input
+    display: inline
+  textarea
+    @extend .basic-pagemaker-input
+    min-height: 100px
+    vertical-align: top
+    padding: 4px
+    &.full
+      display: block
+      width: 100%
+    &.half
+      display: inline-block
+      width: 49%
+      margin: 2px
+    &.third
+      display: inline-block
+      width: 32f%
+      margin: 2px
+
+  span
+    &.emptyEditorMessage
+      @extend .light-font
+      display: block
+      padding:  12px
+      color: #333
+      border: 1px solid
+      width: 100%
+      border-radius: 1px
+      text-align: center
+      font-size: 12px
+
+    &.buttonsSpan
+      display: block
+      text-align: right
+
+      button
+        @extend .light-font
+        @extend .basic-button
+        display: inline-block
+        display: inline-block
+        padding: 4px 12px
+        margin: 8px
+
+        &.cancelButton
+          background: $cancel-red
+          color: white
+        &.submitButton
+          background: $minty-green
+          color: white
+        &:hover
+          background: #333
+
+.pageMakerDeletePagePopup
+  text-align: center
+  button
+    @extend .light-font
+    @extend .basic-button
+    display: inline-block
+    padding: 4px 12px
+    margin: 8px
+
+    &.cancelButton
+      background: $cancel-red
+      color: white
+    &.submitButton
+      background: $minty-green
+      color: white
+    &:hover
+      background: #333
+
+.pageMakerPopupMessage
+.pageMakerDeletePagePopup
+  @extend .light-font
+  display: block
+  padding: 12px
+  background: white
+  margin: 120px auto
+  width: 200px
+  box-shadow: 0 1px 10px rgba(0,0,0,0.1)
+  font-size: 12px
+  color: #333
+
+  span
+    @extend .basic-button
+    display: block
+    width: 100px
+    margin: 12px auto
+    text-align: center
+    padding: 4px
+    background: $minty-green
+    color: white
+    &:hover
+      color: $minty-green
+      background: #333
+
+.newCustomPagePopup
+  @extend .light-font
+  display: block
+  padding: 12px
+  background: white
+  margin: 120px auto
+  width: 350px
+  box-shadow: 0 1px 10px rgba(0,0,0,0.1)
+  font-size: 12px
+  color: #333
+  text-align: center
+
+  input
+    @extend .light-font
+    @extend .basic-button
+    display: block
+    padding: 8px
+    width: 80%
+    margin: 12px auto
+    border: 1px solid #DCDCDC
+
+  button
+    @extend .light-font
+    @extend .basic-button
+    display: inline-block
+    display: inline-block
+    padding: 4px 12px
+    margin: 4px
+
+    &.cancelButton
+      background: $cancel-red
+      color: white
+    &.submitButton
+      background: $minty-green
+      color: white
+    &:hover
+      background: #333

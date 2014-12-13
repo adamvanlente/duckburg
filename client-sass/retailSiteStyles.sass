@@ -1,0 +1,148 @@
+// Import fonts
+@import ./includes/fonts
+
+// Sample styles just for the demo
+.customPageSample
+  font-family: 'Helvetica'
+
+  h1
+    &.sampleHeader
+      font-family: 'Helvetica'
+      display: block
+      font-size: 14px
+      color: #DCDCDC
+      text-align: center
+
+// Global settings
+// Media Query Breakpoints
+$iphone-portrait: 320px
+$iphone-landscape: 568px
+$ipad-portrait: 569px
+$ipad-landscape: 1024px
+$desktop: 1025px
+$desktop-large: 1824px
+
+// Fonts
+.standard-font
+  font-family: "Roboto", sans-serif
+
+.serif-font
+  font-family: "Playfair", serif
+
+.serif-title-font
+  font-family: "Playfair Bold", serif
+
+// Breakpoint function
+=break-for($device)
+
+  @if $device == standard
+    @media only screen and (min-width: $desktop)
+      @content
+
+  @if $device == standard-large
+    @media only screen and (min-width: $desktop-large)
+      @content
+
+  @if $device == iphone
+    @media only screen and (min-device-width: $iphone-portrait) and (max-device-width: $iphone-landscape)
+      @content
+    @media only screen and (min-width: $iphone-portrait) and (max-width: $iphone-landscape)
+      @content
+
+  @if $device == ipad
+    @media only screen and (min-device-width: $ipad-portrait) and (max-device-width: $ipad-landscape)
+      @content
+    @media only screen and (min-width: $ipad-portrait) and (max-width: $ipad-landscape)
+      @content
+
+// Transition
+=trans($transtype)
+  -webkit-transition: $transtype
+  -moz-transition:    $transtype
+  -o-transition:      $transtype
+  transition:         $transtype
+
+$easybreezy: ease-in-out all 0.2s
+$easyslider: all 1s cubic-bezier(0.7,0.53,0,0.87)
+
+// Colors
+$link-blue: rgb(56, 130, 202)
+
+//////////////////////////////
+// Standard retail site styles.
+//////////////////////////////
+
+.light-font
+  font-family: "Roboto Light", sans-serif
+  font-weight: 100
+  font-size: 14px
+  +break-for(ipad)
+    font-size: 18px
+  +break-for(iphone)
+    font-size: 20px
+
+
+.retailSite
+  display: block
+
+.norm-width
+  width: 800px
+  +break-for(ipad)
+    width: 600px
+  +break-for(iphone)
+    width: 300px
+
+.column-holder
+  @extend .light-font
+  @extend .norm-width
+  background: rgba(241, 241, 241, 0.35)
+  display: block
+  margin: 8px auto
+  padding: 8px
+  text-align: center
+  white-space: nowrap
+
+.column-style
+  display: inline-block
+  margin: 8px
+  text-align: justify
+  vertical-align: top
+  white-space: normal
+
+// Standard paragraph
+.retailSite--paragraph
+  @extend .light-font
+  @extend .norm-width
+  background: rgba(241, 241, 241, 0.35)
+  display: block
+  margin: 8px auto
+  padding: 8px
+
+  a
+    color: $link-blue
+    text-decoration: none
+    +trans($easybreezy)
+    &:hover
+      color: #777
+      cursor: pointer
+
+// Two column style
+.retailSite--twoColumnHolder,
+.retailSite--threeColumnHolder
+  @extend .column-holder
+
+.retailSite--twoColumnHolder__column,
+.retailSite--threeColumnHolder__column
+  @extend .column-style
+
+.retailSite--twoColumnHolder__column
+  width: 48%
+  +break-for(iphone)
+    display: block
+    width: auto
+
+.retailSite--threeColumnHolder__column
+  width: 31%
+  +break-for(iphone)
+    display: block
+    width: auto

@@ -45,15 +45,19 @@ duckburg.requests = {
         // Set value, and remove any $ characters, as there are many currency
         // fields throughout DuckBurg.
         var value = params[param];
-        value = value.replace(/\$/g, '');
+
+        if (typeof value == 'string' && typeof value == 'number') {
+          value = String(value);
+          value = value.replace(/\$/g, '');
+        }
+
+        // Add to the search string.
+        if (value != '' && value.search('http://') == -1) {
+          searchString += value;
+        }
 
         // Set the parameter value of the new items.
         newItem.set(param, value);
-
-        // Add to the search string.
-        if (value && value != '') {
-          searchString += String(value);
-        }
       }
     }
 

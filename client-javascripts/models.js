@@ -277,6 +277,24 @@ duckburg.models = {
   },
 
   /**
+  * DELIVERY METHOD
+  *
+  */
+  dbDeliveryMethod: {
+    display_name: 'Delivery method',
+    values: {
+      'method_name': {
+        placeholder: 'Name of method, eg shipping',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null,
+        required: true
+      }
+    }
+  },
+
+  /**
    * DESIGN MODEL
    *
    */
@@ -408,27 +426,94 @@ duckburg.models = {
   },
 
   /**
-  * DELIVERY METHOD
+  * Store settings model
   *
   */
-  dbDeliveryMethod: {
-    display_name: 'Delivery method',
+  dbStoreSettings: {
+    display_name: 'Store settings',
     values: {
-      'method_name': {
-        placeholder: 'Name of method, eg shipping',
+      'related_store': {
+        placeholder: 'Name of storefront',
         input: 'text',
         input_size: 'full',
         options: null,
-        dbObject: null,
-        required: true
+        dbObject: {
+          type: 'dbStorefront',
+          primary_key: 'store_name',
+          additional_mappings: {}
+        }
+      },
+      'copyright_text': {
+        placeholder: 'Copyright text',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'facebook_link': {
+        placeholder: 'Facebook link',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'twitter_link': {
+        placeholder: 'Twitter link',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'instagram_link': {
+        placeholder: 'Instagram link',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'contact_email': {
+        placeholder: 'Contact email address',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'contact_phone': {
+        placeholder: 'Contact phone number',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'store_address': {
+        placeholder: 'Store address',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'store_lat': {
+        placeholder: 'Store latitude coordinates',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
+      },
+      'store_lon': {
+        placeholder: 'Store longitude coordinates',
+        input: 'text',
+        input_size: 'full',
+        options: null,
+        dbObject: null
       }
+
     }
   },
 
   /**
-   * SUPPLIER MODEL
-   *
-   */
+  * SUPPLIER MODEL
+  *
+  */
   dbSupplier: {
     display_name: 'Supplier',
     values: {
@@ -481,25 +566,5 @@ duckburg.models = {
         required: false
       },
     }
-  },
-
-  /**
-   * SAMPLE MODEL
-   *
-   */
-  // dbSample: {
-  //   display_name: 'Customer',
-  //   values: {
-  //     'first_name': {
-  //       placeholder: 'first name',
-  //       input: 'text',
-  //       input_size: 'half',
-  //       options: null,
-  //       dbObject: null,
-  //       required: true
-  //     }
-  //   }
-  // }
-
-
+  }  
 };
