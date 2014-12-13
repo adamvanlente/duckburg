@@ -52,7 +52,7 @@ duckburg.requests = {
         }
 
         // Add to the search string.
-        if (value != '' && value.search('http://') == -1) {
+        if (String(value) != '' && String(value).search('http://') == -1) {
           searchString += value;
         }
 
