@@ -244,6 +244,7 @@ duckburg.printing = {
       // Get order and attributes.
       var order = orders[i];
       var d = order.attributes;
+      console.log(d);
 
       // Bail out if the order is completed.
       if (d.order_status == 'completed') {
@@ -271,7 +272,9 @@ duckburg.printing = {
       var completedBgColor = duckburg.utils.orderStatusMap['completed'];
 
       // Order summary object.
-      var summary = JSON.parse(d.order_summary);
+      var summary = d.order_summary || '{}';
+      summary = JSON.parse(summary);
+      var totalItems = summary.total_pieces || 0;
 
       // Calculate each job's print time as well as the day's total print time.
       var printTime = summary.total_hours || 0.00;
@@ -485,7 +488,7 @@ duckburg.printing = {
             .append($('<span>')
               .attr('class', 'summary')
               .append($('<label>')
-                .html(summary.total_pieces + ' total items'))
+                .html(totalItems + ' total items'))
               .append($('<label>')
                 .html(printTime + ' hrs'))
               )
@@ -607,7 +610,10 @@ duckburg.printing = {
       var bgColor = duckburg.utils.orderStatusMap[d.order_status];
 
       // Order summary object.
-      var summary = JSON.parse(d.order_summary);
+      var summary = d.order_summary || '{}';
+      summary = JSON.parse(summary);
+      var totalItems = summary.total_pieces || 0;
+
 
       // Get the amount of time for this print job, and build on an object that
       // will remember how much print time is required for each day.
@@ -668,7 +674,7 @@ duckburg.printing = {
           // Span showing total items on the job.
           .append($('<span>')
             .attr('class', 'dwTotalPieces')
-            .html(summary.total_pieces + ' total items'))
+            .html(totalItems + ' total items'))
 
           // Span showing the job's total print time.
           .append($('<span>')
@@ -839,7 +845,9 @@ duckburg.printing = {
       var bgColor = duckburg.utils.orderStatusMap[d.order_status];
 
       // Summary
-      var summary = JSON.parse(d.order_summary);
+      var summary = d.order_summary || '{}';
+      summary = JSON.parse(summary);
+      var totalItems = summary.total_pieces || 0;
 
       // Get print time for each job as well as each day.
       var printTime = summary.total_hours || 0.00;
@@ -905,7 +913,7 @@ duckburg.printing = {
           // Total pieces in order.
           .append($('<span>')
             .attr('class', 'dwTotalPieces')
-            .html(summary.total_pieces + '  pcs'))
+            .html(totalItems + '  pcs'))
          );
     }
 

@@ -9,13 +9,43 @@ duckburg.customPageElements = {
 
     elements: {
 
+      /** Heading element **/
+      title_heading: {
+        display_name: 'Heading',
+        nest_inside: false,
+        structure: {
+          heading: {
+            tag: 'h1',
+            class_name: 'retailSite--heading',
+            form_element: 'textarea',
+            form_class: 'full',
+            placeholder: 'Heading element to begin a block.'
+          }
+        }
+      },
+
+      /** Subheading element **/
+      title_subheading: {
+        display_name: 'Subheading',
+        nest_inside: false,
+        structure: {
+          heading: {
+            tag: 'h2',
+            class_name: 'retailSite--subheading',
+            form_element: 'textarea',
+            form_class: 'full',
+            placeholder: 'Subheading element.'
+          }
+        }
+      },
+
       /** Plain paragraph element **/
       plain_paragraph_element: {
         display_name: 'Text only paragraph',
         nest_inside: false,
         structure: {
           paragraph_1: {
-            tag: '<p>',
+            tag: 'p',
             class_name: 'retailSite--paragraph',
             form_element: 'textarea',
             form_class: 'full',
@@ -28,18 +58,18 @@ duckburg.customPageElements = {
       two_column_element: {
         display_name: 'Two column paragraph',
         nest_inside: {
-          '<div>': 'retailSite--twoColumnHolder'
+          'div': 'retailSite--twoColumnHolder'
         },
         structure: {
           paragraph_1: {
-            tag: '<p>',
+            tag: 'p',
             class_name: 'retailSite--twoColumnHolder__column',
             form_element: 'textarea',
             form_class: 'half',
             placeholder: 'A simple paragraph with text only.'
           },
           paragraph_2: {
-            tag: '<p>',
+            tag: 'p',
             class_name: 'retailSite--twoColumnHolder__column',
             form_element: 'textarea',
             form_class: 'half',
@@ -52,25 +82,25 @@ duckburg.customPageElements = {
       three_column_element: {
         display_name: 'Three column element',
         nest_inside: {
-          '<div>': 'retailSite--threeColumnHolder'
+          'div': 'retailSite--threeColumnHolder'
         },
         structure: {
           paragraph_1: {
-            tag: '<p>',
+            tag: 'p',
             class_name: 'retailSite--threeColumnHolder__column',
             form_element: 'textarea',
             form_class: 'third',
             placeholder: 'A simple paragraph with text only.'
           },
           paragraph_2: {
-            tag: '<p>',
+            tag: 'p',
             class_name: 'retailSite--threeColumnHolder__column',
             form_element: 'textarea',
             form_class: 'third',
             placeholder: 'A simple paragraph with text only.'
           },
           paragraph_3: {
-            tag: '<p>',
+            tag: 'p',
             class_name: 'retailSite--threeColumnHolder__column',
             form_element: 'textarea',
             form_class: 'third',
@@ -99,7 +129,7 @@ duckburg.customPageElements = {
           var parent;
           for (var tag in details.nest_inside) {
             var className = details.nest_inside[tag];
-            parent = $(tag)
+            parent = $('<' + tag + '>')
               .attr('class', className);
 
             // Append the parent.
@@ -110,7 +140,7 @@ duckburg.customPageElements = {
           for (var item in details.structure) {
             var el = details.structure[item];
             parent
-              .append($(el.tag)
+              .append($('<' + el.tag + '>')
                 .attr('class', el.class_name)
                 .html(duckburg.customPageElements.sample_content));
           }
@@ -121,7 +151,7 @@ duckburg.customPageElements = {
           for (var item in details.structure) {
             var el = details.structure[item];
             $('#customPageSample')
-              .append($(el.tag)
+              .append($('<' + el.tag + '>')
                 .attr('class', el.class_name)
                 .html(duckburg.customPageElements.sample_content));
           }

@@ -146,3 +146,23 @@ $link-blue: rgb(56, 130, 202)
   +break-for(iphone)
     display: block
     width: auto
+
+.basic-heading
+  @extend .serif-font
+  @extend .norm-width
+  display: block
+  margin: 0 auto
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+.retailSite--heading
+  @extend .basic-heading
+  color: #333
+  font-size: 22px
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15)
+
+.retailSite--subheading
+  @extend .basic-heading
+  color: #A5A1A1
+  font-size: 16px

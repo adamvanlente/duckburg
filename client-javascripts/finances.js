@@ -8,7 +8,7 @@ var duckburg = duckburg || {};
 duckburg.finances = {
 
   /** Default finance mode **/
-  defaultView: 'ledger', // ledger, taxes or payroll
+  defaultView: 'payroll', // ledger, taxes or payroll
 
   /** Remember if all ledger items are checked. **/
   ledgerItemsAreLoaded: {},
@@ -328,11 +328,11 @@ duckburg.finances = {
     lastSunday = String(lastSunday).split(lastSunday.getFullYear())[0] +
         String(lastSunday.getFullYear());
 
-    if (duckburg.finances.payrollObject[lastSunday]) {
-      var msg = 'You have already done payroll for the current pay period.';
-      duckburg.utils.errorMessage(msg);
-      return;
-    }
+    // if (duckburg.finances.payrollObject[lastSunday]) {
+    //   var msg = 'You have already done payroll for the current pay period.';
+    //   duckburg.utils.errorMessage(msg);
+    //   return;
+    // }
 
     // Show the popup.
     duckburg.utils.showPopup();
@@ -525,6 +525,7 @@ duckburg.finances = {
       // Collect the details about this paycheck.
       var payrollItem = {
         employee: name,
+        total_hours: parseFloat(hours).toFixed(2),
         wages: regularWages.toFixed(2),
         salary: weekSalary.toFixed(2),
         overtime: overtime.toFixed(2),
@@ -546,7 +547,8 @@ duckburg.finances = {
           amount: totalPaycheck.toFixed(2),
           ledger_item_date: today,
           name: checkName,
-          type: 'expense'
+          type: 'expense',
+          visible: true
         };
 
         duckburg.requests.createNewObject('dbLedgerItem', ledgerItem,
@@ -559,6 +561,7 @@ duckburg.finances = {
       setTimeout(function() {
         $('.payrollSubmitLoading').hide();
         duckburg.utils.hidePopup();
+        duckburg.finances.loadPayroll();
       }, 5000);
     });
   },
@@ -849,7 +852,7 @@ duckburg.finances = {
     validWeeks.push(stringDate);
 
     // Create entries for the interesting weeks of payroll.
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       date.setDate(date.getDate() + 7);
       stringDate = String(date).split(String(date.getFullYear()))[0] +
           date.getFullYear();

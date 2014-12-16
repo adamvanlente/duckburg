@@ -83,7 +83,7 @@ $pagemakerBlue: rgb(76, 130, 215)
       display: inline-block
       font-size: 11px
       padding: 4px
-      width: 80px
+      width: 90px
     em
       @extend .basic-button
       display: inline-block
@@ -142,6 +142,7 @@ $pagemakerBlue: rgb(76, 130, 215)
           input
             display: inline-block
             padding: 2px 8px
+            margin: 0
             &.indexInput
               text-align: center
               width: 10px
@@ -183,7 +184,10 @@ $pagemakerBlue: rgb(76, 130, 215)
 
   input
     @extend .basic-pagemaker-input
-    display: inline
+    display: block
+    width: 100%
+    padding: 8px
+    margin-bottom: 12px
   textarea
     @extend .basic-pagemaker-input
     min-height: 100px
@@ -252,7 +256,7 @@ $pagemakerBlue: rgb(76, 130, 215)
     &:hover
       background: #333
 
-.pageMakerPopupMessage
+.pageMakerPopupMessage,
 .pageMakerDeletePagePopup
   @extend .light-font
   display: block

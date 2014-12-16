@@ -99,6 +99,36 @@ duckburg.pageMaker = {
       .append($('<h1>')
         .html(storeName))
 
+      // Page title element.
+      .append($('<span>')
+        .append($('<label>')
+          .html('page title'))
+        .append($('<em>')
+          .html('edit')
+          .click(function() {
+            duckburg.pageMaker.editStoreTitle();
+          })))
+
+      // Page meta keywords.
+      .append($('<span>')
+        .append($('<label>')
+          .html('meta keywords'))
+        .append($('<em>')
+          .html('edit')
+          .click(function() {
+            duckburg.pageMaker.editMetaKeywords();
+          })))
+
+      // Page meta description.
+      .append($('<span>')
+        .append($('<label>')
+          .html('meta description'))
+        .append($('<em>')
+          .html('edit')
+          .click(function() {
+            duckburg.pageMaker.editMetaDescription();
+          })))
+
       // Fixed header link
       .append($('<span>')
         .append($('<label>')
@@ -107,6 +137,16 @@ duckburg.pageMaker = {
           .html('edit')
           .click(function() {
             duckburg.pageMaker.editStoreHeader();
+          })))
+
+      // Main page fixed content.
+      .append($('<span>')
+        .append($('<label>')
+          .html('main body'))
+        .append($('<em>')
+          .html('edit')
+          .click(function() {
+            duckburg.pageMaker.editStoreHomepageBody();
           })))
 
       // Fixed footer link
@@ -238,6 +278,103 @@ duckburg.pageMaker = {
   },
 
   /**
+   * Edit the Title for the store (html page title)
+   * @function that launches the Title editor.
+   *
+   */
+  editStoreTitle: function() {
+
+    // Clear the body.
+    $('.pageMakerBody').html('');
+
+    // Add the header editing elements.
+    duckburg.pageMaker.setEditorHeader('Edit store title', 'store_title');
+
+    // Set the required editor elements.
+    var elements = {
+      'store_title': {
+        type: 'input',
+        placeholder: 'Enter the store title (title for html/browser tab).'
+      }
+    };
+    duckburg.pageMaker.setEditorElements(elements);
+
+    // Append form buttons.
+    duckburg.pageMaker.setEditorButtons(duckburg.pageMaker.submitEditorForm);
+
+    // Set an existing header if it exists.
+    var store = duckburg.pageMaker.currentlyViewingStore;
+    var st = store.attributes.store_title || {};
+    var body = st.store_title || '';
+    $('#store_title').val(body);
+  },
+
+  /**
+   * Edit the meta keywords
+   * @function that launches the Title editor.
+   *
+   */
+  editMetaKeywords: function() {
+
+    // Clear the body.
+    $('.pageMakerBody').html('');
+
+    // Add the header editing elements.
+    duckburg.pageMaker.setEditorHeader('Edit meta keywords', 'meta_keywords');
+
+    // Set the required editor elements.
+    var elements = {
+      'meta_keywords': {
+        type: 'input',
+        placeholder: 'Enter a comma separated list of meta keywords.'
+      }
+    };
+    duckburg.pageMaker.setEditorElements(elements);
+
+    // Append form buttons.
+    duckburg.pageMaker.setEditorButtons(duckburg.pageMaker.submitEditorForm);
+
+    // Set an existing header if it exists.
+    var store = duckburg.pageMaker.currentlyViewingStore;
+    var mk = store.attributes.meta_keywords || {};
+    var body = mk.meta_keywords || '';
+    $('#meta_keywords').val(body);
+  },
+
+  /**
+   * Edit the meta description
+   * @function that launches the meta description editor.
+   *
+   */
+  editMetaDescription: function() {
+
+    // Clear the body.
+    $('.pageMakerBody').html('');
+
+    // Add the header editing elements.
+    duckburg.pageMaker.setEditorHeader(
+        'Edit meta description', 'meta_description');
+
+    // Set the required editor elements.
+    var elements = {
+      'meta_description': {
+        type: 'textarea',
+        placeholder: 'Enter a comma separated list of meta description.'
+      }
+    };
+    duckburg.pageMaker.setEditorElements(elements);
+
+    // Append form buttons.
+    duckburg.pageMaker.setEditorButtons(duckburg.pageMaker.submitEditorForm);
+
+    // Set an existing header if it exists.
+    var store = duckburg.pageMaker.currentlyViewingStore;
+    var mk = store.attributes.meta_description || {};
+    var body = mk.meta_description || '';
+    $('#meta_description').val(body);
+  },
+
+  /**
    * Edit the header details for a store.
    * @function that launches the header editor.
    *
@@ -267,6 +404,38 @@ duckburg.pageMaker = {
     var header = store.attributes.header || {};
     var body = header.header_body || '';
     $('#header_body').val(body);
+  },
+
+  /**
+   * Edit the header details for a store.
+   * @function that launches the header editor.
+   *
+   */
+  editStoreHomepageBody: function() {
+
+    // Clear the body.
+    $('.pageMakerBody').html('');
+
+    // Add the body editing elements.
+    duckburg.pageMaker.setEditorHeader('Edit page body', 'homepage_body');
+
+    // Set the required editor elements.
+    var elements = {
+      'homepage_body': {
+        type: 'textarea',
+        placeholder: 'Enter the hompage html in this area.'
+      }
+    };
+    duckburg.pageMaker.setEditorElements(elements);
+
+    // Append form buttons.
+    duckburg.pageMaker.setEditorButtons(duckburg.pageMaker.submitEditorForm);
+
+    // Set an existing homepage body if it exists.
+    var store = duckburg.pageMaker.currentlyViewingStore;
+    var hp = store.attributes.homepage_body || {};
+    var body = hp.homepage_body || '';
+    $('#homepage_body').val(body);
   },
 
   /**
@@ -312,7 +481,7 @@ duckburg.pageMaker = {
     // Form heading
     $('.pageMakerBody')
       .append($('<h1>')
-        .attr('class', 'pageMakerEditorHeading')
+        .attr('class', 'pageMakerEditorHeading full')
         .attr('id', 'pageMakerEditorHeading')
         .attr('name', name)
         .html(string));
@@ -333,7 +502,7 @@ duckburg.pageMaker = {
         $('.pageMakerBody')
           .append($('<textarea>')
             .attr('id', elementName)
-            .attr('class', el.form_class)
+            .attr('class', el.form_class + ' full')
             .attr('name', 'pageMakerEditorFormElement')
             .attr('placeholder', placeholder));
       } else {
@@ -514,7 +683,24 @@ duckburg.pageMaker = {
      var msg = 'Edit custom page: ' + page;
      duckburg.pageMaker.setEditorHeader(msg, page);
 
-     // Element-Adder
+     // Add title and meta inputs.
+     $('.pageMakerBody')
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('id', 'custom_page_title')
+         .attr('placeholder', 'Page title'))
+
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('id', 'custom_meta_keywords')
+         .attr('placeholder', 'Page meta keywords'))
+
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('id', 'custom_meta_description')
+         .attr('placeholder', 'Page meta description'));
+
+     // Element-Adder form.
      duckburg.pageMaker.createCustomPageElementAdder(page);
 
      // Get any existing elements.
@@ -736,7 +922,6 @@ duckburg.pageMaker = {
        // Get children of the element.
        var childElements = $(this).children();
        var type = this.id;
-       var obj = duckburg.customPageElements.elements[type];
 
        // Create a new object for each item.
        var newObject = {};
@@ -752,20 +937,36 @@ duckburg.pageMaker = {
          var el = childElements[i];
          if (el.name == 'structureElement') {
            newObject.values[el.id] = el.value;
-
          }
        }
+
+       // Get the rendered html string for the items.
+       newObject.rendered_content =
+          duckburg.pageMaker.getRenderedPageElement(newObject.values, type);
 
        // Push every object to the holder.
        customPageElementsHolder.push(newObject);
      });
 
+     // Get title and meta info.
+     var titleOfPage = $('#custom_page_title').val();
+     var keywords = $('#custom_meta_keywords').val();
+     var description = $('#custom_meta_description').val();
+
      // Get the current store and update its custom page data.
      var store = duckburg.pageMaker.currentlyViewingStore;
      var s = store.attributes;
      var customPages = s.custom_pages;
-     customPages[duckburg.pageMaker.currentlyUpdatingPage] =
-        customPageElementsHolder;
+     var curPage = duckburg.pageMaker.currentlyUpdatingPage;
+
+     // Set title and meta keywords/desc on the new object.
+     customPages[curPage] = {};
+     customPages[curPage].title = titleOfPage;
+     customPages[curPage].meta_keywords = keywords;
+     customPages[curPage].meta_description = description;
+
+     // Set the new custom elements with Parse.
+     customPages[curPage].elements = customPageElementsHolder;
      duckburg.pageMaker.currentlyViewingStore.set('custom_pages', customPages);
 
      // Save it on the server and notify user of results.
@@ -782,13 +983,80 @@ duckburg.pageMaker = {
      );
    },
 
+   /**
+    * Creates a rendered version of a custom page element.
+    * @function that takes a custom page element, looks up its structure
+    *           within customPageElements.js and renders the actual html
+    *           that will be seen and used by the client.
+    * @param name String name of the item within the custom page element.
+    * @param value String custom value being plugged in.
+    * @param type String type of custom page element.
+    *
+    */
+   getRenderedPageElement: function(values, type) {
+
+     // Get the custom element description from the custom page elements
+     // script.
+     var cpe = duckburg.customPageElements.elements[type];
+     var renderedContent = '';
+
+     // Get all the elements for the custom page elment (and their values).
+     for (var element in values) {
+
+       // Value to place inside the page item.
+       var value = values[element];
+
+        // Get the intended structure of this element.
+        var struct = cpe.structure[element];
+
+        // Opening tag.
+        renderedContent += '<' + struct.tag +
+           ' class="' + struct.class_name + '">';
+
+        // Insert value.
+        renderedContent += value;
+
+        // Closing tag.
+        renderedContent += '</' + struct.tag + '>';
+     }
+
+     // Determine if this needs to be nested inside an element.
+     if (cpe.nest_inside) {
+       var parentTag;
+       var parentClass;
+       for (var parent in cpe.nest_inside) {
+         parentTag = parent;
+         parentClass = cpe.nest_inside[parent];
+       }
+
+       // Now insert the current rendered content into this parent element.
+       renderedContent = '<' + parentTag + ' class="' + parentClass + '">' +
+          renderedContent + '</' + parentTag + '>';
+     }
+
+     // Return the string containing rendered content.
+     return renderedContent;
+   },
+
+   /**
+    * Populate a custom page form with existing elements.
+    * @function that take a custom page's info and fills a form for editing.
+    * @param page String name of page
+    *
+    */
    popuplateExistingElements: function(page) {
 
      // Get the desired page elements from the current store.
      var store = duckburg.pageMaker.currentlyViewingStore;
      var s = store.attributes;
      var customPages = s.custom_pages;
-     var currentPageElements = customPages[page];
+     var curPage = customPages[page];
+     var currentPageElements = curPage.elements;
+
+     // Set the title and meta keywords/description.
+     $('#custom_page_title').val(curPage.title);
+     $('#custom_meta_keywords').val(curPage.meta_keywords);
+     $('#custom_meta_description').val(curPage.meta_description);
 
      // Make a copy of the custom page element.
      for (var i = 0; i < currentPageElements.length; i++) {
@@ -813,7 +1081,6 @@ duckburg.pageMaker = {
        newModel.values = element.values;
 
        duckburg.pageMaker.createCustomFormElementHeader(newModel, type);
-
      }
    }
 };
