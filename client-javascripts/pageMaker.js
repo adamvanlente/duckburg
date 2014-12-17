@@ -685,6 +685,19 @@ duckburg.pageMaker = {
 
      // Add title and meta inputs.
      $('.pageMakerBody')
+
+       .append($('<label>')
+         .html('Is top menu item?'))
+       .append($('<input>')
+         .attr('type', 'checkbox')
+         .attr('id', 'top_menu_item_checkbox'))
+
+       .append($('<label>')
+         .html('Include in footer?'))
+       .append($('<input>')
+         .attr('type', 'checkbox')
+         .attr('id', 'include_in_footer_checkbox'))
+
        .append($('<input>')
          .attr('type', 'text')
          .attr('id', 'custom_page_title')
@@ -953,6 +966,10 @@ duckburg.pageMaker = {
      var keywords = $('#custom_meta_keywords').val();
      var description = $('#custom_meta_description').val();
 
+     // Get menu locations.
+     var isMenuItem = $('#top_menu_item_checkbox').prop('checked');
+     var includeInFooter = $('#include_in_footer_checkbox').prop('checked');
+
      // Get the current store and update its custom page data.
      var store = duckburg.pageMaker.currentlyViewingStore;
      var s = store.attributes;
@@ -964,6 +981,8 @@ duckburg.pageMaker = {
      customPages[curPage].title = titleOfPage;
      customPages[curPage].meta_keywords = keywords;
      customPages[curPage].meta_description = description;
+     customPages[curPage].is_menu_item = isMenuItem;
+     customPages[curPage].has_footer_link = includeInFooter;
 
      // Set the new custom elements with Parse.
      customPages[curPage].elements = customPageElementsHolder;
@@ -1057,6 +1076,12 @@ duckburg.pageMaker = {
      $('#custom_page_title').val(curPage.title);
      $('#custom_meta_keywords').val(curPage.meta_keywords);
      $('#custom_meta_description').val(curPage.meta_description);
+
+     // Set menu option checkboxes.
+     var isMenuItem = curPage.is_menu_item;
+     var hasFooterLink = curPage.has_footer_link;
+     $('#top_menu_item_checkbox').prop('checked', isMenuItem);
+     $('#include_in_footer_checkbox').prop('checked', hasFooterLink);
 
      // Make a copy of the custom page element.
      for (var i = 0; i < currentPageElements.length; i++) {

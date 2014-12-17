@@ -10,11 +10,11 @@ $pagemakerBlue: rgb(76, 130, 215)
   @extend .light-font
   display: block
   position: fixed
-  top: 63px
-  background: $pagemakerBlue
-  border-bottom: 1px solid $pagemakerBlue
+  top: 62px
+  background: #3963AE
   left: 0
   right: 0
+  border-bottom: 1px solid #3963AE
   span
     display: inline-block
     font-size: 11px
@@ -182,12 +182,22 @@ $pagemakerBlue: rgb(76, 130, 215)
       font-size: 16px
       color: gray
 
+  label
+    font-size: 11px
+    padding: 12px 0
+    display: inline-block
+
   input
-    @extend .basic-pagemaker-input
-    display: block
-    width: 100%
-    padding: 8px
-    margin-bottom: 12px
+    &[type="text"],
+    &[type="email"],
+    &[type="tel"],
+    &[type="password"],
+    &[type="date"],
+      @extend .basic-pagemaker-input
+      display: block
+      width: 100%
+      padding: 8px
+      margin-bottom: 12px
   textarea
     @extend .basic-pagemaker-input
     min-height: 100px

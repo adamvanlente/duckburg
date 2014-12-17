@@ -244,6 +244,8 @@ duckburg.utils = {
       duckburg.users.loadUserView();
     } else if (route == '/objects') {
       duckburg.objects.loadObjectView();
+    } else if (route == '/socialorder') {
+      duckburg.order.load(true);
     } else if (route.search('/order') != -1) {
       duckburg.order.load();
     } else if (route.search('/makeObject') != -1) {

@@ -43,7 +43,7 @@ duckburg.orderList = {
       .html('')
       .append($('<span>')
         .attr('class', 'loadingOrderMessage')
-        .html('loading orders'))
+        .html('loading orders'));
 
     // Uncheck all status filter boxes.
     $('.statusFilterCheckbox').each(function() {
@@ -333,6 +333,12 @@ duckburg.orderList = {
       duckburg.orderList.reportIssue(printDateIssueText, order.id, 'high');
     }
 
+    // Report whether or not the order is social.
+    if (o.is_social_order) {
+      var socialMsg = 'This is a social order';
+      duckburg.orderList.reportIssue(socialMsg, order.id, 'social');
+    }
+
     // See that there are customers associated with the order.
     var customers = o.customers || '[]';
     customers = JSON.parse(customers);
@@ -368,31 +374,6 @@ duckburg.orderList = {
 
     for (var i = 0; i < designs.length; i++) {
       var d = designs[i];
-
-      // Set some social messages.
-      if (d.product_issocial == 'yes') {
-
-        // Get end date for the social item and start a string description.
-        var endDate = d.social_end_date;
-        var endDateString = ' with no end date.';
-
-        if (endDate && endDate != '') {
-          endDate = new Date(endDate)
-          var daysAway = endDate - today;
-          daysAway = parseInt((daysAway / (1000*60*60)) / 24) + 1;
-          if (daysAway == 1) {
-            endDateString = ' with sales ending tomorrow';
-          } else if (daysAway > 1) {
-            endDateString = ' with sales ending in ' + daysAway +
-                ' days (' + duckburg.utils.dayDict[endDate.getDay()] +
-                ' ' + duckburg.utils.formatDate(endDate) + ')';
-          }
-        }
-
-        //
-        var socialMsg = 'This order has a social item' + endDateString;
-        duckburg.orderList.reportIssue(socialMsg, order.id, 'social');
-      }
 
       var type = d.product_type;
       if (!d.product_colors || d.product_colors == '') {
@@ -496,8 +477,8 @@ duckburg.orderList = {
       'high': 'rgb(242, 69, 69)', // red
       'warning': 'rgb(226, 207, 77)', // gold
       'log': 'rgb(79, 200, 135)', // green,
-      'social': 'rgb(79, 200, 135)', // green,
-      'deliveryMethod': '#3A7BF2' // slate
+      'social': '#3A7BF2', // green,
+      'deliveryMethod': '#333' // slate
     };
 
     // Get color for level.

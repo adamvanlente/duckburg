@@ -30,9 +30,13 @@ duckburg.order = {
    * Load order view
    * @function loads the initial view for order.  Scans url to see if an order
    *           is being requested.  If not, this is simply a new order form.
-   *
+   * @param isSocial Boolean whether or not this is a social order.
    */
-  load: function() {
+  load: function(isSocial) {
+
+    // Check if this is a social order.
+    duckburg.order.isSocialOrder = isSocial;
+    duckburg.order.setSocialNotifier(isSocial);
 
     // Look in the url path for an order id.
     var urlArray = window.location.pathname.split('/');
@@ -102,6 +106,10 @@ duckburg.order = {
     duckburg.order.currentOrder = order[0];
     var o = duckburg.order.currentOrder.attributes;
 
+    // Store whether or not this is a social order.
+    duckburg.order.isSocialOrder = o.is_social_order;
+    duckburg.order.setSocialNotifier(o.is_social_order);
+
     // Fill print date and due date.
     var due_date = duckburg.utils.formatDate(o.due_date);
     $('#due_date').val(due_date);
@@ -138,6 +146,14 @@ duckburg.order = {
         duckburg.order.fetchAndSetDesign(item.id);
         duckburg.order.populateOrderDesigns(item, i);
       }
+    }
+  },
+
+  setSocialNotifier: function(isSocial) {
+    if (isSocial) {
+      $('.socialOrderNotifier')
+        .append($('<span>')
+        .html('<i class="fa fa-user"></i> you are viewing a social order.'));
     }
   },
 
@@ -229,9 +245,10 @@ duckburg.order = {
 
     $('[name="product_ishidden_' + index + '"]').val(design.product_ishidden);
     $('[name="product_isindexed_' + index + '"]').val(design.product_isindexed);
-    $('[name="product_issocial_' + index + '"]').val(design.product_issocial);
     $('[name="product_socialprice_' + index + '"]')
         .val(design.product_socialprice);
+    $('[name="product_socialmessage_' + index + '"]')
+        .val(design.product_socialmessage);
 
     var endDate = design.social_end_date;
     if (endDate && endDate != '') {
@@ -969,7 +986,7 @@ duckburg.order = {
         if (!customers || customers.length == 0) {
           $('.existingUserSearchResultsSpan')
             .append($('<label>')
-              .html('searching for customers')
+              .html('no customers with that name')
               .attr('class', 'progressMsg'))
         } else {
 
@@ -1349,7 +1366,8 @@ duckburg.order = {
           order_name: orderName,
           due_date: dueDate,
           print_date: printDate,
-          order_status: orderStatus
+          order_status: orderStatus,
+          is_social_order: duckburg.order.isSocialOrder
         };
 
         // Create an order item.
@@ -1395,13 +1413,21 @@ duckburg.order = {
     // Add the pricing input fields to the form.
     duckburg.order.addDesignPriceInputsToDesignForm(newForm);
 
-    // Append size holder and sizes.
-    duckburg.order.addDesignSizeHolderToForm(newForm, sizes);
+    // Add social settings for social orders.
+    if (duckburg.order.isSocialOrder) {
+      duckburg.order.addSocialSettingsHolder(newForm);
+    }
 
     // Create holders for color count.
     duckburg.order.addDesignColorCountToForm(newForm);
 
-    // Add the image fields (design)/
+    // TODO Here is where we'll add a holder for all the existing social
+    //      'sub' orders, orders that have been place on a social order.
+
+    // Add sizes for non-social orders.
+    duckburg.order.addDesignSizeHolderToForm(newForm, sizes);
+
+    // Add the image fields (design).
     duckburg.order.addDesignImageHolderToDesignForm(newForm);
 
     // Add names & numbers area to design form.
@@ -1415,6 +1441,75 @@ duckburg.order = {
 
     // Append the new form.
     $('.designsDetailsCustomerHolder').append(newForm);
+  },
+
+  /**
+   * Add a div containing social settings options.
+   * @function that appends social settings inputs to a design form.
+   * @param form Object the dom element to append to.
+   *
+   */
+  addSocialSettingsHolder: function(form) {
+
+    // Get current number of designs.
+    var numDesigns = $('.designFormWithinOrder').length;
+
+    // Create a settings detail div.
+    var settingsDetail = $('<div>')
+      .attr('class', 'socialSettingsForDesign')
+      .attr('id', numDesigns);
+
+    // Append a social order input.
+    settingsDetail
+        .append($('<label>')
+          .html('social end date'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'social_end_date_' + numDesigns)
+          .attr('class', 'socialEndDate')
+          .attr('placeholder', 'End date for social order')
+          .attr('name', 'social_end_date_' + numDesigns)
+          .click(function(e) {
+
+            // After a breif wait, set a function to update the due date
+            // after any document click.
+            setTimeout(function() {
+              $(document).bind('click', duckburg.order.updateSocialCal);
+            }, 200);
+          }));
+
+     var socialCalId = 'social_end_date_' + numDesigns;
+     duckburg.order.socialHighsmiths.push(socialCalId);
+
+     // Append a product category input.
+     settingsDetail
+       .append($('<label>')
+         .html('social deliv. method'))
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('class', 'socialDeliveryMethodVis')
+         .attr('placeholder', 'method')
+         .attr('id', 'social_delivery_method_visible')
+         .attr('name', 'social_delivery_method_visible_' + numDesigns)
+         .click(function(e) {
+           duckburg.order.lastClickedCategory = e.currentTarget.name;
+           duckburg.utils.launchRelatedItemSelector(
+             e, 'method_name', 'dbDeliveryMethod', 'method_name');
+         }))
+       .append($('<input>')
+         .attr('type', 'hidden')
+         .attr('class', 'socialDeliveryMethod')
+         .attr('id', 'social_delivery_method')
+         .attr('name', 'social_delivery_method_' + numDesigns));
+
+      // Append all settings to the form.
+      form.append(settingsDetail);
+
+      // Add highsmith calendars.
+      setTimeout(function() {
+        duckburg.utils.addHighsmithCalendars(
+            duckburg.order.socialHighsmiths, true);
+      }, 1000);
   },
 
   /**
@@ -1691,24 +1786,50 @@ duckburg.order = {
     var numDesigns = $('.designFormWithinOrder').length;
 
     // Append a product detail holder.
-    form
-      .append($('<div>')
-        .attr('class', 'designPriceDetailInputs')
+    var priceHolder = $('<div>')
+        .attr('class', 'designPriceDetailInputs');
 
-        // Product type label and input.
+    priceHolder
+      .append($('<label>')
+        .html('piece price')
+        .attr('class', 'productPriceLabel'))
+      .append($('<input>')
+        .attr('type', 'text')
+        .attr('id', 'product_price')
+        .attr('name', 'product_price_' + numDesigns)
+        .attr('class', 'productPriceInputField')
+        .attr('placeholder', '0.00')
+        .keyup(function() {
+          duckburg.order.collectDesignDetails();
+        }));
+
+    if (duckburg.order.isSocialOrder) {
+
+      priceHolder
         .append($('<label>')
-          .html('piece price')
-          .attr('class', 'productPriceLabel'))
+          .attr('id', 'social_price_label')
+          .attr('class', 'socialPriceLabel')
+          .html('social price'))
         .append($('<input>')
           .attr('type', 'text')
-          .attr('id', 'product_price')
-          .attr('name', 'product_price_' + numDesigns)
-          .attr('class', 'productPriceInputField')
+          .attr('id', 'product_socialprice')
+          .attr('class', 'productSocialPrice')
           .attr('placeholder', '0.00')
+          .attr('name', 'product_socialprice_' + numDesigns)
           .keyup(function() {
             duckburg.order.collectDesignDetails();
           }))
-     );
+         .append($('<textarea>')
+           .attr('id', 'product_socialmessage')
+           .attr('class', 'productSocialMessage')
+           .attr('placeholder', 'Message to social customers')
+           .attr('name', 'product_socialmessage_' + numDesigns)
+           .keyup(function() {
+             duckburg.order.collectDesignDetails();
+           }));
+     }
+
+     form.append(priceHolder);
    },
 
    /**
@@ -1727,7 +1848,7 @@ duckburg.order = {
       .append($('<textarea>')
         .attr('class', 'designNotesWithinDesignForm')
         .attr('name', 'design_notes_' + numDesigns)
-        .attr('placeholder', 'notes')
+        .attr('placeholder', 'notes OR description for a social/retail item')
         .keyup(function() {
           duckburg.order.collectDesignDetails();
         }));
@@ -2206,24 +2327,32 @@ duckburg.order = {
     }
 
     // Add an additional input for creating new sizes.
-    parent
-      .append($('<span>')
-        .attr('class', 'sizeLabelAndInputHolder')
-        .append($('<label>')
-          .attr('class', 'addSizeLabel')
-          .html('add size'))
+    var sizeSpan = $('<span>')
+        .attr('class', 'sizeLabelAndInputHolder');
+
+    sizeSpan
+      .append($('<label>')
+        .attr('class', 'addSizeLabel')
+        .html('add size'));
+
+      sizeSpan
         .append($('<input>')
-          .attr('class', 'addSizeInput'))
-        .append($('<label>')
-          .attr('class', 'addSizeButton')
-          .attr('id', index)
-          .html('<i class="fa fa-plus"></i>')
-          .click(function(e) {
-            var el = e.currentTarget;
-            var size = $(el).prev().val();
-            duckburg.order.addSizeToDesignForm(size, el.id);
-          }))
-      );
+          .attr('class', 'addSizeInput'));
+
+    sizeSpan
+      .append($('<label>')
+        .attr('class', 'addSizeButton')
+        .attr('id', index)
+        .html('<i class="fa fa-plus"></i>')
+        .click(function(e) {
+          var el = e.currentTarget;
+          var size = $(el).prev().val();
+          duckburg.order.addSizeToDesignForm(size, el.id);
+        })
+    );
+
+    // Append the size span to the parent.
+    parent.append(sizeSpan);
   },
 
   /**
@@ -2237,23 +2366,32 @@ duckburg.order = {
    *
    */
   addSizeInputFieldToForm: function(size, quantity, designIndex, parent) {
-    parent
-      .append($('<span>')
+
+    var sizeInputClass = duckburg.order.isSocialOrder ?
+        'sizeInputHidden' : 'sizeInput';
+
+    var sizeSpan = $('<span>')
         .attr('class', 'sizeLabelAndInputHolder')
-        .attr('id', size + '_' + quantity)
+        .attr('id', size + '_' + quantity);
+
+    sizeSpan
       .append($('<label>')
         .attr('class', 'sizeLabel')
-        .html(size))
+        .html(size));
+
+    sizeSpan
       .append($('<input>')
         .attr('type', 'text')
         .attr('id', size)
         .attr('name', 'size_for_item_' + designIndex)
         .attr('placeholder', '0')
-        .attr('class', 'sizeInput')
+        .attr('class', sizeInputClass)
         .val(quantity)
         .keyup(function(e) {
           duckburg.order.collectDesignDetails();
-        }))
+        }));
+
+    sizeSpan
       .append($('<label>')
         .attr('class', 'removeSizeButton')
         .html('<i class="fa fa-times"></i>')
@@ -2261,8 +2399,10 @@ duckburg.order = {
           var el = e.currentTarget.parentElement;
           $(el).remove();
           duckburg.order.collectDesignDetails();
-        }))
-      );
+        }));
+
+    // Add the size span to the parent.
+    parent.append(sizeSpan);
   },
 
   /**
@@ -2307,6 +2447,9 @@ duckburg.order = {
 
      // Reset the list in the UI.
      duckburg.order.addSizeInputsToSizeHolder(parent, sizeObj);
+
+     // Update the design details.
+     duckburg.order.collectDesignDetails();
    },
 
   /**
@@ -2426,86 +2569,6 @@ duckburg.order = {
           .keyup(function() {
             duckburg.order.collectDesignDetails();
           }));
-
-      settingsDetail
-        .append($('<h2>')
-          .html('social settings'));
-
-      // Append a social order input.
-      settingsDetail
-        .append($('<label>')
-          .html('Is Social?'))
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'product_issocial')
-          .attr('class', 'productIsSocial')
-          .attr('placeholder', 'yes/no (default no)')
-          .attr('name', 'product_issocial_' + numDesigns)
-          .keyup(function() {
-            duckburg.order.collectDesignDetails();
-          }));
-
-      // Append a social order input.
-      settingsDetail
-        .append($('<label>')
-          .html('Social price'))
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'product_socialprice')
-          .attr('class', 'productSocialPrice')
-          .attr('placeholder', 'Social price, eg 10.00')
-          .attr('name', 'product_socialprice_' + numDesigns)
-          .keyup(function() {
-            duckburg.order.collectDesignDetails();
-          }));
-
-      // Append a social order input.
-      settingsDetail
-          .append($('<label>')
-            .html('Social end date'))
-          .append($('<input>')
-            .attr('type', 'text')
-            .attr('id', 'social_end_date_' + numDesigns)
-            .attr('class', 'socialEndDate')
-            .attr('placeholder', 'End date for social order')
-            .attr('name', 'social_end_date_' + numDesigns)
-            .click(function(e) {
-
-              // After a breif wait, set a function to update the due date
-              // after any document click.
-              setTimeout(function() {
-                $(document).bind('click', duckburg.order.updateSocialCal);
-              }, 200);
-            }));
-
-       var socialCalId = 'social_end_date_' + numDesigns;
-       duckburg.order.socialHighsmiths.push(socialCalId);
-
-       // Append a product category input.
-       settingsDetail
-         .append($('<label>')
-           .html('Social deliv. method'))
-         .append($('<input>')
-           .attr('type', 'text')
-           .attr('class', 'socialDeliveryMethodVis')
-           .attr('id', 'social_delivery_method_visible')
-           .attr('name', 'social_delivery_method_visible_' + numDesigns)
-           .click(function(e) {
-             duckburg.order.lastClickedCategory = e.currentTarget.name;
-             duckburg.utils.launchRelatedItemSelector(
-               e, 'method_name', 'dbDeliveryMethod', 'method_name');
-           }))
-         .append($('<input>')
-           .attr('type', 'hidden')
-           .attr('class', 'socialDeliveryMethod')
-           .attr('id', 'social_delivery_method')
-           .attr('name', 'social_delivery_method_' + numDesigns));
-
-        // Add highsmith calendars.
-        setTimeout(function() {
-          duckburg.utils.addHighsmithCalendars(
-              duckburg.order.socialHighsmiths, true);
-        }, 1000)
    },
 
    /** Force designs to update if a social end date has been updated **/
@@ -2636,11 +2699,11 @@ duckburg.order = {
      $('.productStore').each(function(item) {
        $(this).attr('name', 'product_store_' + item);
      });
-     $('.productIsSocial').each(function(item) {
-       $(this).attr('name', 'product_issocial_' + item);
-     });
      $('.productSocialPrice').each(function(item) {
        $(this).attr('name', 'product_socialprice_' + item);
+     });
+     $('.productSocialMessage').each(function(item) {
+       $(this).attr('name', 'product_socialmessage_' + item);
      });
      $('.socialEndDate').each(function(item) {
        $(this).attr('name', 'social_end_date_' + item);
@@ -2963,13 +3026,10 @@ duckburg.order = {
         item.product_store_visible =
             $('[name="product_store_visible_' + i + '"]').val();
 
-        // Socail settings.
-        var isSocial = $('[name="product_issocial_' + i + '"]').val();
-        item.product_issocial = isSocial == '' || !isSocial ? 'no' : isSocial;
-
         item.product_socialprice =
             $('[name="product_socialprice_' + i + '"]').val();
-
+        item.product_socialmessage =
+            $('[name="product_socialmessage_' + i + '"]').val();
         item.social_delivery_method =
             $('[name="social_delivery_method_' + i + '"]').val();
 

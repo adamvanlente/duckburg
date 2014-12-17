@@ -6,7 +6,6 @@
   top: 30px
   background: rgba(247, 246, 246, 1)
   z-index: 11
-  border-bottom: 1px solid $minty-green
   box-shadow: 0 1px 1px rgba(0,0,0,0.1)
 
   +break-for(iphone)
@@ -26,16 +25,23 @@
 
   a
     &.menuNewOrderButton
-      color: white
       background: $minty-green
+      &:hover
+        background: #333
+        color: $minty-green
+
+    &.menuNewSocialOrderButton
+      background: rgb(97, 140, 218)
+      &:hover
+        background: #333
+        color: rgb(97, 140, 218)
+    &.menuNewOrderButton,
+    &.menuNewSocialOrderButton
+      color: white
       font-size: 12px
       width: 26px
       text-align: center
       border-radius: 0px
-
-      &:hover
-        background: #333
-        color: $minty-green
 
     @extend .basic-button
     @extend .light-font
@@ -47,7 +53,7 @@
     &.adminOnlyMenuItem
       display: none
     &.standardMenuItem
-      display: inline-block  
+      display: inline-block
     &:hover
       background: #F1F1F1
 

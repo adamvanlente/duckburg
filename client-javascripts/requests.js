@@ -102,7 +102,7 @@ duckburg.requests = {
       success: function(result) {
         successCb(result);
       },
-      error: function(object, error) {
+      error: function(error) {
         duckburg.utils.errorMessage(error.message);
       }
     });

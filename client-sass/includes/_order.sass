@@ -154,17 +154,17 @@
 
               &.firstNameField,
               &.lastNameField
-                font-size: 13px
+                font-size: 11px
                 background: none
-                width: 122px
+                width: 100px
                 overflow: visible
-                text-align: center
+                text-align: left
               &.phoneNumberField
-                width: 90px
+                width: 125px
                 overflow: visible
                 text-align: center
                 background: none
-                font-size: 13px
+                font-size: 11px
                 text-align: left
                 margin-left: 4px
               &.emailAddressInput
@@ -172,7 +172,7 @@
                 overflow: visible
                 text-align: center
                 background: none
-                font-size: 13px
+                font-size: 11px
                 text-align: left
                 margin-left: 4px
           i
@@ -184,7 +184,7 @@
             @extend .basic-button
             &.shipToLabel,
             &.billToLabel
-              font-size: 13px
+              font-size: 11px
               display: inline-block
               text-align: center
               width: 50px
@@ -469,16 +469,16 @@
             &.designFormDesignColorCountHolder
               @extend .light-font
               display: block
-              margin: -8px 16px 12px 16px
+              margin: 8px 16px
 
               label
                 font-size: 11px
                 display: inline-block
                 padding: 7px
-                width: 75px
+                width: 70px
                 text-align: center
-                background: #2261C2
-                border: 1px solid #2261c2
+                background: #EF9824
+                border: 1px solid #EF9824
                 color: white
                 border-bottom-left-radius: 4px
                 border-top-left-radius: 4px
@@ -504,10 +504,10 @@
                 &.dccFront,
                 &.dccBack,
                 &.dccLeft,
-                  border-top: 1px solid #2261C2
-                  border-bottom: 1px solid #2261C2
+                  border-top: 1px solid #EF9824
+                  border-bottom: 1px solid #EF9824
                 &.dccRight
-                  border: 1px solid #2261C2
+                  border: 1px solid #EF9824
                   border-left: none
                   border-bottom-right-radius: 4px
                   border-top-right-radius: 4px
@@ -554,10 +554,12 @@
                   padding: 8px
                   color: #746E6E
                   text-align: center
-                  &.sizeInput
+                  &.sizeInput,
                     background: rgba(213, 202, 83, 0.54)
                     vertical-align: top
                     height: 13px
+                  &.sizeInputHidden
+                    display: none
                   &.addSizeInput
                     background: #B5DAC5
                     padding: 8px
@@ -614,7 +616,7 @@
                 text-align: center
                 color: #333
 
-            &.designPriceDetailInputs
+            &.socialSettingsForDesign
               padding: 8px
               margin: 0 auto
               width: 800px
@@ -627,10 +629,52 @@
                 color: white
                 border-bottom-left-radius: 4px
                 border-top-left-radius: 4px
+                width: 100px
+                display: inline-block
+                text-align: center
+                background: #618cda
+
+              input
+                @extend .basic-button
+                @extend .light-font
+                font-size: 11px
+                padding: 8px
+                width: 100px
+                margin-right: 16px
+                background: rgb(229, 227, 227)
+                border-top-right-radius: 4px
+                border-bottom-right-radius: 4px
+                text-align: center
+                color: #333
+
+            &.designPriceDetailInputs
+              padding: 8px
+              margin: 0 auto
+              width: 800px
+              display: block
+              color: #333
+
+              textarea
+                @extend .basic-button
+                @extend .light-font
+                font-size: 12px
+                display: block
+                margin-top: 16px
+                padding: 8px
+                width: 80%
+                min-height: 50px
+
+              label
+                font-size: 11px
+                padding: 8px
+                color: white
+                border-bottom-left-radius: 4px
+                border-top-left-radius: 4px
                 width: 70px
                 display: inline-block
                 text-align: center
-                &.productPriceLabel
+                &.productPriceLabel,
+                &.socialPriceLabel
                   background: #9C7BC5
                 &.productSalePriceLabel,
                 &.productSocialPriceLabel
@@ -652,7 +696,7 @@
             &.designImageSelectorDiv
               @extend .light-font
               padding: 8px
-              margin: 0px auto 12px auto
+              margin: 16px 8px
               background: #e5e3e3
               width: 800px
               display: block
@@ -682,6 +726,7 @@
                 margin-bottom: 4px
 
               input
+                color: rgba(255,255,255,0.0)
                 &.designImagesFilePicker::before
                   @extend .basic-button
                   @extend .light-font
@@ -716,20 +761,22 @@
                     &:hover
                       label
                         display: block
-                        padding: 16px
                         text-align: center
                     label
                       display: none
+                      font-size: 11px
                       @extend .light-font
                       @extend .basic-button
                       &.delete
                         background: $cancel-red
+                        padding: 2px
                         color: white
                         &:hover
                           background: #333
                           color: $cancel-red
                       &.view
                         background: $minty-green
+                        padding: 33px
                         color: white
                         &:hover
                           background: #333
@@ -1116,3 +1163,26 @@
     background: #e77575
     color: white
     border-bottom: 3px solid #B52727
+
+.socialOrderNotifier
+  display: block
+  position: fixed
+  z-index: 1000
+  top: 0
+  left: 30%
+  right: 30%
+
+  span
+    @extend .light-font
+    display: block
+    font-size: 12px
+    background: #618cda
+    border-bottom: 4px solid #4D78C7
+    padding: 4px 16px
+    text-align: center
+    color: white
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2)
+
+    i
+      display: inline-block
+      margin-right: 12px
