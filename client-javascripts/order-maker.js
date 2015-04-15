@@ -38,9 +38,7 @@ duckburg.orderMaker = {
 
   // Master function for creating a new order.
   createOrder: function(order) {
-
     duckburg.orderMaker.confirmOrderIsNew(order);
-
   },
 
   // Confirms that an order is new.
@@ -334,6 +332,8 @@ duckburg.orderMaker = {
     var DbObject = Parse.Object.extend('dbCatalogItem');
     var parseCatalogItem = new DbObject();
 
+    // TODO additional logic for product type visible
+
     parseCatalogItem.set('item_name', ci.item_name);
     parseCatalogItem.set('parse_search_string', ci.item_name.toLowerCase());
     parseCatalogItem.set('product_colors', ci.product_colors);
@@ -551,10 +551,170 @@ duckburg.oldOrderData = [
 },
 {
   "customer": {
-    "first_name": "Claudio",
-    "last_name": "Paulo",
-    "email_address": "Claudiopjuarez@gmail.com",
-    "phone_number": "917.780.7233",
+    "first_name": "Karen",
+    "last_name": "",
+    "email_address": "kjd517@att.net",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "500",
+    "tax_amount": "30",
+    "final_total": "530.00",
+    "payments": "0",
+    "balance": "330.00",
+    "total_pieces": "100"
+  },
+  "design_one": {
+    "design_name": "Blue Tees",
+    "design_images_list": "o6qkYu6aEMdog36pbl.gif"
+  },
+  "design_two": {
+    "design_name": "Pink Tees ",
+    "design_images_list": "o6qkYu6aEMdog36ppink.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Blue",
+    "product_description": "20 smalls 25 mediums 25 larges 25 xl 5 2x ",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "10",
+      "M": "13",
+      "L": "15",
+      "XL": "15",
+      "2X": "3",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "Pink Tees ",
+    "design_images_list": "o6qkYu6aEMdog36ppink.gif",
+    "product_category": "Job Category",
+    "product_colors": "Pink",
+    "product_description": "20 smalls 25 mediums 25 larges 25 xl 5 2x ",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "10",
+      "M": "12",
+      "L": "10",
+      "XL": "10",
+      "2X": "2",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4064",
+  "order_status": "Placed",
+  "due_date": "05/22/2015",
+  "is_taxed": "0.06",
+  "name": "A-Mayes-Ing Race"
+},
+{
+  "customer": {
+    "first_name": "Claire",
+    "last_name": "LaFave",
+    "email_address": "lafavecl@msu.edu",
+    "phone_number": "269 967 6982",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "156",
+    "tax_amount": "9.36",
+    "final_total": "165.36",
+    "payments": "0",
+    "balance": "165.36",
+    "total_pieces": "13"
+  },
+  "design_one": {
+    "design_name": "Crew Neck Sweatshirt",
+    "design_images_list": "2rcyejbYBmjeZriaproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Gildan",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "12.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "RD012 - Crew Neck Sweatshirt",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "13"
+    }
+  },
+  "old_db_id": "4053",
+  "order_status": "Active",
+  "due_date": "04/01/2015",
+  "is_taxed": "0.06",
+  "name": "Club Volleyball Nationals"
+},
+{
+  "customer": {
+    "first_name": "Kyle",
+    "last_name": "Mulder",
+    "email_address": "mulderky@msu.edu",
+    "phone_number": "5178810561",
     "address_one": "",
     "address_two": "",
     "address_city": "",
@@ -570,205 +730,31 @@ duckburg.oldOrderData = [
     "total_pieces": "0"
   },
   "design_one": {
-    "design_name": "Classic Hoodie ",
-    "design_images_list": "cLD6ZedKUyihpFZRHoodie.gif"
-  },
-  "design_two": {
-    "design_name": "Classic T-shirt",
-    "design_images_list": "cLD6ZedKUyihpFZRTee.gif"
-  },
-  "design_three": {
-    "design_name": "Sneakers Hoodie",
-    "design_images_list": "f0UHearnQEWZoJk2Sneakers2.gif"
-  },
-  "design_four": {
-    "design_name": "Sneakers T-shirt",
-    "design_images_list": "f0UHearnQEWZoJk2Sneakers.gif"
+    "design_name": "T-Shirts",
+    "design_images_list": "dKGCexHrvlyHE0N3proof.gif"
   },
   "cat_item_one": {
     "item_name": "",
     "design_images_list": "",
-    "product_category": "Leisure",
-    "product_colors": "White",
-    "product_description": "",
+    "product_category": "Academic",
+    "product_colors": "dark grey",
+    "product_description": "About 50-74 Shirts",
     "product_ishidden": "yes",
     "product_isindexed": "no",
-    "product_price": "18.00",
-    "product_socialprice": "26.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Classic T-shirt",
-    "design_images_list": "cLD6ZedKUyihpFZRTee.gif",
-    "product_category": "Leisure",
-    "product_colors": "Navy",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "10.00",
-    "product_socialprice": "18.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "Sneakers Hoodie",
-    "design_images_list": "f0UHearnQEWZoJk2Sneakers2.gif",
-    "product_category": "Leisure",
-    "product_colors": "Sport Grey ",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "18.00",
-    "product_socialprice": "26.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "Sneakers T-shirt",
-    "design_images_list": "f0UHearnQEWZoJk2Sneakers.gif",
-    "product_category": "Leisure",
-    "product_colors": "Navy",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "10.00",
-    "product_socialprice": "18.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4012",
-  "order_status": "Placed",
-  "due_date": "12/31/2014",
-  "is_taxed": "0.06",
-  "name": "La Verdad "
-},
-{
-  "customer": {
-    "first_name": "Fulu",
-    "last_name": "Singo",
-    "email_address": "fulufhelo.i.singo@onemainfinancial.com",
-    "phone_number": "517.488.4956",
-    "address_one": "6030 S Pennsylvania Ave ",
-    "address_two": "Suite 7",
-    "address_city": "Lansing",
-    "address_state": "MI",
-    "address_zip": "48911"
-  },
-  "order_summary": {
-    "order_total": "600",
-    "tax_amount": "36",
-    "final_total": "636.00",
-    "payments": "0",
-    "balance": "636.00",
-    "total_pieces": "100"
-  },
-  "design_one": {
-    "design_name": "Full Design",
-    "design_images_list": "kg3RsvglSnVayaELwhite.gif"
-  },
-  "design_two": {
-    "design_name": "Full Design",
-    "design_images_list": "kg3RsvglSnVayaELash.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "White",
-    "product_description": "3046",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "6.00",
+    "product_price": "0.00",
     "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
+    "product_type_visible": "",
     "color_count": {
-      "front": "4",
-      "back": "5",
+      "front": "5",
+      "back": "1",
       "left": "0",
       "right": "0"
     },
     "sizes": {
-      "S": "7",
-      "M": "10",
-      "L": "25",
-      "XL": "8",
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
       "2X": "0",
       "3X": "0",
       "4X": "0",
@@ -779,1902 +765,18 @@ duckburg.oldOrderData = [
       "QUOTE": "0"
     }
   },
-  "cat_item_two": {
-    "item_name": "Full Design",
-    "design_images_list": "kg3RsvglSnVayaELash.gif",
-    "product_category": "Job Category",
-    "product_colors": "Ash",
-    "product_description": "3046",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "6.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "4",
-      "back": "5",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "7",
-      "M": "10",
-      "L": "25",
-      "XL": "8",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4020",
+  "old_db_id": "4173",
   "order_status": "Active",
-  "due_date": "12/22/2014",
+  "due_date": "03/21/2015",
   "is_taxed": "0.06",
-  "name": "ONEMAIN Financial Services INC 220253"
-},
-{
-  "customer": {
-    "first_name": "Erica",
-    "last_name": "Tackett",
-    "email_address": "",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "998.25",
-    "tax_amount": "0",
-    "final_total": "998.25",
-    "payments": "0",
-    "balance": "998.25",
-    "total_pieces": "121"
-  },
-  "design_one": {
-    "design_name": "V-neck",
-    "design_images_list": "EYb9mblyiS72bybZv-neck.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.25",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "3",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "121"
-    }
-  },
-  "old_db_id": "3983",
-  "order_status": "Active",
-  "due_date": "12/19/2014",
-  "is_taxed": "0.00",
-  "name": "Campus Center Cinemas"
-},
-{
-  "customer": {
-    "first_name": "Julie",
-    "last_name": "Banks",
-    "email_address": "juliebersuder@gmail.com",
-    "phone_number": "734-834-0765",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "59.5",
-    "tax_amount": "0",
-    "final_total": "59.50",
-    "payments": "0",
-    "balance": "59.50",
-    "total_pieces": "8"
-  },
-  "design_one": {
-    "design_name": "Hoodie ",
-    "design_images_list": ""
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Red",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "18.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "1",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4034",
-  "order_status": "Active",
-  "due_date": "12/19/2014",
-  "is_taxed": "0.00",
-  "name": "Red Friday"
-},
-{
-  "customer": {
-    "first_name": "Macdonnel",
-    "last_name": "Middle",
-    "email_address": "janelle.orange@elps.us",
-    "phone_number": "517.333.7600",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "833.25",
-    "tax_amount": "0",
-    "final_total": "833.25",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "101"
-  },
-  "design_one": {
-    "design_name": "Crew Neck ",
-    "design_images_list": "tXcCDNo02VnBuUDlproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Lime",
-    "product_description": "Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.25",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "22",
-      "M": "31",
-      "L": "28",
-      "XL": "20",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "3930",
-  "order_status": "Shirts Received",
-  "due_date": "12/18/2014",
-  "is_taxed": "0.00",
-  "name": "STEM Club"
-},
-{
-  "customer": {
-    "first_name": "Katie",
-    "last_name": "Benacquisto-Laporte",
-    "email_address": "kablaporte@gmail.com",
-    "phone_number": "248.390.7128",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "288",
-    "tax_amount": "17.28",
-    "final_total": "305.28",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "16"
-  },
-  "design_one": {
-    "design_name": "Baseball Tees",
-    "design_images_list": "tb1dAvuFfJEM7GMKproof2.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "White/Grey",
-    "product_description": "XSmall: 1 (if you have it, if you don’t, add to small) Small: 9 Medium: 5 Large: 1",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "18.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "10",
-      "M": "5",
-      "L": "1",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4024",
-  "order_status": "Shirts Received",
-  "due_date": "12/18/2014",
-  "is_taxed": "0.06",
-  "name": "Elite Baseball Tees"
-},
-{
-  "customer": {
-    "first_name": "Jenny",
-    "last_name": "",
-    "email_address": "flexcityfitness@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "189",
-    "tax_amount": "11.34",
-    "final_total": "200.34",
-    "payments": "0",
-    "balance": "200.34",
-    "total_pieces": "42"
-  },
-  "design_one": {
-    "design_name": "Black Slouchy Tees",
-    "design_images_list": "MAg8aDsn4UMO7Wpsblacktee.gif"
-  },
-  "design_two": {
-    "design_name": "Slouchy Baseball Tees",
-    "design_images_list": "MAg8aDsn4UMO7Wpsbaseball.gif"
-  },
-  "design_three": {
-    "design_name": "Yellow Tees",
-    "design_images_list": "MAg8aDsn4UMO7WpsYellow.gif"
-  },
-  "design_four": {
-    "design_name": "Crew Sweatshirt",
-    "design_images_list": "MAg8aDsn4UMO7Wpsyellowsweat.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "4.50",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "2",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "32"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Slouchy Baseball Tees",
-    "design_images_list": "MAg8aDsn4UMO7Wpsbaseball.gif",
-    "product_category": "Academic",
-    "product_colors": "Black/White",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "4.50",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "2",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "6"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "Yellow Tees",
-    "design_images_list": "MAg8aDsn4UMO7WpsYellow.gif",
-    "product_category": "Academic",
-    "product_colors": "Yellow",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "4.50",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "2",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "2"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "Crew Sweatshirt",
-    "design_images_list": "MAg8aDsn4UMO7Wpsyellowsweat.gif",
-    "product_category": "Academic",
-    "product_colors": "Yellow",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "4.50",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "2",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "2"
-    }
-  },
-  "old_db_id": "4033",
-  "order_status": "Shirts Received",
-  "due_date": "12/18/2014",
-  "is_taxed": "0.06",
-  "name": "FlexCity Fitness"
-},
-{
-  "customer": {
-    "first_name": "Angie",
-    "last_name": "Smith",
-    "email_address": "ang14smith@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "94",
-    "tax_amount": "0",
-    "final_total": "94.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "10"
-  },
-  "design_one": {
-    "design_name": "Adult Long Sleeve",
-    "design_images_list": "qnID41s4V6gPrXMGlongsleeve.gif"
-  },
-  "design_two": {
-    "design_name": "Youth Long Sleeve",
-    "design_images_list": "qnID41s4V6gPrXMGlongsleeve.gif"
-  },
-  "design_three": {
-    "design_name": "Adult Tie Dye",
-    "design_images_list": "qnID41s4V6gPrXMGtiedyetee.gif"
-  },
-  "design_four": {
-    "design_name": "Youth Tie Dye",
-    "design_images_list": "qnID41s4V6gPrXMGtiedyetee.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Royal",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "9.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "3",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Youth Long Sleeve",
-    "design_images_list": "qnID41s4V6gPrXMGlongsleeve.gif",
-    "product_category": "Academic",
-    "product_colors": "Royal",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "9.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "1",
-      "YM": "0",
-      "YL": "1",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "Adult Tie Dye",
-    "design_images_list": "qnID41s4V6gPrXMGtiedyetee.gif",
-    "product_category": "Academic",
-    "product_colors": "Royal",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "10.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "1",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "Youth Tie Dye",
-    "design_images_list": "qnID41s4V6gPrXMGtiedyetee.gif",
-    "product_category": "Academic",
-    "product_colors": "Royal",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "10.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "1",
-      "YM": "1",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4035",
-  "order_status": "Shirts Ordered",
-  "due_date": "12/18/2014",
-  "is_taxed": "0.00",
-  "name": "Whitehills Elementary"
-},
-{
-  "customer": {
-    "first_name": "Will",
-    "last_name": "",
-    "email_address": "willbengh@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "160",
-    "tax_amount": "9.6",
-    "final_total": "169.60",
-    "payments": "0",
-    "balance": "169.60",
-    "total_pieces": "40"
-  },
-  "design_one": {
-    "design_name": "Anvil Tees",
-    "design_images_list": ""
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "White",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "4.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "10",
-      "L": "20",
-      "XL": "5",
-      "2X": "5",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4036",
-  "order_status": "Shirts Ordered",
-  "due_date": "12/18/2014",
-  "is_taxed": "0.06",
-  "name": "Shirts For WIll"
-},
-{
-  "customer": {
-    "first_name": "Roxanne",
-    "last_name": "Truhn",
-    "email_address": "scifest@msu.edu",
-    "phone_number": "(517) 353-8977",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "1000",
-    "tax_amount": "0",
-    "final_total": "1000.00",
-    "payments": "0",
-    "balance": "450.00",
-    "total_pieces": "200"
-  },
-  "design_one": {
-    "design_name": "Volunteer Tees",
-    "design_images_list": "idtoBKsvTpN5xZd8proof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "University",
-    "product_colors": "Lime",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "5.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "4",
-      "back": "4",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "35",
-      "M": "58",
-      "L": "75",
-      "XL": "22",
-      "2X": "10",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4016",
-  "order_status": "Shirts Received",
-  "due_date": "12/17/2014",
-  "is_taxed": "0.00",
-  "name": "MSU Science Festival 1st Run"
-},
-{
-  "customer": {
-    "first_name": "Adam",
-    "last_name": "Rosen",
-    "email_address": "rosen@strat-o-matic.com",
-    "phone_number": "516-671-6566 ext. 108 ",
-    "address_one": "2002 Fifth Avenue ",
-    "address_two": "#7A",
-    "address_city": "New York",
-    "address_state": "NY",
-    "address_zip": "10035"
-  },
-  "order_summary": {
-    "order_total": "80",
-    "tax_amount": "0",
-    "final_total": "80.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "4"
-  },
-  "design_one": {
-    "design_name": "Softstyle Tees",
-    "design_images_list": "ZGkRh7ScbkQfRjWRcharcoal.gif"
-  },
-  "design_two": {
-    "design_name": "Anvil Tees",
-    "design_images_list": "ZGkRh7ScbkQfRjWRproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Charcoal, Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "20.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "1",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "2",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Anvil Tees",
-    "design_images_list": "ZGkRh7ScbkQfRjWRproof.gif",
-    "product_category": "Job Category",
-    "product_colors": "Black, Charcoal",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "20.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "1",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "2",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4026",
-  "order_status": "Shirts Received",
-  "due_date": "12/17/2014",
-  "is_taxed": "0.00",
-  "name": "Strat-O-matic Samples"
-},
-{
-  "customer": {
-    "first_name": "Becca",
-    "last_name": "",
-    "email_address": "",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "220",
-    "tax_amount": "13.2",
-    "final_total": "233.20",
-    "payments": "0",
-    "balance": "233.20",
-    "total_pieces": "10"
-  },
-  "design_one": {
-    "design_name": "Ladies Track Jacket ",
-    "design_images_list": ""
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "22.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "4",
-      "M": "1",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4028",
-  "order_status": "Shirts Received",
-  "due_date": "12/17/2014",
-  "is_taxed": "0.06",
-  "name": "Black Cat Hoodies"
-},
-{
-  "customer": {
-    "first_name": "Jonna",
-    "last_name": "",
-    "email_address": "jonna.tury@gmail.com",
-    "phone_number": "517.490.6616",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "80",
-    "tax_amount": "4.8",
-    "final_total": "84.80",
-    "payments": "0",
-    "balance": "84.80",
-    "total_pieces": "10"
-  },
-  "design_one": {
-    "design_name": "SoftStyle Tees ",
-    "design_images_list": "ZHccNVSipLp9bSOBproof.gif"
-  },
-  "design_two": {
-    "design_name": "Other Colors: ",
-    "design_images_list": "rIFdm8JOJHrQ7iOGproo2f.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Dark Heather",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "1",
-      "L": "1",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Other Colors: ",
-    "design_images_list": "rIFdm8JOJHrQ7iOGproo2f.gif",
-    "product_category": "Job Category",
-    "product_colors": "Various",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "3",
-      "M": "3",
-      "L": "2",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4031",
-  "order_status": "Shirts Ordered",
-  "due_date": "12/17/2014",
-  "is_taxed": "0.06",
-  "name": "Jonnas SFBC Tour"
-},
-{
-  "customer": {
-    "first_name": "Sam",
-    "last_name": "",
-    "email_address": "samsibilski@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "240",
-    "tax_amount": "0",
-    "final_total": "240.00",
-    "payments": "0",
-    "balance": "100.00",
-    "total_pieces": "24"
-  },
-  "design_one": {
-    "design_name": "Women's",
-    "design_images_list": "YgcgVht3roGMfP7nunnamed.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "High School",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "10.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "24",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4022",
-  "order_status": "Completed - Unpaid",
-  "due_date": "12/16/2014",
-  "is_taxed": "0.00",
-  "name": "Jackson Northwest Soccer "
-},
-{
-  "customer": {
-    "first_name": "Dana",
-    "last_name": "",
-    "email_address": "danamirate@yahoo.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "48",
-    "tax_amount": "2.88",
-    "final_total": "50.88",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "6"
-  },
-  "design_one": {
-    "design_name": "Youth",
-    "design_images_list": "CeTYGXREuJwSLHLHproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "vintage heather blue",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "RD002 - 50/50",
-    "color_count": {
-      "front": "2",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "2",
-      "L": "3",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4027",
-  "order_status": "Completed",
-  "due_date": "12/16/2014",
-  "is_taxed": "0.06",
-  "name": "Rooster"
-},
-{
-  "customer": {
-    "first_name": "Tina",
-    "last_name": "",
-    "email_address": "rtmcarter@comcast.net",
-    "phone_number": "",
-    "address_one": "2101 Warrensville Rd",
-    "address_two": "",
-    "address_city": "Montoursville",
-    "address_state": "Pa",
-    "address_zip": "17754"
-  },
-  "order_summary": {
-    "order_total": "25",
-    "tax_amount": "1.5",
-    "final_total": "26.50",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "1"
-  },
-  "design_one": {
-    "design_name": "T shirt",
-    "design_images_list": "VGTZkGZSBq66JZTjproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Kelly Green",
-    "product_description": "UPS Tracking: 1Z79y94v0362150764",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "25.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4032",
-  "order_status": "Completed",
-  "due_date": "12/16/2014",
-  "is_taxed": "0.06",
-  "name": "Stegosaurus Shirt"
-},
-{
-  "customer": {
-    "first_name": "Colin",
-    "last_name": "",
-    "email_address": "Colin@boldmethod.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "450",
-    "tax_amount": "0",
-    "final_total": "450.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "28"
-  },
-  "design_one": {
-    "design_name": "Propeller Pullover Hoodie ",
-    "design_images_list": "0pHkzImYsToDQtZQScreen Shot 2014-12-03 at 10.45.06 AM.png"
-  },
-  "design_two": {
-    "design_name": "777 Long Sleeve",
-    "design_images_list": "RAisQf8XN6FOoh5nScreen Shot 2014-12-03 at 11.25.18 AM.png"
-  },
-  "design_three": {
-    "design_name": "777 Long Sleeve",
-    "design_images_list": "3jC2spqlJfoZ9Og4Screen Shot 2014-12-03 at 10.48.59 AM.png"
-  },
-  "design_four": {
-    "design_name": "777 Long Sleeve",
-    "design_images_list": "5fVYCpUERmBJ0d0tScreen Shot 2014-12-03 at 10.49.59 AM.png"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Navy",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "30.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "1",
-      "2X": "1",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "777 Long Sleeve",
-    "design_images_list": "RAisQf8XN6FOoh5nScreen Shot 2014-12-03 at 11.25.18 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Asphalt",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "15.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "2",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "3",
-      "L": "1",
-      "XL": "0",
-      "2X": "1",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "777 Long Sleeve",
-    "design_images_list": "3jC2spqlJfoZ9Og4Screen Shot 2014-12-03 at 10.48.59 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Navy",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "15.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "2",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "777 Long Sleeve",
-    "design_images_list": "5fVYCpUERmBJ0d0tScreen Shot 2014-12-03 at 10.49.59 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Galaxy",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "15.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "4",
-      "L": "7",
-      "XL": "6",
-      "2X": "2",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4009",
-  "order_status": "Completed",
-  "due_date": "12/15/2014",
-  "is_taxed": "0.00",
-  "name": "Boldmethod Winter"
-},
-{
-  "customer": {
-    "first_name": "Dana",
-    "last_name": "",
-    "email_address": "danamirate@yahoo.com",
-    "phone_number": "881 1501",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "244",
-    "tax_amount": "14.64",
-    "final_total": "258.64",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "40"
-  },
-  "design_one": {
-    "design_name": "New Tee",
-    "design_images_list": "VVPE2Ti6wXAnY9Csproof1.gif"
-  },
-  "design_two": {
-    "design_name": "New Tee 2",
-    "design_images_list": "A2QuUqiJVU7dw3M9proof2.gif"
-  },
-  "design_three": {
-    "design_name": "Ladies Tees",
-    "design_images_list": "A2QuUqiJVU7dw3M9Ladies.gif"
-  },
-  "design_four": {
-    "design_name": "Crew Tees",
-    "design_images_list": "A2QuUqiJVU7dw3M9crew.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Heather Dark Grey ",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "7.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "2",
-      "M": "2",
-      "L": "5",
-      "XL": "3",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "New Tee 2",
-    "design_images_list": "A2QuUqiJVU7dw3M9proof2.gif",
-    "product_category": "Academic",
-    "product_colors": "Heather Green",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "7.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "2",
-      "M": "2",
-      "L": "2",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "Ladies Tees",
-    "design_images_list": "A2QuUqiJVU7dw3M9Ladies.gif",
-    "product_category": "Academic",
-    "product_colors": "Red",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "7.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "2",
-      "M": "4",
-      "L": "4",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "Crew Tees",
-    "design_images_list": "A2QuUqiJVU7dw3M9crew.gif",
-    "product_category": "Academic",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "3.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "2",
-      "M": "3",
-      "L": "2",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4014",
-  "order_status": "Completed",
-  "due_date": "12/15/2014",
-  "is_taxed": "0.06",
-  "name": "Starfarm Winter 14"
-},
-{
-  "customer": {
-    "first_name": "Dana",
-    "last_name": "",
-    "email_address": "danamirate@yahoo.com",
-    "phone_number": "881 1501",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "496",
-    "tax_amount": "29.76",
-    "final_total": "525.76",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "24"
-  },
-  "design_one": {
-    "design_name": "Heavier Zip Hoodie",
-    "design_images_list": "OPSZM7AetuPU5ddZhoodie.gif"
-  },
-  "design_two": {
-    "design_name": "Lighter Zip Hoodie",
-    "design_images_list": "mjYozdWe3TyD9KeShoodie3.gif"
-  },
-  "design_three": {
-    "design_name": "Lighter Zip Hoodie ",
-    "design_images_list": "6K7vEqxlNvtgF0tqhoodie2.gif"
-  },
-  "design_four": {
-    "design_name": "1 XL,1 L,1 L ZipHoodie Alpha",
-    "design_images_list": "6K7vEqxlNvtgF0tqhoodie4.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "20.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "2",
-      "L": "4",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Lighter Zip Hoodie",
-    "design_images_list": "mjYozdWe3TyD9KeShoodie3.gif",
-    "product_category": "Academic",
-    "product_colors": "LightRed Tri",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "19.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "2",
-      "L": "2",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "Lighter Zip Hoodie ",
-    "design_images_list": "6K7vEqxlNvtgF0tqhoodie2.gif",
-    "product_category": "Academic",
-    "product_colors": "Light Blue",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "19.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "2",
-      "L": "2",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "1 XL,1 L,1 L ZipHoodie Alpha",
-    "design_images_list": "6K7vEqxlNvtgF0tqhoodie4.gif",
-    "product_category": "Academic",
-    "product_colors": "EcoGreen, TruRed, TruRoyal",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "30.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "3"
-    }
-  },
-  "old_db_id": "4015",
-  "order_status": "Completed",
-  "due_date": "12/15/2014",
-  "is_taxed": "0.06",
-  "name": "Starfarm Winter 14-2"
-},
-{
-  "customer": {
-    "first_name": "Alex",
-    "last_name": "Dawson",
-    "email_address": "alexanderdawson10@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "24",
-    "tax_amount": "1.44",
-    "final_total": "25.44",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "2"
-  },
-  "design_one": {
-    "design_name": "T-shirt",
-    "design_images_list": "KC4eGrviU90YJHfAproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "White",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "12.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "1",
-      "3X": "1",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4021",
-  "order_status": "Completed",
-  "due_date": "12/15/2014",
-  "is_taxed": "0.06",
-  "name": "It's Black & White"
-},
-{
-  "customer": {
-    "first_name": "Stephanie",
-    "last_name": "Lampi",
-    "email_address": "lampister@gmail.com",
-    "phone_number": "517-214-6998. ",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "144",
-    "tax_amount": "0",
-    "final_total": "144.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "12"
-  },
-  "design_one": {
-    "design_name": "T-shirts",
-    "design_images_list": "PzKCJOeAB03btcpRproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Tropical Blue ",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "12.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "3",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "1",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "3",
-      "YL": "8",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4025",
-  "order_status": "Completed",
-  "due_date": "12/15/2014",
-  "is_taxed": "0.00",
-  "name": "Megalodons"
-},
-{
-  "customer": {
-    "first_name": "Sonie",
-    "last_name": "",
-    "email_address": "",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "180",
-    "tax_amount": "10.8",
-    "final_total": "190.80",
-    "payments": "0",
-    "balance": "190.80",
-    "total_pieces": "30"
-  },
-  "design_one": {
-    "design_name": "T-shirt",
-    "design_images_list": "TdsdHWsEkOrc3QNYproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Black",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "6.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "4",
-      "M": "12",
-      "L": "10",
-      "XL": "3",
-      "2X": "1",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4030",
-  "order_status": "Completed - Unpaid",
-  "due_date": "12/15/2014",
-  "is_taxed": "0.06",
-  "name": "Conrads Crawl 2014"
+  "name": "Pre-Dental Club"
 },
 {
   "customer": {
     "first_name": "Phu",
     "last_name": "Nguyen",
     "email_address": "phunguyen3223@gmail.com",
-    "phone_number": "",
+    "phone_number": "586 822 4332",
     "address_one": "",
     "address_two": "",
     "address_city": "",
@@ -2682,88 +784,26 @@ duckburg.oldOrderData = [
     "address_zip": ""
   },
   "order_summary": {
-    "order_total": "640",
-    "tax_amount": "38.4",
-    "final_total": "678.40",
+    "order_total": "260",
+    "tax_amount": "15.6",
+    "final_total": "275.60",
     "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "40"
+    "balance": "275.60",
+    "total_pieces": "20"
   },
   "design_one": {
-    "design_name": "Long Sleeve Tee",
-    "design_images_list": "fsu408OXIUQ0jBFoproof.gif"
+    "design_name": "Tanks",
+    "design_images_list": "EMdJyZXfNeH10bA8proof.gif"
   },
   "cat_item_one": {
     "item_name": "",
     "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Light Blue",
-    "product_description": "S:5 M:25 L:5 XL: 3 XXL: 2",
+    "product_category": "Greek",
+    "product_colors": "Royal",
+    "product_description": "Quote 1:20",
     "product_ishidden": "yes",
     "product_isindexed": "no",
-    "product_price": "16.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "3",
-      "back": "3",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "5",
-      "M": "25",
-      "L": "5",
-      "XL": "3",
-      "2X": "2",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4023",
-  "order_status": "Completed",
-  "due_date": "12/12/2014",
-  "is_taxed": "0.06",
-  "name": "Kappa Sigma Spring Rush"
-},
-{
-  "customer": {
-    "first_name": "Dan",
-    "last_name": "Romigh",
-    "email_address": "",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "256",
-    "tax_amount": "15.36",
-    "final_total": "271.36",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "8"
-  },
-  "design_one": {
-    "design_name": "Vertical Barbell Design Hoodie",
-    "design_images_list": "m2n0OOY2YW7D4u9iproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Grey ",
-    "product_description": "3 L, 2 M, 3",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "32.00",
+    "product_price": "13.00",
     "product_socialprice": "0.00",
     "product_type_visible": "Shirt Style",
     "color_count": {
@@ -2773,10 +813,10 @@ duckburg.oldOrderData = [
       "right": "0"
     },
     "sizes": {
-      "S": "0",
-      "M": "2",
-      "L": "3",
-      "XL": "3",
+      "S": "2",
+      "M": "12",
+      "L": "5",
+      "XL": "1",
       "2X": "0",
       "3X": "0",
       "4X": "0",
@@ -2787,17 +827,79 @@ duckburg.oldOrderData = [
       "QUOTE": "0"
     }
   },
-  "old_db_id": "4017",
-  "order_status": "Completed - Unpaid",
-  "due_date": "12/11/2014",
+  "old_db_id": "4174",
+  "order_status": "Active",
+  "due_date": "03/04/2015",
   "is_taxed": "0.06",
-  "name": "Crossfit Sanction Hoodies "
+  "name": "Kappa Sigma Spring Break 2015"
 },
 {
   "customer": {
-    "first_name": "Nick",
-    "last_name": "Chilenko",
-    "email_address": "nick@nicholascreative.com",
+    "first_name": "Juliann",
+    "last_name": "Otto",
+    "email_address": "jotto@cityofeastlansing.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "1650",
+    "tax_amount": "0",
+    "final_total": "1650.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "1000"
+  },
+  "design_one": {
+    "design_name": "",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "1.65",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "1000",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4091",
+  "order_status": "Placed",
+  "due_date": "03/03/2015",
+  "is_taxed": "0.00",
+  "name": "Bags"
+},
+{
+  "customer": {
+    "first_name": "Timothy",
+    "last_name": "Griffin",
+    "email_address": "griffint323@aol.com",
     "phone_number": "",
     "address_one": "",
     "address_two": "",
@@ -2811,708 +913,34 @@ duckburg.oldOrderData = [
     "final_total": "0.00",
     "payments": "0",
     "balance": "0.00",
-    "total_pieces": "200"
+    "total_pieces": "0"
   },
   "design_one": {
-    "design_name": "Shirts",
-    "design_images_list": "LrwuPkYs03zYn44Oproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "210",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "0.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "15",
-      "M": "75",
-      "L": "100",
-      "XL": "10",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4018",
-  "order_status": "Completed",
-  "due_date": "12/11/2014",
-  "is_taxed": "0.06",
-  "name": "LAUNCHED"
-},
-{
-  "customer": {
-    "first_name": "Dim",
-    "last_name": "Ciang",
-    "email_address": "",
-    "phone_number": "517.515.3955",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "462",
-    "tax_amount": "0",
-    "final_total": "462.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "42"
-  },
-  "design_one": {
-    "design_name": "Youth Tee",
-    "design_images_list": "tqEluDwMv122tgyAproof.gif"
+    "design_name": "A4 Tech Red Tees",
+    "design_images_list": "UVWIbIaIVliw967kredtimothy.gif"
   },
   "design_two": {
-    "design_name": "Toddler Polos",
-    "design_images_list": "tqEluDwMv122tgyAproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Royal ",
-    "product_description": "quote= XS for toddlers, ym=4t yl=5t/6t",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "11.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "7",
-      "L": "13",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "9"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Toddler Polos",
-    "design_images_list": "tqEluDwMv122tgyAproof.gif",
-    "product_category": "Job Category",
-    "product_colors": "Royal ",
-    "product_description": "quote= XS for toddlers, ym=4t yl=5t/6t",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "11.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "12",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4019",
-  "order_status": "Completed",
-  "due_date": "12/11/2014",
-  "is_taxed": "0.00",
-  "name": "Sunday School"
-},
-{
-  "customer": {
-    "first_name": "brittney",
-    "last_name": "heatherington",
-    "email_address": "brittney.heatherington@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "2750",
-    "tax_amount": "0",
-    "final_total": "2750.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "500"
-  },
-  "design_one": {
-    "design_name": "T-shirt",
-    "design_images_list": "alkwphoQpzULXd8Knewproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Navy",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "5.50",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "3",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "75",
-      "M": "150",
-      "L": "200",
-      "XL": "50",
-      "2X": "25",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4013",
-  "order_status": "Completed",
-  "due_date": "12/10/2014",
-  "is_taxed": "0.00",
-  "name": "Ski Club Aspen Trip"
-},
-{
-  "customer": {
-    "first_name": "Patrick",
-    "last_name": "",
-    "email_address": "seidleinpatrick@gmail.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "120",
-    "tax_amount": "7.2",
-    "final_total": "127.20",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "6"
-  },
-  "design_one": {
-    "design_name": "Hoodies",
-    "design_images_list": ""
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "20.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "0",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "6"
-    }
-  },
-  "old_db_id": "4029",
-  "order_status": "Completed",
-  "due_date": "12/10/2014",
-  "is_taxed": "0.06",
-  "name": "Hoodies"
-},
-{
-  "customer": {
-    "first_name": "Patty",
-    "last_name": "",
-    "email_address": "",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "1650",
-    "tax_amount": "99",
-    "final_total": "1749.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "100"
-  },
-  "design_one": {
-    "design_name": "Zip Hoodie",
-    "design_images_list": "qItoUwlZQxZGdOulziphoodie.gif"
-  },
-  "design_two": {
-    "design_name": "Long Sleeve Tee",
-    "design_images_list": "qItoUwlZQxZGdOulproof.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Dark Heather Grey",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "25.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "20",
-      "M": "20",
-      "L": "8",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Long Sleeve Tee",
-    "design_images_list": "qItoUwlZQxZGdOulproof.gif",
-    "product_category": "Job Category",
-    "product_colors": "Dark Heather Grey",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "20",
-      "M": "20",
-      "L": "8",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4008",
-  "order_status": "Completed",
-  "due_date": "12/09/2014",
-  "is_taxed": "0.06",
-  "name": "Hot Yoga EL"
-},
-{
-  "customer": {
-    "first_name": "Colin",
-    "last_name": "",
-    "email_address": "Colin@boldmethod.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "295",
-    "tax_amount": "0",
-    "final_total": "295.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "33"
-  },
-  "design_one": {
-    "design_name": "777 T-shirt",
-    "design_images_list": "sqr2F7waNRzQHUVYScreen Shot 2014-12-03 at 10.54.18 AM.png"
-  },
-  "design_two": {
-    "design_name": "777 T-shirt",
-    "design_images_list": "sqr2F7waNRzQHUVYScreen Shot 2014-12-03 at 10.56.13 AM.png"
+    "design_name": "A4 Tech White Tees",
+    "design_images_list": "UVWIbIaIVliw967kwhitetimothy.gif"
   },
   "design_three": {
-    "design_name": "777 T-shirt",
-    "design_images_list": "GW86Ay0X2mdkzfMsScreen Shot 2014-12-03 at 11.01.28 AM.png"
+    "design_name": "Cotton Red Tee",
+    "design_images_list": "UVWIbIaIVliw967kredtimothy.gif"
   },
   "design_four": {
-    "design_name": "777 Ladies Tee",
-    "design_images_list": "F8bhpn7XydD2FIEuScreen Shot 2014-12-03 at 11.09.28 AM.png"
+    "design_name": "Cotton White Tee",
+    "design_images_list": "UVWIbIaIVliw967kwhitetimothy.gif"
   },
   "cat_item_one": {
     "item_name": "",
     "design_images_list": "",
     "product_category": "Academic",
-    "product_colors": "Asphalt",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "2",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "0",
-      "L": "1",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "777 T-shirt",
-    "design_images_list": "sqr2F7waNRzQHUVYScreen Shot 2014-12-03 at 10.56.13 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Navy",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "2",
-      "L": "6",
-      "XL": "5",
-      "2X": "2",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "777 T-shirt",
-    "design_images_list": "GW86Ay0X2mdkzfMsScreen Shot 2014-12-03 at 11.01.28 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Galaxy",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "10.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "2",
-      "L": "5",
-      "XL": "6",
-      "2X": "2",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "777 Ladies Tee",
-    "design_images_list": "F8bhpn7XydD2FIEuScreen Shot 2014-12-03 at 11.09.28 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Heather",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "9.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "1",
-      "L": "0",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4010",
-  "order_status": "Completed",
-  "due_date": "12/09/2014",
-  "is_taxed": "0.00",
-  "name": "Boldmethod Winter 2 "
-},
-{
-  "customer": {
-    "first_name": "Colin",
-    "last_name": "",
-    "email_address": "Colin@boldmethod.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "549",
-    "tax_amount": "0",
-    "final_total": "549.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "40"
-  },
-  "design_one": {
-    "design_name": "777 Ladies Tee",
-    "design_images_list": "P6JVeNP00ymLuNSgScreen Shot 2014-12-03 at 11.11.11 AM.png"
-  },
-  "design_two": {
-    "design_name": "Propeller Ladies T-shirt ",
-    "design_images_list": "3lzk1SGgNLlwnOdDScreen Shot 2014-12-03 at 11.11.55 AM.png"
-  },
-  "design_three": {
-    "design_name": "Zip Up Hoodie",
-    "design_images_list": "kmYZAep1ccc7qvNTScreen Shot 2014-12-03 at 11.14.22 AM.png"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Navy ",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "9.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "1",
-      "L": "5",
-      "XL": "7",
-      "2X": "2",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Propeller Ladies T-shirt ",
-    "design_images_list": "3lzk1SGgNLlwnOdDScreen Shot 2014-12-03 at 11.11.55 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Heather",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "9.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "1",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "0",
-      "M": "1",
-      "L": "7",
-      "XL": "6",
-      "2X": "2",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_three": {
-    "item_name": "Zip Up Hoodie",
-    "design_images_list": "kmYZAep1ccc7qvNTScreen Shot 2014-12-03 at 11.14.22 AM.png",
-    "product_category": "Academic",
-    "product_colors": "Asphalt",
-    "product_description": "Quote 1:0Quote 2:0Quote 1:0",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "30.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "",
-    "color_count": {
-      "front": "3",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "2",
-      "L": "2",
-      "XL": "3",
-      "2X": "1",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4011",
-  "order_status": "Completed",
-  "due_date": "12/09/2014",
-  "is_taxed": "0.00",
-  "name": "Boldmethod Winter 3 "
-},
-{
-  "customer": {
-    "first_name": "Angela",
-    "last_name": "Magbag",
-    "email_address": "angelamagbag101@yahoo.com",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "220",
-    "tax_amount": "0",
-    "final_total": "220.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "22"
-  },
-  "design_one": {
-    "design_name": "T-shirt",
-    "design_images_list": "Wx5VK3HXtRYv8L4zwaverlyinteract.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Charcoal",
+    "product_colors": "Red",
     "product_description": "",
     "product_ishidden": "yes",
     "product_isindexed": "no",
     "product_price": "10.00",
-    "product_socialprice": "0.00",
+    "product_socialprice": "22.00",
     "product_type_visible": "",
     "color_count": {
       "front": "1",
@@ -3521,107 +949,9 @@ duckburg.oldOrderData = [
       "right": "0"
     },
     "sizes": {
-      "S": "10",
-      "M": "8",
-      "L": "2",
-      "XL": "2",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "3990",
-  "order_status": "Completed",
-  "due_date": "12/08/2014",
-  "is_taxed": "0.00",
-  "name": "Waverly Interact"
-},
-{
-  "customer": {
-    "first_name": "Lauren",
-    "last_name": "",
-    "email_address": "hopkinslauren@gmail.com",
-    "phone_number": "(989) 475-2149",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "432",
-    "tax_amount": "0",
-    "final_total": "432.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "23"
-  },
-  "design_one": {
-    "design_name": "Hoodies",
-    "design_images_list": "yqW2dJQv3efQBEKfproof-(2).gif"
-  },
-  "design_two": {
-    "design_name": "Quarter Zip ",
-    "design_images_list": "CVXj0kJ9epOCp2nJquarterzip.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Academic",
-    "product_colors": "Dark Heather",
-    "product_description": "Tooth w/bow (front) Class of 2016 (back) white/bright blue",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "16.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "RD010 - Hooded Sweatshirt",
-    "color_count": {
-      "front": "3",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
       "S": "0",
-      "M": "5",
-      "L": "1",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_two": {
-    "item_name": "Quarter Zip ",
-    "design_images_list": "CVXj0kJ9epOCp2nJquarterzip.gif",
-    "product_category": "Academic",
-    "product_colors": "Dark Heather ",
-    "product_description": "Tooth w/bow (front) Class of 2016 (back) white/bright blue",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "20.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "0",
-      "back": "0",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "6",
-      "M": "7",
-      "L": "3",
+      "M": "0",
+      "L": "0",
       "XL": "0",
       "2X": "0",
       "3X": "0",
@@ -3633,91 +963,17 @@ duckburg.oldOrderData = [
       "QUOTE": "0"
     }
   },
-  "old_db_id": "3991",
-  "order_status": "Completed",
-  "due_date": "12/05/2014",
-  "is_taxed": "0.00",
-  "name": "Dental Hygiene"
-},
-{
-  "customer": {
-    "first_name": "George",
-    "last_name": "Hoover",
-    "email_address": "ghoover@cottageinn.com",
-    "phone_number": " 248-249-6000",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "383",
-    "tax_amount": "22.98",
-    "final_total": "405.98",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "33"
-  },
-  "design_one": {
-    "design_name": "Design 1 ",
-    "design_images_list": "NFymJCzsvAvygHbWDesign1.gif"
-  },
-  "design_two": {
-    "design_name": "Design 2 ",
-    "design_images_list": "R1k13jUZkPX0WynGDesign2.gif"
-  },
-  "design_three": {
-    "design_name": "Design 3",
-    "design_images_list": "aeNEX73Hmr8JpVPgDesign3.gif"
-  },
-  "design_four": {
-    "design_name": "Design 4 ",
-    "design_images_list": "aeNEX73Hmr8JpVPgdesign4.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Forest",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "11.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "4",
-      "M": "3",
-      "L": "6",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "1",
-      "QUOTE": "0"
-    }
-  },
   "cat_item_two": {
-    "item_name": "Design 2 ",
-    "design_images_list": "R1k13jUZkPX0WynGDesign2.gif",
-    "product_category": "Job Category",
-    "product_colors": "Forest",
+    "item_name": "A4 Tech White Tees",
+    "design_images_list": "UVWIbIaIVliw967kwhitetimothy.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
     "product_description": "",
     "product_ishidden": "yes",
     "product_isindexed": "no",
-    "product_price": "15.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
+    "product_price": "10.00",
+    "product_socialprice": "22.00",
+    "product_type_visible": "",
     "color_count": {
       "front": "1",
       "back": "1",
@@ -3727,8 +983,8 @@ duckburg.oldOrderData = [
     "sizes": {
       "S": "0",
       "M": "0",
-      "L": "4",
-      "XL": "1",
+      "L": "0",
+      "XL": "0",
       "2X": "0",
       "3X": "0",
       "4X": "0",
@@ -3740,108 +996,716 @@ duckburg.oldOrderData = [
     }
   },
   "cat_item_three": {
-    "item_name": "Design 3",
-    "design_images_list": "aeNEX73Hmr8JpVPgDesign3.gif",
-    "product_category": "Job Category",
-    "product_colors": "Forest",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "11.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "4",
-      "M": "1",
-      "L": "1",
-      "XL": "0",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "1",
-      "QUOTE": "0"
-    }
-  },
-  "cat_item_four": {
-    "item_name": "Design 4 ",
-    "design_images_list": "aeNEX73Hmr8JpVPgdesign4.gif",
-    "product_category": "Job Category",
-    "product_colors": "Forest",
-    "product_description": "",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "11.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "1",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "1",
-      "M": "2",
-      "L": "2",
-      "XL": "1",
-      "2X": "0",
-      "3X": "0",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "4005",
-  "order_status": "Completed",
-  "due_date": "12/05/2014",
-  "is_taxed": "0.06",
-  "name": "Cottage Inn"
-},
-{
-  "customer": {
-    "first_name": "Deshawn",
-    "last_name": "Mims",
-    "email_address": "mimsdesh@gmail.com",
-    "phone_number": "313.658.5551",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "287",
-    "tax_amount": "0",
-    "final_total": "287.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "41"
-  },
-  "design_one": {
-    "design_name": "Tee Shirt",
-    "design_images_list": "AMRSAX49y57RNKPIFINAL.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Royal",
+    "item_name": "Cotton Red Tee",
+    "design_images_list": "UVWIbIaIVliw967kredtimothy.gif",
+    "product_category": "Academic",
+    "product_colors": "Red",
     "product_description": "",
     "product_ishidden": "yes",
     "product_isindexed": "no",
     "product_price": "7.00",
+    "product_socialprice": "18.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "0",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_four": {
+    "item_name": "Cotton White Tee",
+    "design_images_list": "UVWIbIaIVliw967kwhitetimothy.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "18.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "0",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4098",
+  "order_status": "Archive",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "Jesus Runner : 2 Timothy 4:7"
+},
+{
+  "customer": {
+    "first_name": "Timothy",
+    "last_name": "Griffin",
+    "email_address": "griffint323@aol.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "0"
+  },
+  "design_one": {
+    "design_name": "A4 Tech Red Tees",
+    "design_images_list": "TfjEx3hs11sdJV6Qredhebrews.gif"
+  },
+  "design_two": {
+    "design_name": "A4 Tech White Tees",
+    "design_images_list": "TfjEx3hs11sdJV6Qwhitehebrews.gif"
+  },
+  "design_three": {
+    "design_name": "Cotton Red Tee",
+    "design_images_list": "TfjEx3hs11sdJV6Qredhebrews.gif"
+  },
+  "design_four": {
+    "design_name": "Cotton White Tee",
+    "design_images_list": "TfjEx3hs11sdJV6Qwhitehebrews.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Red",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "10.00",
+    "product_socialprice": "22.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "A4 Tech White Tees",
+    "design_images_list": "TfjEx3hs11sdJV6Qwhitehebrews.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "10.00",
+    "product_socialprice": "22.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "0",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_three": {
+    "item_name": "Cotton Red Tee",
+    "design_images_list": "TfjEx3hs11sdJV6Qredhebrews.gif",
+    "product_category": "Academic",
+    "product_colors": "Red",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "18.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_four": {
+    "item_name": "Cotton White Tee",
+    "design_images_list": "TfjEx3hs11sdJV6Qwhitehebrews.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "18.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4099",
+  "order_status": "Archive",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "Jesus Runner : Hebrews 12: 1"
+},
+{
+  "customer": {
+    "first_name": "Timothy",
+    "last_name": "Griffin",
+    "email_address": "griffint323@aol.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "0"
+  },
+  "design_one": {
+    "design_name": "A4 Tech Red Tees",
+    "design_images_list": "kJronlO6BuIY4nuaredphil.gif"
+  },
+  "design_two": {
+    "design_name": "A4 Tech White Tees",
+    "design_images_list": "kJronlO6BuIY4nuawhitephil.gif"
+  },
+  "design_three": {
+    "design_name": "Cotton Red Tee",
+    "design_images_list": "kJronlO6BuIY4nuaredphil.gif"
+  },
+  "design_four": {
+    "design_name": "Cotton White Tee",
+    "design_images_list": "kJronlO6BuIY4nuawhitephil.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Red",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "10.00",
+    "product_socialprice": "22.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "A4 Tech White Tees",
+    "design_images_list": "kJronlO6BuIY4nuawhitephil.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "10.00",
+    "product_socialprice": "22.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_three": {
+    "item_name": "Cotton Red Tee",
+    "design_images_list": "kJronlO6BuIY4nuaredphil.gif",
+    "product_category": "Academic",
+    "product_colors": "Red",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "18.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_four": {
+    "item_name": "Cotton White Tee",
+    "design_images_list": "kJronlO6BuIY4nuawhitephil.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "18.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4100",
+  "order_status": "Archive",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "Jesus Runner : Philippians 4: 13"
+},
+{
+  "customer": {
+    "first_name": "C-Rad",
+    "last_name": "",
+    "email_address": "joe@conradsgrill.com",
+    "phone_number": "517 488 6722",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "0"
+  },
+  "design_one": {
+    "design_name": "AA Hoodie 'Know'",
+    "design_images_list": "Sxmx7B1dTZeEtzmIknow.gif"
+  },
+  "design_two": {
+    "design_name": "AA Hoodie 'Eat'",
+    "design_images_list": "Sxmx7B1dTZeEtzmIeat.gif"
+  },
+  "design_three": {
+    "design_name": "AA Hoodie Plain Back",
+    "design_images_list": "Sxmx7B1dTZeEtzmIplain.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "black",
+    "product_description": "1899",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "23.00",
+    "product_socialprice": "23.00",
+    "product_type_visible": "Other",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "AA Hoodie 'Eat'",
+    "design_images_list": "Sxmx7B1dTZeEtzmIeat.gif",
+    "product_category": "Academic",
+    "product_colors": "Black",
+    "product_description": "1899",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "23.00",
+    "product_socialprice": "23.00",
+    "product_type_visible": "Other",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_three": {
+    "item_name": "AA Hoodie Plain Back",
+    "design_images_list": "Sxmx7B1dTZeEtzmIplain.gif",
+    "product_category": "Academic",
+    "product_colors": "Black",
+    "product_description": "1899",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "21.00",
+    "product_socialprice": "21.00",
+    "product_type_visible": "Other",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4116",
+  "order_status": "Placed",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "Conrads Hoodies Lighter "
+},
+{
+  "customer": {
+    "first_name": "C-Rad",
+    "last_name": "",
+    "email_address": "joe@conradsgrill.com",
+    "phone_number": "517 488 6722",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "0"
+  },
+  "design_one": {
+    "design_name": "Hoodie ",
+    "design_images_list": "fOE7Pwilx80AoG3Hknow.gif"
+  },
+  "design_two": {
+    "design_name": "Hoodie ",
+    "design_images_list": "fOE7Pwilx80AoG3Heat.gif"
+  },
+  "design_three": {
+    "design_name": "Hoodie Plain",
+    "design_images_list": "fOE7Pwilx80AoG3Hplain.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Black",
+    "product_description": "4116",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "23.00",
+    "product_socialprice": "23.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "Hoodie ",
+    "design_images_list": "fOE7Pwilx80AoG3Heat.gif",
+    "product_category": "Academic",
+    "product_colors": "Black",
+    "product_description": "4116",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "23.00",
+    "product_socialprice": "23.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_three": {
+    "item_name": "Hoodie Plain",
+    "design_images_list": "fOE7Pwilx80AoG3Hplain.gif",
+    "product_category": "Academic",
+    "product_colors": "Black",
+    "product_description": "4116",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "21.00",
+    "product_socialprice": "21.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4117",
+  "order_status": "Placed",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "CONRADS HOODIES Heavier "
+},
+{
+  "customer": {
+    "first_name": "Jaimee",
+    "last_name": "Gillon",
+    "email_address": "jgillon@swcrk.org",
+    "phone_number": "",
+    "address_one": "1 Dragon Drive",
+    "address_two": "",
+    "address_city": "Swartz Creek",
+    "address_state": "MI",
+    "address_zip": "48137"
+  },
+  "order_summary": {
+    "order_total": "280",
+    "tax_amount": "16.8",
+    "final_total": "296.80",
+    "payments": "0",
+    "balance": "296.80",
+    "total_pieces": "35"
+  },
+  "design_one": {
+    "design_name": "T-shirt",
+    "design_images_list": "Xvjf5QDcECJERSTmproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "White",
+    "product_description": "Calling Thursday (13th)",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
     "product_socialprice": "0.00",
     "product_type_visible": "Shirt Style",
     "color_count": {
@@ -3851,10 +1715,10 @@ duckburg.oldOrderData = [
       "right": "0"
     },
     "sizes": {
-      "S": "18",
-      "M": "15",
-      "L": "5",
-      "XL": "3",
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
       "2X": "0",
       "3X": "0",
       "4X": "0",
@@ -3862,21 +1726,21 @@ duckburg.oldOrderData = [
       "YS": "0",
       "YM": "0",
       "YL": "0",
-      "QUOTE": "0"
+      "QUOTE": "35"
     }
   },
-  "old_db_id": "3932",
-  "order_status": "Completed",
-  "due_date": "12/04/2014",
-  "is_taxed": "0.00",
-  "name": "RAWR "
+  "old_db_id": "4135",
+  "order_status": "Active",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "Hand-Print"
 },
 {
   "customer": {
-    "first_name": "Kalieha",
-    "last_name": "Stapleton",
-    "email_address": "staple42@msu.edu",
-    "phone_number": "",
+    "first_name": "Leigh",
+    "last_name": "Graves",
+    "email_address": "gravesle@msu.edu",
+    "phone_number": "517.432.7195 ",
     "address_one": "",
     "address_two": "",
     "address_city": "",
@@ -3884,39 +1748,39 @@ duckburg.oldOrderData = [
     "address_zip": ""
   },
   "order_summary": {
-    "order_total": "275",
+    "order_total": "0",
     "tax_amount": "0",
-    "final_total": "275.00",
+    "final_total": "0.00",
     "payments": "0",
-    "balance": "275.00",
-    "total_pieces": "25"
+    "balance": "0.00",
+    "total_pieces": "0"
   },
   "design_one": {
-    "design_name": "Black Tee",
-    "design_images_list": "SJPsKfLoZH2XpUFxproof.gif"
+    "design_name": "Baseball Tee",
+    "design_images_list": "0jkeJKnrdQldvTZ8Proof.gif"
   },
   "cat_item_one": {
     "item_name": "",
     "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Black",
-    "product_description": "S 4 -M 7 -L 8 -XL 6 ",
+    "product_category": "B2B",
+    "product_colors": "Green / White",
+    "product_description": "3142",
     "product_ishidden": "yes",
     "product_isindexed": "no",
-    "product_price": "11.00",
+    "product_price": "18.00",
     "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
+    "product_type_visible": "RD005 - 3/4 Sleeve Jersey",
     "color_count": {
-      "front": "2",
-      "back": "1",
+      "front": "0",
+      "back": "0",
       "left": "0",
       "right": "0"
     },
     "sizes": {
-      "S": "4",
-      "M": "7",
-      "L": "8",
-      "XL": "6",
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
       "2X": "0",
       "3X": "0",
       "4X": "0",
@@ -3927,11 +1791,11 @@ duckburg.oldOrderData = [
       "QUOTE": "0"
     }
   },
-  "old_db_id": "3945",
-  "order_status": "Archive",
-  "due_date": "12/04/2014",
+  "old_db_id": "4142",
+  "order_status": "Active",
+  "due_date": "02/27/2015",
   "is_taxed": "0.00",
-  "name": "MSU Black Caucus "
+  "name": "MSU MAET2"
 },
 {
   "customer": {
@@ -3946,28 +1810,32 @@ duckburg.oldOrderData = [
     "address_zip": ""
   },
   "order_summary": {
-    "order_total": "306",
-    "tax_amount": "18.36",
-    "final_total": "324.36",
+    "order_total": "107",
+    "tax_amount": "6.42",
+    "final_total": "113.42",
     "payments": "0",
     "balance": "0.00",
-    "total_pieces": "34"
+    "total_pieces": "11"
   },
   "design_one": {
-    "design_name": "T-shirt",
-    "design_images_list": "bN3SSyrbvJkr5l2yproof.gif"
+    "design_name": "Old Design",
+    "design_images_list": "24SJ7MAWproof.gif"
+  },
+  "design_two": {
+    "design_name": "Moot Court",
+    "design_images_list": "Yercdauzc7A6gZcuproof.gif"
   },
   "cat_item_one": {
     "item_name": "",
     "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Forest ",
-    "product_description": "If available, toddler size 4 - 1 Small - 2 Medium - 5 Large - 7 XLarge - 9 2XL - 10 3XL - 1",
+    "product_category": "Academic",
+    "product_colors": "Forest Green",
+    "product_description": "Quote 1:0Quote 2:0",
     "product_ishidden": "yes",
     "product_isindexed": "no",
     "product_price": "9.00",
     "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
+    "product_type_visible": "",
     "color_count": {
       "front": "1",
       "back": "1",
@@ -3975,73 +1843,11 @@ duckburg.oldOrderData = [
       "right": "0"
     },
     "sizes": {
-      "S": "2",
-      "M": "5",
-      "L": "7",
-      "XL": "9",
-      "2X": "10",
-      "3X": "1",
-      "4X": "0",
-      "YXS": "0",
-      "YS": "0",
-      "YM": "0",
-      "YL": "0",
-      "QUOTE": "0"
-    }
-  },
-  "old_db_id": "3976",
-  "order_status": "Completed",
-  "due_date": "12/04/2014",
-  "is_taxed": "0.06",
-  "name": "MSU NALSA"
-},
-{
-  "customer": {
-    "first_name": "Jill",
-    "last_name": "Passanante",
-    "email_address": "operations@impact89fm.org",
-    "phone_number": "",
-    "address_one": "",
-    "address_two": "",
-    "address_city": "",
-    "address_state": "",
-    "address_zip": ""
-  },
-  "order_summary": {
-    "order_total": "2120",
-    "tax_amount": "0",
-    "final_total": "2120.00",
-    "payments": "0",
-    "balance": "0.00",
-    "total_pieces": "265"
-  },
-  "design_one": {
-    "design_name": "Pocket Tee",
-    "design_images_list": "EyH0fTbolV21ca1nproofpocket.gif"
-  },
-  "cat_item_one": {
-    "item_name": "",
-    "design_images_list": "",
-    "product_category": "Job Category",
-    "product_colors": "Black",
-    "product_description": "90 smalls, 95 mediums, 65 larges, 10 XL and 5 XXL. ",
-    "product_ishidden": "yes",
-    "product_isindexed": "no",
-    "product_price": "8.00",
-    "product_socialprice": "0.00",
-    "product_type_visible": "Shirt Style",
-    "color_count": {
-      "front": "1",
-      "back": "3",
-      "left": "0",
-      "right": "0"
-    },
-    "sizes": {
-      "S": "90",
-      "M": "95",
-      "L": "65",
-      "XL": "10",
-      "2X": "5",
+      "S": "0",
+      "M": "2",
+      "L": "1",
+      "XL": "0",
+      "2X": "0",
       "3X": "0",
       "4X": "0",
       "YXS": "0",
@@ -4051,10 +1857,1772 @@ duckburg.oldOrderData = [
       "QUOTE": "0"
     }
   },
-  "old_db_id": "3985",
-  "order_status": "Completed",
-  "due_date": "12/04/2014",
+  "cat_item_two": {
+    "item_name": "Moot Court",
+    "design_images_list": "Yercdauzc7A6gZcuproof.gif",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "Quote 1:0Quote 2:0",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "10.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "3",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "3",
+      "M": "1",
+      "L": "1",
+      "XL": "1",
+      "2X": "1",
+      "3X": "1",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4172",
+  "order_status": "Active",
+  "due_date": "02/27/2015",
+  "is_taxed": "0.06",
+  "name": "MSU NALSA Spring"
+},
+{
+  "customer": {
+    "first_name": "Adam",
+    "last_name": "Schoonmaker",
+    "email_address": "adamschoonmaker12@gmail.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "130",
+    "tax_amount": "7.8",
+    "final_total": "137.80",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "10"
+  },
+  "design_one": {
+    "design_name": "T-Shirt",
+    "design_images_list": "30TKRut3xrw4qGt4proof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Dark Heather",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "13.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "3",
+      "M": "4",
+      "L": "1",
+      "XL": "2",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4181",
+  "order_status": "Active",
+  "due_date": "02/25/2015",
+  "is_taxed": "0.06",
+  "name": "Onesound"
+},
+{
+  "customer": {
+    "first_name": "Augie",
+    "last_name": "Evered",
+    "email_address": "aoevered@gmail.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "350",
+    "tax_amount": "21",
+    "final_total": "371.00",
+    "payments": "0",
+    "balance": "371.00",
+    "total_pieces": "70"
+  },
+  "design_one": {
+    "design_name": "T-shirt",
+    "design_images_list": "WSfXDwTacwsOJ7Psproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Trop Blue?",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "70"
+    }
+  },
+  "old_db_id": "4180",
+  "order_status": "Active",
+  "due_date": "02/25/2015",
+  "is_taxed": "0.06",
+  "name": "Battle of the Bands"
+},
+{
+  "customer": {
+    "first_name": "Arun",
+    "last_name": "Das",
+    "email_address": "dasarun@gmail.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "448",
+    "tax_amount": "0",
+    "final_total": "448.00",
+    "payments": "0",
+    "balance": "448.00",
+    "total_pieces": "14"
+  },
+  "design_one": {
+    "design_name": "Flex Fleece Zip Hoodie",
+    "design_images_list": "JUYXn4pUMlbr2gA7new3.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Asphalt",
+    "product_description": "1 XXL 2 XL 4 L 4 M 3 S",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "32.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "3",
+      "M": "4",
+      "L": "4",
+      "XL": "2",
+      "2X": "1",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4183",
+  "order_status": "Active",
+  "due_date": "02/25/2015",
   "is_taxed": "0.00",
-  "name": "Impact Tees"
+  "name": "Pangea Hoodies"
+},
+{
+  "customer": {
+    "first_name": "",
+    "last_name": "",
+    "email_address": "",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "48",
+    "tax_amount": "2.88",
+    "final_total": "50.88",
+    "payments": "0",
+    "balance": "50.88",
+    "total_pieces": "6"
+  },
+  "design_one": {
+    "design_name": "",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "3",
+      "XL": "3",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4166",
+  "order_status": "Active",
+  "due_date": "02/24/2015",
+  "is_taxed": "0.06",
+  "name": "Mommy Says Fitness"
+},
+{
+  "customer": {
+    "first_name": "Scott",
+    "last_name": "Rolen",
+    "email_address": "srolen14@gmail.com",
+    "phone_number": "734.649.0596",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "481.25",
+    "tax_amount": "28.875",
+    "final_total": "510.13",
+    "payments": "0",
+    "balance": "510.13",
+    "total_pieces": "65"
+  },
+  "design_one": {
+    "design_name": "Girls Tanks",
+    "design_images_list": "OPgROxKbKm79fVGMtank.gif"
+  },
+  "design_two": {
+    "design_name": "Girls Tanks",
+    "design_images_list": "OPgROxKbKm79fVGMteal.gif"
+  },
+  "design_three": {
+    "design_name": "Mens V-necks STAFF",
+    "design_images_list": "OPgROxKbKm79fVGMproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "B2B",
+    "product_colors": "Red",
+    "product_description": "4092",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.25",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "10",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "Girls Tanks",
+    "design_images_list": "OPgROxKbKm79fVGMteal.gif",
+    "product_category": "B2B",
+    "product_colors": "Teal",
+    "product_description": "4092",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.25",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "10",
+      "M": "5",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_three": {
+    "item_name": "Mens V-necks STAFF",
+    "design_images_list": "OPgROxKbKm79fVGMproof.gif",
+    "product_category": "B2B",
+    "product_colors": "Black",
+    "product_description": "4092",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.50",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "25",
+      "L": "10",
+      "XL": "5",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4176",
+  "order_status": "Active",
+  "due_date": "02/24/2015",
+  "is_taxed": "0.06",
+  "name": "Landshark"
+},
+{
+  "customer": {
+    "first_name": "Will",
+    "last_name": "Benghauser",
+    "email_address": "",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "200",
+    "tax_amount": "12",
+    "final_total": "212.00",
+    "payments": "0",
+    "balance": "212.00",
+    "total_pieces": "25"
+  },
+  "design_one": {
+    "design_name": "Black Tee",
+    "design_images_list": "A9N4uzUHFtleXPNSblacktee.gif"
+  },
+  "design_two": {
+    "design_name": "White Tee",
+    "design_images_list": "dq0medgJWDul5IFiwhtietee.gif"
+  },
+  "design_three": {
+    "design_name": "Grey Tees",
+    "design_images_list": "dq0medgJWDul5IFidarkheath.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Black",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "1",
+      "M": "2",
+      "L": "4",
+      "XL": "2",
+      "2X": "1",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "White Tee",
+    "design_images_list": "dq0medgJWDul5IFiwhtietee.gif",
+    "product_category": "Job Category",
+    "product_colors": "White",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "3",
+      "2X": "1",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_three": {
+    "item_name": "Grey Tees",
+    "design_images_list": "dq0medgJWDul5IFidarkheath.gif",
+    "product_category": "Job Category",
+    "product_colors": "Dark Heather",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "1",
+      "M": "3",
+      "L": "4",
+      "XL": "2",
+      "2X": "1",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4177",
+  "order_status": "Placed",
+  "due_date": "02/24/2015",
+  "is_taxed": "0.06",
+  "name": "Geovybe"
+},
+{
+  "customer": {
+    "first_name": "Colin",
+    "last_name": "",
+    "email_address": "Colin@boldmethod.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "30",
+    "tax_amount": "0",
+    "final_total": "30.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "2"
+  },
+  "design_one": {
+    "design_name": "Stripe Zip Hoodie",
+    "design_images_list": "tmtjcBQ2xSxYbruximage.png"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Asphalt",
+    "product_description": "3933",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "30.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "3",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "1",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4136",
+  "order_status": "Shirts Ordered",
+  "due_date": "02/23/2015",
+  "is_taxed": "0.00",
+  "name": "Boldmethod 1 "
+},
+{
+  "customer": {
+    "first_name": "Mike",
+    "last_name": "Casner",
+    "email_address": "md_casner@yahoo.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "428",
+    "tax_amount": "25.68",
+    "final_total": "473.68",
+    "payments": "0",
+    "balance": "474.88",
+    "total_pieces": "29"
+  },
+  "design_one": {
+    "design_name": "T-shirts",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Various",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "6.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "6"
+    }
+  },
+  "old_db_id": "4140",
+  "order_status": "Active",
+  "due_date": "02/23/2015",
+  "is_taxed": "0.06",
+  "name": "CDM 1"
+},
+{
+  "customer": {
+    "first_name": "Mariana",
+    "last_name": "",
+    "email_address": "",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "467.5",
+    "tax_amount": "0",
+    "final_total": "467.50",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "85"
+  },
+  "design_one": {
+    "design_name": "T-Shirt",
+    "design_images_list": "UnjPSkqyZ62hqHsbproof2.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Black",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.50",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "25",
+      "M": "25",
+      "L": "25",
+      "XL": "10",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4164",
+  "order_status": "Placed",
+  "due_date": "02/23/2015",
+  "is_taxed": "0.00",
+  "name": "Spartan Engineering"
+},
+{
+  "customer": {
+    "first_name": "Rick",
+    "last_name": "",
+    "email_address": "rick@dublinsquare.net",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "160",
+    "tax_amount": "9.6",
+    "final_total": "169.60",
+    "payments": "0",
+    "balance": "169.60",
+    "total_pieces": "20"
+  },
+  "design_one": {
+    "design_name": "Tees",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Safety Orange",
+    "product_description": "3730",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "10",
+      "XL": "10",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4182",
+  "order_status": "Active",
+  "due_date": "02/23/2015",
+  "is_taxed": "0.06",
+  "name": "Dublin Security"
+},
+{
+  "customer": {
+    "first_name": "Alana",
+    "last_name": "Assenmacher",
+    "email_address": "alanaassenmacher@gmail.com",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "57"
+  },
+  "design_one": {
+    "design_name": "Long Sleeve Tee",
+    "design_images_list": "RqIkSwWGnVhkUJz8proof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Bar Crawl",
+    "product_colors": "Forest ",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "0.00",
+    "product_socialprice": "12.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "57"
+    }
+  },
+  "old_db_id": "4110",
+  "order_status": "Shirts Received",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.06",
+  "name": "Comfy Crawl"
+},
+{
+  "customer": {
+    "first_name": "Stephen",
+    "last_name": "",
+    "email_address": "sgiles2000@gmail.com",
+    "phone_number": "517 402 3631",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "132",
+    "tax_amount": "7.92",
+    "final_total": "139.92",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "11"
+  },
+  "design_one": {
+    "design_name": "Customer Supplied",
+    "design_images_list": "tV0hA9rrtBzLoKF8proof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "High School",
+    "product_colors": "",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "12.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "11"
+    }
+  },
+  "old_db_id": "4168",
+  "order_status": "Shirts Received",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.06",
+  "name": "Flight School Floor Hockey"
+},
+{
+  "customer": {
+    "first_name": "Stephen",
+    "last_name": "",
+    "email_address": "sgiles2000@gmail.com",
+    "phone_number": "517 402 3631",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "0"
+  },
+  "design_one": {
+    "design_name": "Customer Supplied",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "High School",
+    "product_colors": "",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "12.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4169",
+  "order_status": "Archive",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.06",
+  "name": "Flight School Floor Hockey"
+},
+{
+  "customer": {
+    "first_name": "Mike",
+    "last_name": "Ayres",
+    "email_address": "ayresmic@msu.edu",
+    "phone_number": "248 915 8722",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "216",
+    "tax_amount": "12.96",
+    "final_total": "228.96",
+    "payments": "0",
+    "balance": "-9.54",
+    "total_pieces": "30"
+  },
+  "design_one": {
+    "design_name": "V-Neck",
+    "design_images_list": "S4VfbUvQk85GEX35proof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Black",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "2",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "8",
+      "M": "9",
+      "L": "6",
+      "XL": "2",
+      "2X": "3",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4170",
+  "order_status": "Shirts Ordered",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.06",
+  "name": "Landshark Bar Crawl"
+},
+{
+  "customer": {
+    "first_name": "Tim",
+    "last_name": "Dempsey",
+    "email_address": "dempse43@msu.edu",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "110",
+    "tax_amount": "6.6",
+    "final_total": "116.60",
+    "payments": "0",
+    "balance": "58.30",
+    "total_pieces": "11"
+  },
+  "design_one": {
+    "design_name": "T-Shirt",
+    "design_images_list": "3cBrdQyBhnnPmEpRproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "High School",
+    "product_colors": "Lime",
+    "product_description": "Small - 2 Medium - 6 Large - 3",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "10.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "RD001 - 100% Cotton",
+    "color_count": {
+      "front": "1",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "2",
+      "M": "6",
+      "L": "3",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4171",
+  "order_status": "Shirts Received",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.06",
+  "name": "Hat Trick Floor Hockey"
+},
+{
+  "customer": {
+    "first_name": "Julie",
+    "last_name": "Banks",
+    "email_address": "",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "212.5",
+    "tax_amount": "0",
+    "final_total": "212.50",
+    "payments": "0",
+    "balance": "212.50",
+    "total_pieces": "28"
+  },
+  "design_one": {
+    "design_name": "Design 1 Tee",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Red",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "1",
+      "L": "2",
+      "XL": "0",
+      "2X": "3",
+      "3X": "0",
+      "4X": "1",
+      "YXS": "0",
+      "YS": "2",
+      "YM": "2",
+      "YL": "1",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4178",
+  "order_status": "Shirts Ordered",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.00",
+  "name": "Red Friday"
+},
+{
+  "customer": {
+    "first_name": "Julie",
+    "last_name": "Banks",
+    "email_address": "",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "117",
+    "tax_amount": "0",
+    "final_total": "117.00",
+    "payments": "0",
+    "balance": "117.00",
+    "total_pieces": "8"
+  },
+  "design_one": {
+    "design_name": "Design 1 Fitted V",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Red ",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "8.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "1",
+      "XL": "0",
+      "2X": "1",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4179",
+  "order_status": "Shirts Ordered",
+  "due_date": "02/20/2015",
+  "is_taxed": "0.00",
+  "name": "Red Friday"
+},
+{
+  "customer": {
+    "first_name": "LCC:",
+    "last_name": "Mackenzie",
+    "email_address": "draperm2@lcc.edu",
+    "phone_number": "517-483-1678",
+    "address_one": "Office of Student Life",
+    "address_two": "411 N. Grand Ave. Room 25",
+    "address_city": "Lansing",
+    "address_state": "MI",
+    "address_zip": "48933"
+  },
+  "order_summary": {
+    "order_total": "400",
+    "tax_amount": "0",
+    "final_total": "400.00",
+    "payments": "0",
+    "balance": "400.00",
+    "total_pieces": "100"
+  },
+  "design_one": {
+    "design_name": "T-shirt",
+    "design_images_list": "DNJFHtV8Fx07QSkQproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Royal ",
+    "product_description": "#P1502170 ",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "4.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "2",
+      "back": "2",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "20",
+      "M": "50",
+      "L": "30",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4106",
+  "order_status": "Completed - Unpaid",
+  "due_date": "02/19/2015",
+  "is_taxed": "0.00",
+  "name": "LCC Student Life C4"
+},
+{
+  "customer": {
+    "first_name": "Laura",
+    "last_name": "Zeller",
+    "email_address": "zeller@impression5.org",
+    "phone_number": "517-485-8116 ext #123",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "395",
+    "tax_amount": "0",
+    "final_total": "395.00",
+    "payments": "0",
+    "balance": "197.50",
+    "total_pieces": "79"
+  },
+  "design_one": {
+    "design_name": "T-shirt",
+    "design_images_list": "N5R9Xq4Gf9347wCIFINAL.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "Navy",
+    "product_description": "Quote 1:0",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "10",
+      "M": "29",
+      "L": "23",
+      "XL": "17",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4109",
+  "order_status": "Completed - Unpaid",
+  "due_date": "02/19/2015",
+  "is_taxed": "0.00",
+  "name": "Physics And Astronomy Day"
+},
+{
+  "customer": {
+    "first_name": "Lori",
+    "last_name": "Fischer",
+    "email_address": "lfischer@spartaninnovation.org",
+    "phone_number": "517-884-4540",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "450",
+    "tax_amount": "27",
+    "final_total": "477.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "75"
+  },
+  "design_one": {
+    "design_name": "T-shirt",
+    "design_images_list": "JV0pUGQkwfPSsMGcFinalProof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Academic",
+    "product_colors": "White",
+    "product_description": "10 XL, 30 L, 30 M, 5 S",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "6.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "5",
+      "M": "30",
+      "L": "30",
+      "XL": "10",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4158",
+  "order_status": "Completed",
+  "due_date": "02/19/2015",
+  "is_taxed": "0.06",
+  "name": "Lansing Start Up"
+},
+{
+  "customer": {
+    "first_name": "Ben",
+    "last_name": "",
+    "email_address": "benjamin.burton@legacymp.com",
+    "phone_number": "734 642 6014",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "0"
+  },
+  "design_one": {
+    "design_name": "Canvas Tanks",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "B2B",
+    "product_colors": "",
+    "product_description": "",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "0.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "0",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4175",
+  "order_status": "Archive",
+  "due_date": "02/19/2015",
+  "is_taxed": "0.06",
+  "name": "Luke Reminder - Malibu Rum art"
+},
+{
+  "customer": {
+    "first_name": "",
+    "last_name": "Kaitlyn",
+    "email_address": "vaux.kait@gmail.com",
+    "phone_number": "",
+    "address_one": "6711 Yolanda Avenue",
+    "address_two": "",
+    "address_city": "Reseda",
+    "address_state": "Ca",
+    "address_zip": "91335"
+  },
+  "order_summary": {
+    "order_total": "600",
+    "tax_amount": "0",
+    "final_total": "600.00",
+    "payments": "0",
+    "balance": "300.00",
+    "total_pieces": "120"
+  },
+  "design_one": {
+    "design_name": "Design 1 ",
+    "design_images_list": "H9zJsxSDVNlgakUgloho1.gif"
+  },
+  "design_two": {
+    "design_name": "Design 2 ",
+    "design_images_list": "o9aW0yMiCAngerumLogo2.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Non Profit",
+    "product_colors": "White",
+    "product_description": "Quote 1:0Quote 2:0",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "30",
+      "M": "27",
+      "L": "10",
+      "XL": "3",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "cat_item_two": {
+    "item_name": "Design 2 ",
+    "design_images_list": "o9aW0yMiCAngerumLogo2.gif",
+    "product_category": "Non Profit",
+    "product_colors": "White",
+    "product_description": "Quote 1:0Quote 2:0",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "5.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "25",
+      "M": "20",
+      "L": "3",
+      "XL": "2",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4141",
+  "order_status": "Completed - Unpaid",
+  "due_date": "02/18/2015",
+  "is_taxed": "0.00",
+  "name": "Girls Camps Tees "
+},
+{
+  "customer": {
+    "first_name": "Anton",
+    "last_name": "",
+    "email_address": "anton.deavila@gmail.com",
+    "phone_number": "(248) 622-7088",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "595",
+    "tax_amount": "35.7",
+    "final_total": "630.70",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "85"
+  },
+  "design_one": {
+    "design_name": "T-Shirt",
+    "design_images_list": "XSm74XppNYfhHGvkproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Athletic Heather",
+    "product_description": "Due Wednesday @ 10am",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "7.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "3",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "30",
+      "M": "34",
+      "L": "17",
+      "XL": "4",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4159",
+  "order_status": "Completed",
+  "due_date": "02/18/2015",
+  "is_taxed": "0.06",
+  "name": "Spartans Rebuilding Michigan SRM"
+},
+{
+  "customer": {
+    "first_name": "",
+    "last_name": "",
+    "email_address": "",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "0",
+    "tax_amount": "0",
+    "final_total": "0.00",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "1"
+  },
+  "design_one": {
+    "design_name": "",
+    "design_images_list": ""
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "",
+    "product_description": "4158",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "0.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "1",
+      "back": "1",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "1",
+      "M": "0",
+      "L": "0",
+      "XL": "0",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4161",
+  "order_status": "Completed",
+  "due_date": "02/18/2015",
+  "is_taxed": "0.06",
+  "name": "Sample Shirt"
+},
+{
+  "customer": {
+    "first_name": "Jessica",
+    "last_name": "Bonardelli",
+    "email_address": "bonardel@msu.edu",
+    "phone_number": "",
+    "address_one": "",
+    "address_two": "",
+    "address_city": "",
+    "address_state": "",
+    "address_zip": ""
+  },
+  "order_summary": {
+    "order_total": "156",
+    "tax_amount": "9.36",
+    "final_total": "165.36",
+    "payments": "0",
+    "balance": "0.00",
+    "total_pieces": "13"
+  },
+  "design_one": {
+    "design_name": "T-shirt",
+    "design_images_list": "1aaRv5Abgff3RTeLproof.gif"
+  },
+  "cat_item_one": {
+    "item_name": "",
+    "design_images_list": "",
+    "product_category": "Job Category",
+    "product_colors": "Coral Silk",
+    "product_description": " 3 small, 6 medium, 2 large, and 2 X-large.",
+    "product_ishidden": "yes",
+    "product_isindexed": "no",
+    "product_price": "12.00",
+    "product_socialprice": "0.00",
+    "product_type_visible": "Shirt Style",
+    "color_count": {
+      "front": "2",
+      "back": "0",
+      "left": "0",
+      "right": "0"
+    },
+    "sizes": {
+      "S": "3",
+      "M": "6",
+      "L": "2",
+      "XL": "2",
+      "2X": "0",
+      "3X": "0",
+      "4X": "0",
+      "YXS": "0",
+      "YS": "0",
+      "YM": "0",
+      "YL": "0",
+      "QUOTE": "0"
+    }
+  },
+  "old_db_id": "4163",
+  "order_status": "Completed",
+  "due_date": "02/18/2015",
+  "is_taxed": "0.06",
+  "name": "MSU Microbiology Club"
 }
 ];

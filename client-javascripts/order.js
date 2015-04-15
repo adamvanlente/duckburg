@@ -1822,7 +1822,7 @@ duckburg.order = {
          .append($('<textarea>')
            .attr('id', 'product_socialmessage')
            .attr('class', 'productSocialMessage')
-           .attr('placeholder', 'Message to social customers')
+           .attr('placeholder', 'Message to social customers (recommended)')
            .attr('name', 'product_socialmessage_' + numDesigns)
            .keyup(function() {
              duckburg.order.collectDesignDetails();

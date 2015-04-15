@@ -3,7 +3,7 @@ var duckburg = duckburg || {};
 
 /**
  * Requests
- * @modele main list of Parse requests
+ * @module main list of Parse requests
  *
  */
 duckburg.requests = {

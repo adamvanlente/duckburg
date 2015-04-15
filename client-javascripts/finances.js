@@ -8,7 +8,7 @@ var duckburg = duckburg || {};
 duckburg.finances = {
 
   /** Default finance mode **/
-  defaultView: 'payroll', // ledger, taxes or payroll
+  defaultView: 'ledger', // ledger, taxes or payroll
 
   /** Remember if all ledger items are checked. **/
   ledgerItemsAreLoaded: {},

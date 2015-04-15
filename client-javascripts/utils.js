@@ -38,6 +38,7 @@ duckburg.utils = {
   /** Default order status and order status map. **/
   defaultNewOrderStatus: 'open',
 
+  /** Map a color to each order status **/
   orderStatusMap: {
     'quote': 'rgba(184, 184, 184, 1.0)',
     'open': 'rgba(130, 153, 200, 1.0)',
@@ -46,6 +47,7 @@ duckburg.utils = {
     'received': 'rgba(226, 177, 101, 1.0)',
     'printing': 'rgba(239, 116, 116, 1.0)',
     'completed': 'rgba(54, 179, 202, 1.0)',
+    'delivered': 'rgba(160, 115, 239, 1.0)',
     'archived': 'rgba(0, 0, 0, 0.8)'
   },
 
