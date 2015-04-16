@@ -1,7 +1,10 @@
 config
 node_modules
 npm-debug.log
-public
+public/css/*.css
+public/img
+public/jobimages
+public/js
 .DS_Store
 .sass-cache
 parse.js
