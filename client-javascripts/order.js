@@ -2014,6 +2014,9 @@ duckburg.order = {
 
             for (var j = 0; j < imgList.length; j++) {
               var img = imgList[j];
+              if (img.indexOf('/jobimages/') === -1) {
+                img = '/jobimages/' + img;
+              }
               var imgSpan = $('<span>')
                 .css({'background': 'url(' + img + ')',
                 'background-size': '100%'});
