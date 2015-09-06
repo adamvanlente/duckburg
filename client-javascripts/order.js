@@ -230,6 +230,8 @@ duckburg.order = {
     // Set prices.
     $('[name="product_price_' + index + '"]').val(design.product_price);
 
+    $('[name="pickup_time_' + index + '"]').val(design.pickup_time);
+
     // Advanced settings.
     $('[name="delivery_method_' + index + '"]').val(design.delivery_method);
     $('[name="delivery_method_visible_' + index + '"]').val(
@@ -238,6 +240,14 @@ duckburg.order = {
     $('[name="product_category_' + index + '"]').val(design.product_category);
     $('[name="product_category_visible_' + index + '"]').val(
         design.product_category_visible);
+
+    $('[name="design_licensor_' + index + '"]').val(design.design_licensor);
+    $('[name="design_licensor_visible_' + index + '"]').val(
+        design.design_licensor_visible);
+
+    $('[name="design_salesperson_' + index + '"]').val(design.design_salesperson);
+    $('[name="design_salesperson_visible_' + index + '"]').val(
+        design.design_salesperson_visible);
 
     $('[name="product_store_' + index + '"]').val(design.product_store);
     $('[name="product_store_visible_' + index + '"]').val(
@@ -1413,6 +1423,9 @@ duckburg.order = {
     // Add the pricing input fields to the form.
     duckburg.order.addDesignPriceInputsToDesignForm(newForm);
 
+    // Add options for design category, licensing and sale options.
+    duckburg.order.addCategoryLicensingAndSalesperson(newForm);
+
     // Add social settings for social orders.
     if (duckburg.order.isSocialOrder) {
       duckburg.order.addSocialSettingsHolder(newForm);
@@ -1738,7 +1751,7 @@ duckburg.order = {
         .attr('class', 'designProductDetailInputs')
         .attr('id', numDesigns)
 
-        // Product type label and input.
+        // Product TYPE label and input.
         .append($('<label>')
           .html('product type')
           .attr('class', 'productTypeLabel'))
@@ -1758,7 +1771,7 @@ duckburg.order = {
                 e, 'product_name', 'dbProduct', 'product_type');
           }))
 
-        // Product type label and input.
+        // Product COLOR label and input.
         .append($('<label>')
           .html('product color')
           .attr('class', 'productColorLabel'))
@@ -1803,6 +1816,20 @@ duckburg.order = {
           duckburg.order.collectDesignDetails();
         }));
 
+      priceHolder
+        .append($('<label>')
+          .html('pickup time')
+          .attr('class', 'productPickupTimeLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'pickup_time')
+          .attr('name', 'pickup_time_' + numDesigns)
+          .attr('class', 'pickupTimeInputField')
+          .attr('placeholder', '10am')
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }));
+
     if (duckburg.order.isSocialOrder) {
 
       priceHolder
@@ -1830,6 +1857,86 @@ duckburg.order = {
      }
 
      form.append(priceHolder);
+   },
+
+   /**
+    * Add area that lets the user add design category, licensing
+    * and a salesperson
+    * @function adds area to form for category, licensees and salesperson.
+    * @param form Obj dom element, form to append to.
+    *
+    */
+   addCategoryLicensingAndSalesperson: function(form) {
+
+     // Get number of designs.
+     var numDesigns = $('.designFormWithinOrder').length;
+
+     var wrapper = $('<div>').attr('class', 'catLicensingSalespersonDiv');
+
+     // Append a product category input.
+     wrapper
+       .append($('<label>')
+         .attr('class', 'categoryLabel')
+         .html('Category'))
+       .append($('<input>')
+         .attr('type', 'text')
+         .attr('class', 'productCatVis')
+         .attr('id', 'product_category_visible')
+         .attr('name', 'product_category_visible_' + numDesigns)
+         .click(function(e) {
+           duckburg.order.lastClickedCategory = e.currentTarget.name;
+           duckburg.utils.launchRelatedItemSelector(
+             e, 'category_name', 'dbCatCategory', 'category_name');
+         }))
+       .append($('<input>')
+         .attr('type', 'hidden')
+         .attr('class', 'productCat')
+         .attr('id', 'product_category')
+         .attr('name', 'product_category_' + numDesigns));
+
+       // Append a label and input for Licensor.
+       wrapper
+         .append($('<label>')
+           .attr('class', 'licensorLabel')
+           .html('Licensor'))
+         .append($('<input>')
+           .attr('type', 'text')
+           .attr('class', 'licensorVisible')
+           .attr('id', 'design_licensor_visible')
+           .attr('name', 'design_licensor_visible_' + numDesigns)
+           .click(function(e) {
+             duckburg.order.lastClickedCategory = e.currentTarget.name;
+             duckburg.utils.launchRelatedItemSelector(
+               e, 'licensor_name', 'dbLicensor', 'licensor_name');
+           }))
+         .append($('<input>')
+           .attr('type', 'hidden')
+           .attr('class', 'designLicensor')
+           .attr('id', 'design_licensor')
+           .attr('name', 'design_licensor_' + numDesigns));
+
+       // Append a label and input for Salesperson.
+       wrapper
+         .append($('<label>')
+           .attr('class', 'salespersonLabel')
+           .html('Salesperson'))
+         .append($('<input>')
+           .attr('type', 'text')
+           .attr('class', 'designSalespersonVisible')
+           .attr('id', 'design_salesperson_visible')
+           .attr('name', 'design_salesperson_visible_' + numDesigns)
+           .click(function(e) {
+             duckburg.order.lastClickedCategory = e.currentTarget.name;
+             duckburg.utils.launchRelatedItemSelector(
+               e, 'first_name', 'dbSalesperson', 'first_name');
+           }))
+         .append($('<input>')
+           .attr('type', 'hidden')
+           .attr('class', 'designSalesperson')
+           .attr('id', 'design_salesperson')
+           .attr('name', 'design_salesperson_' + numDesigns));
+
+      form.append(wrapper);
    },
 
    /**
@@ -2505,26 +2612,6 @@ duckburg.order = {
          .attr('id', 'delivery_method')
          .attr('name', 'delivery_method_' + numDesigns));
 
-     // Append a product category input.
-     settingsDetail
-       .append($('<label>')
-         .html('Category'))
-       .append($('<input>')
-         .attr('type', 'text')
-         .attr('class', 'productCatVis')
-         .attr('id', 'product_category_visible')
-         .attr('name', 'product_category_visible_' + numDesigns)
-         .click(function(e) {
-           duckburg.order.lastClickedCategory = e.currentTarget.name;
-           duckburg.utils.launchRelatedItemSelector(
-             e, 'category_name', 'dbCatCategory', 'category_name');
-         }))
-       .append($('<input>')
-         .attr('type', 'hidden')
-         .attr('class', 'productCat')
-         .attr('id', 'product_category')
-         .attr('name', 'product_category_' + numDesigns));
-
      // Append a product store input.
      settingsDetail
        .append($('<label>')
@@ -2696,6 +2783,18 @@ duckburg.order = {
      $('.productCat').each(function(item) {
        $(this).attr('name', 'product_category_' + item);
      });
+     $('.licensorVisible').each(function(item) {
+       $(this).attr('name', 'design_licensor_visible_' + item);
+     });
+     $('.designLicensor').each(function(item) {
+       $(this).attr('name', 'design_licensor_' + item);
+     });
+     $('.designSalespersonVisible').each(function(item) {
+       $(this).attr('name', 'design_salesperson_visible_' + item);
+     });
+     $('.designSalesperson').each(function(item) {
+       $(this).attr('name', 'design_salesperson_' + item);
+     });
      $('.productStoreVis').each(function(item) {
        $(this).attr('name', 'product_store_visible_' + item);
      });
@@ -2752,6 +2851,10 @@ duckburg.order = {
 
      $('.designImagesList').each(function(item) {
        $(this).attr('id', 'design_images_list_' + item);
+     });
+
+     $('.pickupTimeInputField').each(function(item) {
+       $(this).attr('id', 'pickup_time' + item);
      });
 
      // Update price holder ids.
@@ -3015,6 +3118,12 @@ duckburg.order = {
         // Product color
         item.product_colors = $('[name="product_color_' + i + '"]').val();
 
+        var pickupTime = $('[name="pickup_time_' + i + '"]').val()
+        if (!pickupTime) {
+          pickupTime = '10am';
+        }
+        item.pickup_time = pickupTime;
+
         item.delivery_method = $('[name="delivery_method_' + i + '"]').val();
         item.delivery_method_visible =
             $('[name="delivery_method_visible_' + i + '"]').val();
@@ -3023,6 +3132,16 @@ duckburg.order = {
         item.product_category = $('[name="product_category_' + i + '"]').val();
         item.product_category_visible =
             $('[name="product_category_visible_' + i + '"]').val();
+
+        // Design licensor
+        item.design_licensor = $('[name="design_licensor_' + i + '"]').val();
+        item.design_licensor_visible =
+            $('[name="design_licensor_visible_' + i + '"]').val();
+
+        // Design salesperson
+        item.design_salesperson = $('[name="design_salesperson_' + i + '"]').val();
+        item.design_salesperson_visible =
+            $('[name="design_salesperson_visible_' + i + '"]').val();
 
         // Product store
         item.product_store = $('[name="product_store_' + i + '"]').val();

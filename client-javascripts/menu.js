@@ -15,6 +15,7 @@ duckburg.menu = {
    */
   load: function() {
     var userRole = duckburg.curUser.attributes.role;
+    $('.menu').show();
 
     // If user is not admin, remove all admin menu functions.
     if (userRole != 'admin') {

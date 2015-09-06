@@ -28,7 +28,7 @@ duckburg.utils = {
   messageTimeout: 1800,
 
   /** Globals for sorting orders **/
-  defaultSortStatuses: ['open', 'approved', 'ordered'],
+  defaultSortStatuses: ['quote', 'open', 'approved', 'ordered'],
   defaultSortParam: 'due_date',
   defaultSortDirection: 'asc',
 
@@ -127,7 +127,6 @@ duckburg.utils = {
 
       // Get user role.
       var role = duckburg.curUser.attributes.role;
-
       if (isLoginPage) {
         window.location.href = duckburg.utils.homePage;
       }
@@ -1260,6 +1259,10 @@ duckburg.utils = {
           return
         }
 
+        // Clear payment module.
+        $('.paymentModuleHistory')
+          .html('')
+
         for (var i = 0; i < results.length; i++) {
           var result = results[i].attributes;
           var amount = parseFloat(result.amount).toFixed(2);
@@ -1267,7 +1270,6 @@ duckburg.utils = {
           date += ' - ' + result.user;
 
           $('.paymentModuleHistory')
-            .html('')
             .append($('<span>')
               .append($('<label>')
                 .attr('class', 'amtLabel')

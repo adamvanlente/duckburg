@@ -368,12 +368,21 @@ duckburg.orderList = {
     // Missing product color.
     var missingProductColors = 0;
 
+    // Missing licensor assignment
+    var missingLicensorAssignment;
+    var missingLicensorCount = 0;
+
     // Shipping notes.
     var deliveryCount = 0;
     var shippingCount = 0;
 
     for (var i = 0; i < designs.length; i++) {
       var d = designs[i];
+
+      if (!d.design_licensor) {
+        missingLicensorAssignment = true;
+        missingLicensorCount++;
+      }
 
       var type = d.product_type;
       if (!d.product_colors || d.product_colors == '') {
@@ -431,6 +440,14 @@ duckburg.orderList = {
       var noPrintColorsMsg = 'This order has ' + missingColorCounts +
         ' ' + countMsgVerb + ' with no print colors defined.';
       duckburg.orderList.reportIssue(noPrintColorsMsg, order.id, 'warning');
+    }
+
+    // Missing licensor assignment.
+    if (missingLicensorAssignment) {
+      var countMsgVerb = missingLicensorCount == 1 ? 'item' : 'items';
+      var noLicensorMsg = 'This order has ' + missingLicensorCount +
+        ' ' + countMsgVerb + ' with no licensor assigned.';
+      duckburg.orderList.reportIssue(noLicensorMsg, order.id, 'high');
     }
 
     // Missing colors for products.

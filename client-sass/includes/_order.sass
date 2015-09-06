@@ -98,7 +98,6 @@
           font-size: 16px
           margin: 0 16px
           width: 379px
-          text-transform: uppercase
           text-align: center
 
 .statusSelector
@@ -112,6 +111,7 @@
     @extend .light-font
     @extend .basic-button
     display: block
+    border-radius: 0
     font-size: 11px
     color: white
     text-transform: uppercase
@@ -221,7 +221,6 @@
         text-align: left
         color: white
         text-shadow: 0 1px 1px rgba(0,0,0,0.1)
-        text-transform: uppercase
 
       .customerDetailsAddNewButton
         @extend .basic-button
@@ -274,7 +273,6 @@
               background: none
               display: inline-block
               color: #333
-              text-transform: uppercase
               border-bottom: 1px solid rgba(0, 0, 0, 0.21)
 
             &.itemTotalPriceInput,
@@ -674,11 +672,46 @@
                 display: inline-block
                 text-align: center
                 &.productPriceLabel,
-                &.socialPriceLabel
+                &.socialPriceLabel,
+                &.productPickupTimeLabel
                   background: #9C7BC5
                 &.productSalePriceLabel,
                 &.productSocialPriceLabel
                   background: #C6B7DA
+
+              input
+                @extend .basic-button
+                @extend .light-font
+                font-size: 11px
+                padding: 8px
+                width: 60px
+                margin-right: 16px
+                background: rgb(229, 227, 227)
+                border-top-right-radius: 4px
+                border-bottom-right-radius: 4px
+                text-align: center
+                color: #333
+
+            &.catLicensingSalespersonDiv
+              padding: 8px
+              margin: 0 auto
+              width: 800px
+              display: block
+              color: #333
+
+              label
+                font-size: 11px
+                padding: 8px
+                color: white
+                border-bottom-left-radius: 4px
+                border-top-left-radius: 4px
+                width: 70px
+                display: inline-block
+                text-align: center
+                &.categoryLabel,
+                &.licensorLabel,
+                &.salespersonLabel
+                  background: #5A555A
 
               input
                 @extend .basic-button
@@ -797,7 +830,6 @@
         text-align: left
         color: white
         text-shadow: 0 1px 1px rgba(0,0,0,0.1)
-        text-transform: uppercase
 
       .designDetailsAddNewButton
         @extend .basic-button
