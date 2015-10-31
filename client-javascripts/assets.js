@@ -69,7 +69,7 @@ duckburg.assets = {
                var params = {
                  image_name: name,
                  image_url: url,
-                 parse_search_string: name
+                 parse_search_string: name.toLowerCase()
                };
 
                // Create a new image asset.

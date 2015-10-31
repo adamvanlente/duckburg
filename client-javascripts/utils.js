@@ -25,7 +25,7 @@ duckburg.utils = {
   orderSaveInterval: 1000,
 
   /** Interal for messages dissapearing. **/
-  messageTimeout: 1800,
+  messageTimeout: 3500,
 
   /** Globals for sorting orders **/
   defaultSortStatuses: ['quote', 'open', 'approved', 'ordered'],
@@ -72,6 +72,22 @@ duckburg.utils = {
     'L': 0,
     'XL': 0,
     '2X': 0
+  },
+
+  // Standard order sizes for a social order.
+  standardSocialOrderSizes: {
+    'YS': 0,
+    'YM': 0,
+    'YL': 0,
+    'YXL': 0,
+    'XS': 0,
+    'S': 0,
+    'M': 0,
+    'L': 0,
+    'XL': 0,
+    '2X': 0,
+    '3X': 0,
+    '4x': 0
   },
 
   // Order in which sizes should be displayed.
@@ -127,6 +143,12 @@ duckburg.utils = {
 
       // Get user role.
       var role = duckburg.curUser.attributes.role;
+
+      // Don't let customers log in.
+      if (role == 'customer') {
+        duckburg.utils.logout();
+      }
+
       if (isLoginPage) {
         window.location.href = duckburg.utils.homePage;
       }
@@ -294,6 +316,12 @@ duckburg.utils = {
 
           // Set logged in user as current user.
           duckburg.curUser = Parse.User.current();
+          if (duckburg.curUser.attributes.role == 'customer') {
+            var unauthMessage = 'You are not authorized to view this page.';
+            duckburg.utils.errorMessage(unauthMessage);
+            return;
+          }
+
           duckburg.curUser.setACL(new Parse.ACL(user));
           window.location.href = duckburg.utils.homePage;
         },
@@ -437,8 +465,12 @@ duckburg.utils = {
        .attr('class', 'visible messageHolder ' + type)
        .html(message);
 
+      if (duckburg.utils.messageTimer) {
+        window.clearTimeout(duckburg.utils.messageTimer);
+      }
+
      // Hide the message div after a timer expires..
-     setTimeout(function() {
+     duckburg.utils.messageTimer = setTimeout(function() {
         var className = $('.messageHolder').attr('class');
         className = className.replace('visible', 'invisible');
         $('.messageHolder')
@@ -1057,6 +1089,8 @@ duckburg.utils = {
     *
     */
    prepareNewObjectForCreation: function(event) {
+     var msg = 'Creating new object';
+     duckburg.utils.successMessage(msg);
 
      // Get the object function for creating a new object.
      var cbFunctionString = event.currentTarget.id;

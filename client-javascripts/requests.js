@@ -76,6 +76,8 @@ duckburg.requests = {
     // Save the dang thing.
     newItem.save(null, {
       success: function(result) {
+        var msg = 'Successfully created new object.';
+        duckburg.utils.successMessage(msg);
         successCb(result);
       },
 

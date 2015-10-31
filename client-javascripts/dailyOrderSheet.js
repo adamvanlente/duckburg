@@ -171,6 +171,10 @@ duckburg.dos = {
           product.attributes.product_name).toLowerCase();
       var color = item.product_colors.toLowerCase();
 
+      // Trim whitespace from strings.
+      supplierName = supplierName.trim();
+      color = color.trim();
+
       if (!color || color == '') {
         var msg = 'Item(s) on this order have no color information: <a href="' +
           '/order/' + order.attributes.readable_id + '">' +

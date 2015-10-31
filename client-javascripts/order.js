@@ -168,6 +168,9 @@ duckburg.order = {
   fetchAndSetDesign: function(id) {
     duckburg.requests.findById(id, 'dbCatalogItem', function(item) {
       if (item && item.id) {
+        var id = duckburg.order.currentOrder.attributes.readable_id;
+        item.set('parent_order', id);
+        item.save();
         duckburg.order.currentItems[item.id] = item;
       }
     });
@@ -1283,7 +1286,7 @@ duckburg.order = {
          var orderNumber = $('#readable_id').html();
          var searchString = (orderName + orderNumber).toLowerCase();
          duckburg.order.currentOrder.set(param, newVal);
-         duckburg.order.currentOrder.set('parse_search_string', searchString);
+         duckburg.order.currentOrder.set('parse_search_string', searchString.toLowerCase());
 
          // Kick off the save function
          duckburg.order.updateObjectParamTimer = setTimeout(function() {
@@ -1396,7 +1399,10 @@ duckburg.order = {
    */
   addDesignFormToOrder: function(sizes) {
 
-    sizes = sizes || duckburg.utils.standardOrderSizes;
+    var isSocial = duckburg.order.currentOrder.attributes.is_social_order;
+    var standardSizes = isSocial ? duckburg.utils.standardSocialOrderSizes :
+                                   duckburg.utils.standardOrderSizes;
+    sizes = sizes || standardSizes;
 
     // Number of designs
     var numDesigns = $('.designFormWithinOrder').length;
@@ -1783,6 +1789,20 @@ duckburg.order = {
           .keyup(function() {
             duckburg.order.collectDesignDetails();
           }))
+
+        .append($('<label>')
+          .html('pickup time')
+          .attr('class', 'productPickupTimeLabel'))
+        .append($('<input>')
+          .attr('type', 'text')
+          .attr('id', 'pickup_time')
+          .attr('name', 'pickup_time_' + numDesigns)
+          .attr('class', 'pickupTimeInputField')
+          .attr('placeholder', '10am')
+          .keyup(function() {
+            duckburg.order.collectDesignDetails();
+          }))
+
       );
   },
 
@@ -1815,20 +1835,6 @@ duckburg.order = {
         .keyup(function() {
           duckburg.order.collectDesignDetails();
         }));
-
-      priceHolder
-        .append($('<label>')
-          .html('pickup time')
-          .attr('class', 'productPickupTimeLabel'))
-        .append($('<input>')
-          .attr('type', 'text')
-          .attr('id', 'pickup_time')
-          .attr('name', 'pickup_time_' + numDesigns)
-          .attr('class', 'pickupTimeInputField')
-          .attr('placeholder', '10am')
-          .keyup(function() {
-            duckburg.order.collectDesignDetails();
-          }));
 
     if (duckburg.order.isSocialOrder) {
 
@@ -2251,7 +2257,7 @@ duckburg.order = {
       var params = {
         design_images_list: stringImages,
         design_name: $('[name="item_name_' + index + '"]').val(),
-        parse_search_string: $('#item_name_' + index).val(),
+        parse_search_string: $('#item_name_' + index).val().toLowerCase(),
         indexInList: index
       };
 
@@ -2477,8 +2483,8 @@ duckburg.order = {
    */
   addSizeInputFieldToForm: function(size, quantity, designIndex, parent) {
 
-    var sizeInputClass = duckburg.order.isSocialOrder ?
-        'sizeInputHidden' : 'sizeInput';
+    var inputDisabled = duckburg.order.isSocialOrder ? true : false;
+    var inputDisabledClass = inputDisabled ? ' disabled' : '';
 
     var sizeSpan = $('<span>')
         .attr('class', 'sizeLabelAndInputHolder')
@@ -2495,7 +2501,8 @@ duckburg.order = {
         .attr('id', size)
         .attr('name', 'size_for_item_' + designIndex)
         .attr('placeholder', '0')
-        .attr('class', sizeInputClass)
+        .attr('class', 'sizeInput' + inputDisabledClass)
+        .prop('disabled', inputDisabled)
         .val(quantity)
         .keyup(function(e) {
           duckburg.order.collectDesignDetails();
@@ -2669,7 +2676,6 @@ duckburg.order = {
        return false;
      }
 
-     console.log('updated and unbound')
      duckburg.order.collectDesignDetails();
      $(document).unbind('click', duckburg.order.updateSocialCal);
    },
@@ -2910,6 +2916,9 @@ duckburg.order = {
       $('.designFormWithinOrder').each(function(count) {
         if (count == item.indexInLoop) {
           $(this).attr('name', result.id);
+          var id = duckburg.order.currentOrder.attributes.readable_id;
+          result.set('parent_order', id);
+          result.save();
           duckburg.order.currentItems[result.id] = result;
         }
       });
@@ -3184,7 +3193,7 @@ duckburg.order = {
 
             // Set search string and save.
             duckburg.order.currentItems[item.id].set(
-                'parse_search_string', item.item_name);
+                'parse_search_string', item.item_name.toLowerCase());
             duckburg.order.currentItems[item.id].save();
           }
         }

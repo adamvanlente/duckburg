@@ -638,6 +638,14 @@ duckburg.printing = {
         }
       }
 
+      // Note for social order.
+      var socialNote = '';
+      if (d.is_social_order) {
+        socialNote = $('<span>')
+          .html('SOCIAL ORDER')
+          .attr('class', 'weekCalendarNoteSocialOrder');
+      }
+
       // Fill the day with an order.
       $('#dayWeekHolder_' + id)
 
@@ -650,6 +658,8 @@ duckburg.printing = {
           .append($('<a>')
             .attr('href', '/order/' + d.readable_id)
             .html(d.order_name))
+
+          .append(socialNote)
 
           // Input for print date.
           .append($('<input>')

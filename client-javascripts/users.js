@@ -70,6 +70,11 @@ duckburg.users = {
      var email = u.email
      var role = u.role || 'standard user';
 
+     // Just for employees, don't list customers.
+     if (role === 'customer') {
+       return;
+     }
+
      // Add a user record.
      $('.userList')
        .append($('<span>')

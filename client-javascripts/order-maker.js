@@ -326,7 +326,6 @@ duckburg.orderMaker = {
 
     var DbObject = Parse.Object.extend('dbCatalogItem');
     var parseCatalogItem = new DbObject();
-
     var itemDict = {
       'GD110': {
         'key': 'Tv6wzkNpmD',
